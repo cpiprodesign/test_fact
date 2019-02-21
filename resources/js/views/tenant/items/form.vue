@@ -35,7 +35,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.item_code_gs1}">
-                            <label class="control-label">Código GSL</label>
+                            <label class="control-label">Código de Barra <a class="" href="#" style="float: right">Generar</a></label>
                             <el-input v-model="form.item_code_gs1" dusk="item_code_gs1"></el-input>
                             <small class="form-control-feedback" v-if="errors.item_code_gs1" v-text="errors.item_code_gs1[0]"></small>
                         </div>
@@ -97,6 +97,25 @@
                     </div>
                 </div>
             </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Sede</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="row in establishments" :key="row">
+                                <td>{{ row.description }}</td>
+                                <td><input type="text" name="stocks[]" class="form-control" style="max-width: 200px" v-model="stocks"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <div class="form-actions text-right pt-2">
                 <el-button @click.prevent="close()">Cancelar</el-button>
                 <el-button type="primary" native-type="submit" :loading="loading_submit">Guardar</el-button>
@@ -115,11 +134,14 @@
                 titleDialog: null,
                 resource: 'items',
                 errors: {},
-                form: {},
+                form: {
+                    stocks:[]
+                },
                 unit_types: [],
                 currency_types: [],
                 system_isc_types: [],
-                affectation_igv_types: []
+                affectation_igv_types: [],
+                establishments: []
             }
         },
         created() {
@@ -130,9 +152,9 @@
                     this.currency_types = response.data.currency_types
                     this.system_isc_types = response.data.system_isc_types
                     this.affectation_igv_types = response.data.affectation_igv_types
-
                     this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
                     this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0)?this.affectation_igv_types[0].id:null
+                    this.establishments = response.data.establishments                   
                 })
         },
         methods: {
@@ -157,7 +179,7 @@
                     sale_affectation_igv_type_id: null,
                     purchase_affectation_igv_type_id: null,
                     stock: 0,
-                    stock_min: 1,
+                    stock_min: 1                    
                 }
             },
             resetForm() {
@@ -172,12 +194,22 @@
                         .then(response => {
                             this.form = response.data.data
                         })
+
+                    this.$http.get(`/${this.resource}/stocks/${this.recordId}`)
+                        .then(response => {
+                            // this.form.stocks = response.data.data
+                        })
                 }
+
+                // this.paymentmethods.forEach((value) => {
+                //     this.pays.push({id:value.value, ref: '' , val: 0 })
+                // });
             },
             submit() {
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form)
                     .then(response => {
+                        console.log(JSON.stringify(response));
                         if (response.data.success) {
                             this.$message.success(response.data.message)
                             if (this.external) {

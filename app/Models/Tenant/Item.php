@@ -74,6 +74,10 @@ class Item extends ModelTenant
         return $this->hasMany(PurchaseItem::class);
     }
 
+    public function establisment_item()
+    {
+        return $this->hasMany(EstableshimentItem::class);
+    }
 
     public function sale_affectation_igv_type()
     {

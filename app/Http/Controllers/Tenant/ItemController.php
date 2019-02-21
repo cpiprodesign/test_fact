@@ -8,6 +8,8 @@ use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\UnitType;
 use App\Models\Tenant\Item;
+use App\Models\Tenant\Establishment;
+use App\Models\Tenant\EstablishmentItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\ItemRequest;
 use App\Http\Resources\Tenant\ItemCollection;
@@ -50,24 +52,48 @@ class ItemController extends Controller
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
         $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
         $affectation_igv_types = AffectationIgvType::whereActive()->get();
+        $establishments = Establishment::all();
 
-        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types');
+        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'establishments');
     }
 
     public function record($id)
     {
         $record = new ItemResource(Item::findOrFail($id));
-
+        
         return $record;
+
+        // return compact('record', 'stocks');
+    }
+
+    public function stocks($id)
+    {
+        
+        $usuario = DB::table('users as usu')
+                ->join('persona as per', 'per.idPersona', '=', 'usu.idPersona')
+                ->select("per.idPersona", "usu.id", "per.nombre", "usu.username", "usu.email", "usu.estado")
+                ->where('id', $id)
+                ->first();
+
+        $stocks = EstablishmentItem::where('item_id', $id)->get();
+
+        return $stocks;
+
+        // return compact('record', 'stocks');
     }
 
     public function store(ItemRequest $request)
     {
+        echo json_encode($request); exit;
         $id = $request->input('id');
         $item = Item::firstOrNew(['id' => $id]);
         $item->item_type_id = '01';
         $item->fill($request->all());
         $item->save();
+
+        foreach ($request->input('establisment') as $row) {
+            $item->establisment_item()->create($row);
+        }
 
         return [
             'success' => true,
