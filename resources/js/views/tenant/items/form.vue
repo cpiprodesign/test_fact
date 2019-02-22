@@ -110,7 +110,7 @@
                         <tbody>
                             <tr v-for="row in establishments" :key="row">
                                 <td>{{ row.description }}</td>
-                                <td><input type="text" name="stocks[]" class="form-control" style="max-width: 200px" v-model="stocks"></td>
+                                <td><input type="text" name="stocks[]" class="form-control" style="max-width: 200px"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -135,7 +135,6 @@
                 resource: 'items',
                 errors: {},
                 form: {
-                    stocks:[]
                 },
                 unit_types: [],
                 currency_types: [],
@@ -193,11 +192,6 @@
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                             this.form = response.data.data
-                        })
-
-                    this.$http.get(`/${this.resource}/stocks/${this.recordId}`)
-                        .then(response => {
-                            // this.form.stocks = response.data.data
                         })
                 }
 

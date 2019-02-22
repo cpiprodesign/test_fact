@@ -137,6 +137,19 @@ if ($hostname) {
             Route::get('documents/item/tables', 'Tenant\DocumentController@item_tables');
             Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
 
+            //Quotations
+            Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index');
+            Route::get('quotations/columns', 'Tenant\QuotationController@columns');
+            Route::get('quotations/records', 'Tenant\QuotationController@records');
+            Route::get('quotations/create', 'Tenant\QuotationController@create')->name('tenant.quotations.create');
+            Route::get('quotations/tables', 'Tenant\QuotationController@tables');
+            Route::get('quotations/record/{quotation}', 'Tenant\QuotationController@record');
+            Route::post('quotations', 'Tenant\QuotationController@store');
+            Route::get('quotations/send/{quotation}', 'Tenant\QuotationController@send');
+            Route::post('quotations/email', 'Tenant\QuotationController@email');
+            Route::get('quotations/item/tables', 'Tenant\QuotationController@item_tables');
+            Route::get('quotations/table/{table}', 'Tenant\QuotationController@table');
+
             //Summaries
             Route::get('summaries', 'Tenant\SummaryController@index')->name('tenant.summaries.index');
             Route::get('summaries/records', 'Tenant\SummaryController@records');

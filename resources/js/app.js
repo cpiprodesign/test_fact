@@ -41,9 +41,14 @@ Vue.component('tenant-persons-index', require('./views/tenant/persons/index.vue'
 Vue.component('tenant-customers-index', require('./views/tenant/customers/index.vue'));
 Vue.component('tenant-suppliers-index', require('./views/tenant/suppliers/index.vue'));
 Vue.component('tenant-users-form', require('./views/tenant/users/form.vue'));
+
 Vue.component('tenant-documents-index', require('./views/tenant/documents/index.vue'));
 Vue.component('tenant-documents-invoice', require('./views/tenant/documents/invoice.vue'));
 Vue.component('tenant-documents-note', require('./views/tenant/documents/note.vue'));
+
+Vue.component('tenant-quotations-index', require('./views/tenant/quotations/index.vue'));
+Vue.component('tenant-quotations-invoice', require('./views/tenant/quotations/invoice.vue'))
+
 Vue.component('tenant-summaries-index', require('./views/tenant/summaries/index.vue'));
 Vue.component('tenant-voided-index', require('./views/tenant/voided/index.vue'));
 Vue.component('tenant-search-index', require('./views/tenant/search/index.vue'));

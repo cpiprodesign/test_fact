@@ -66,6 +66,7 @@ class TenantCatalogsTable extends Migration
 
         DB::table('cat_document_types')->insert([
             ['id' => '01', 'active' => true,  'short' => 'FT', 'description' => 'FACTURA ELECTRÓNICA'],
+            ['id' => '02', 'active' => false,  'short' => 'CP', 'description' => 'COTIZACIÓN'],
             ['id' => '03', 'active' => true,  'short' => 'BV', 'description' => 'BOLETA DE VENTA ELECTRÓNICA'],
             ['id' => '07', 'active' => true,  'short' => 'NC', 'description' => 'NOTA DE CRÉDITO'],
             ['id' => '08', 'active' => true,  'short' => 'ND', 'description' => 'NOTA DE DÉBITO'],

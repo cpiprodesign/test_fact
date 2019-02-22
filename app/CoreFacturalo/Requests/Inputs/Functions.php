@@ -22,6 +22,19 @@ class Functions
         return $number;
     }
 
+    public static function newNumber2($document_type_id, $series, $number, $model)
+    {
+        if ($number === '#') {
+            $document = $model::select('number')
+                                ->where('document_type_id', $document_type_id)
+                                ->where('series', $series)
+                                ->orderBy('number', 'desc')
+                                ->first();
+            return ($document)?(int)$document->number+1:1;
+        }
+        return $number;
+    }
+
     public static function filename($company, $document_type_id, $series, $number)
     {
         return join('-', [$company->number, $document_type_id, $series, $number]);
@@ -31,6 +44,17 @@ class Functions
     {
         $document = $model::where('soap_type_id', $soap_type_id)
                         ->where('document_type_id', $document_type_id)
+                        ->where('series', $series)
+                        ->where('number', $number)
+                        ->first();
+        if($document) {
+            throw new Exception("El documento: {$document_type_id} {$series}-{$number} ya se encuentra registrado.");
+        }
+    }
+
+    public static function validateUniqueDocument2($document_type_id, $series, $number, $model)
+    {
+        $document = $model::where('document_type_id', $document_type_id)
                         ->where('series', $series)
                         ->where('number', $number)
                         ->first();

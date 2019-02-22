@@ -62,38 +62,27 @@ class ItemController extends Controller
         $record = new ItemResource(Item::findOrFail($id));
         
         return $record;
-
-        // return compact('record', 'stocks');
     }
 
     public function stocks($id)
     {
         
-        $usuario = DB::table('users as usu')
-                ->join('persona as per', 'per.idPersona', '=', 'usu.idPersona')
-                ->select("per.idPersona", "usu.id", "per.nombre", "usu.username", "usu.email", "usu.estado")
-                ->where('id', $id)
-                ->first();
-
         $stocks = EstablishmentItem::where('item_id', $id)->get();
 
         return $stocks;
-
-        // return compact('record', 'stocks');
     }
 
     public function store(ItemRequest $request)
     {
-        echo json_encode($request); exit;
         $id = $request->input('id');
         $item = Item::firstOrNew(['id' => $id]);
         $item->item_type_id = '01';
         $item->fill($request->all());
         $item->save();
 
-        foreach ($request->input('establisment') as $row) {
-            $item->establisment_item()->create($row);
-        }
+        // foreach ($request->input('establisment') as $row) {
+        //     $item->establisment_item()->create($row);
+        // }
 
         return [
             'success' => true,

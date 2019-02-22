@@ -68,7 +68,31 @@
                             </p>
                         </ul>
                     </li>
-
+                    <li class="
+                        nav-parent
+                        {{ ($path[0] === 'quotations')?'nav-active nav-expanded':'' }}                       
+                        ">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-clipboard-list" aria-hidden="true"></i>
+                            <span>COTIZACIONES</span>
+                        </a>
+                        <ul class="nav nav-children" style="">
+                            @if(in_array('documents', $vc_modules))
+                                <li class="{{ ($path[0] === 'quotations' && $path[1] === 'create')?'nav-active':'' }}">
+                                    <a class="nav-link" href="{{route('tenant.quotations.create')}}">
+                                        Nueva cotización
+                                    </a>
+                                </li>
+                            @endif
+                            @if(in_array('documents', $vc_modules))
+                                <li class="{{ ($path[0] === 'quotations' && $path[1] != 'create')?'nav-active':'' }}">
+                                    <a class="nav-link" href="{{route('tenant.quotations.index')}}">
+                                        Listado de cotizaciones
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
                     <li class="
                         nav-parent
                         {{ ($path[0] === 'purchases')?'nav-active nav-expanded':'' }}
