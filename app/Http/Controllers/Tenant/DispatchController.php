@@ -18,6 +18,8 @@ use App\Models\Tenant\Catalogs\{
 use Illuminate\Http\Request;
 use App\Models\Tenant\{
     Establishment,
+    Document,
+    DocumentItem,
     Dispatch,
     Person,
     Series,
@@ -54,6 +56,10 @@ class DispatchController extends Controller
     public function create() {
         return view('tenant.dispatches.form');
     }
+
+    public function create2($document_id=false) {
+        return view('tenant.dispatches.form2', compact('document_id'));
+    }
     
     public function store(Request $request) {
         $fact = DB::connection('tenant')->transaction(function () use($request) {
@@ -74,7 +80,16 @@ class DispatchController extends Controller
             'message' => "Se creo la guía de remisión {$document->series}-{$document->number}",
         ];
     }
-    
+
+    public function datos($document_id)
+    {
+        $document = Document::where('id', $document_id)->first();
+        $person = Person::where('id', $document->customer_id)->first();
+        $series = Series::where('establishment_id', $document->establishment_id)->where('document_type_id', '09')->get();
+
+        return compact('document', 'series');
+    }
+
     /**
      * Tables
      * @param  Request $request

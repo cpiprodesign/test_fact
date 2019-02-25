@@ -92,6 +92,8 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2"
                                     @click.prevent="clickVoided(row.id)"
                                     v-if="row.btn_voided" dusk="annulment-voided">Anular</button>
+                            <a :href="`/dispatches/create2/${row.id}`" class="btn waves-effect waves-light btn-xs btn-default m-1__2"
+                               v-if="row.btn_note">Guía de remisión</a>
                             <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
                                v-if="row.btn_note">Nota</a>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
