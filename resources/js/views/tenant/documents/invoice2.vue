@@ -257,6 +257,7 @@
             await this.$http.get(`/${this.resource}/item/tables2/${this.quotation_id}`)
             .then(response => {
                 this.form.items = response.data.items
+                this.form.total_exportation = response.data.quotation.total_exportation
                 this.operation_types = response.data.operation_types
                 this.all_affectation_igv_types = response.data.affectation_igv_types
                 this.system_isc_types = response.data.system_isc_types
@@ -266,6 +267,7 @@
             })
             this.loading_form = true
             this.form.quotation_id = this.quotation_id
+            this.calculateTotal()
             // this.$eventHub.$on('reloadDataPersons', (customer_id) => {
             //     this.reloadDataCustomers(customer_id)
             // })

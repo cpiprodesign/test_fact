@@ -149,6 +149,7 @@ class DocumentController extends Controller
     {
         // $items = Quotation::getItems($quotation_id);
         // $items = Quotation::getItems($quotation_id);
+        $quotation = Quotation::where('id',$quotation_id)->first();
         $quotation_items = QuotationItem::where('quotation_id',$quotation_id)->get();
 
         $items = array();
@@ -197,7 +198,7 @@ class DocumentController extends Controller
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
 
         return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
-                       'operation_types', 'discount_types', 'charge_types', 'attribute_types');
+                       'operation_types', 'discount_types', 'charge_types', 'attribute_types', 'quotation');
     }
 
     public function table($table)
