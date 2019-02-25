@@ -373,6 +373,7 @@
                     this.form.establishment_id = response.data.document.establishment_id;
                     this.form.customer_id = response.data.document.customer_id;
                     this.series = response.data.series;                 
+                    this.form.items = response.data.items;                 
                 })
             
             this.$http.post(`/${this.resource}/tables`).then(response => {

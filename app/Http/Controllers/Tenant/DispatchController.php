@@ -87,7 +87,22 @@ class DispatchController extends Controller
         $person = Person::where('id', $document->customer_id)->first();
         $series = Series::where('establishment_id', $document->establishment_id)->where('document_type_id', '09')->get();
 
-        return compact('document', 'series');
+        $document_items = DocumentItem::where('document_id', $document_id)->get();
+
+        $items = array();
+
+        foreach($document_items as $document_item)
+        {
+            $row = Item::whereId($document_item->item_id)->first();
+
+            $items[] = [
+                'id' => $row->id,
+                'description' => $row->description,
+                'quantity' => $document_item->quantity
+            ];
+        }
+
+        return compact('document', 'series', 'items');
     }
 
     /**
