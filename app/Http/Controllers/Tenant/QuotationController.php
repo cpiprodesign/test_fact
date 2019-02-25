@@ -143,13 +143,13 @@ class QuotationController extends Controller
     public function store(QuotationRequest $request)
     {
         $inputs = $request->all();
+
         $quotation = Quotation::create($inputs);
         foreach ($inputs['items'] as $row) {
             $quotation->items()->create($row);
         }
 
-        // $facturalo = new Facturalo();
-        // $facturalo->createPdf();
+        $this->create_pdf();
         $this->quotation = Quotation::find($quotation->id);
 
         return [
@@ -158,6 +158,11 @@ class QuotationController extends Controller
                 'id' => $quotation->id,
             ],
         ];
+    }
+
+    public function create_pdf()
+    {
+
     }
 
     public function email(DocumentEmailRequest $request)

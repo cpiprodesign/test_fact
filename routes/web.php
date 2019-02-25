@@ -127,14 +127,18 @@ if ($hostname) {
             Route::get('documents/columns', 'Tenant\DocumentController@columns');
             Route::get('documents/records', 'Tenant\DocumentController@records');
             Route::get('documents/create', 'Tenant\DocumentController@create')->name('tenant.documents.create');
+            Route::get('documents/create2/{document}', 'Tenant\DocumentController@create2')->name('tenant.documents.create2');
             Route::get('documents/tables', 'Tenant\DocumentController@tables');
+            Route::get('documents/tables2/{document}', 'Tenant\DocumentController@tables2');
             Route::get('documents/record/{document}', 'Tenant\DocumentController@record');
             Route::post('documents', 'Tenant\DocumentController@store');
+            // Route::post('documents/store2/', 'Tenant\DocumentController@store2');
             Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
             Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
             Route::post('documents/email', 'Tenant\DocumentController@email');
             Route::get('documents/note/{document}', 'Tenant\NoteController@create');
             Route::get('documents/item/tables', 'Tenant\DocumentController@item_tables');
+            Route::get('documents/item/tables2/{document}', 'Tenant\DocumentController@item_tables2');
             Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
 
             //Quotations

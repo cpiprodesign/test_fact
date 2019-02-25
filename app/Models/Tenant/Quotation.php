@@ -4,6 +4,7 @@ namespace App\Models\Tenant;
 
 use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\DocumentType;
+use Illuminate\Support\Facades\DB;
 
 class Quotation extends ModelTenant
 {
@@ -221,5 +222,50 @@ class Quotation extends ModelTenant
     public function getDownloadExternalPdfAttribute()
     {
         return route('tenant.download.external_id', ['model' => 'document', 'type' => 'pdf', 'external_id' => $this->external_id]);
+    }
+
+    public static function getItems($quotation_id)
+    {
+        $query = DB::connection('tenant')->table('quotation_items as qui')
+          ->select('ite.*')
+          ->join('items as ite', 'ite.id', '=', 'qui.item_id')
+          ->where('qui.quotation_id', $quotation_id)
+          ->get();
+
+        $items = $query->transform(function($row) {
+            $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
+            $currency_type_symbol = "EN";
+            return [
+                'id' => $row->id,
+                'full_description' => $full_description,
+                'description' => $row->description,
+                'currency_type_id' => $row->currency_type_id,
+                'currency_type_symbol' => $currency_type_symbol,
+                'sale_unit_price' => $row->sale_unit_price,
+                'purchase_unit_price' => $row->purchase_unit_price,
+                'unit_type_id' => $row->unit_type_id,
+                'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
+            ];
+        });
+
+        return $items;
+
+        // $items = Item::orderBy('description')->get()->transform(function($row) {
+        //     $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
+        //     return [
+        //         'id' => $row->id,
+        //         'full_description' => $full_description,
+        //         'description' => $row->description,
+        //         'currency_type_id' => $row->currency_type_id,
+        //         'currency_type_symbol' => $row->currency_type->symbol,
+        //         'sale_unit_price' => $row->sale_unit_price,
+        //         'purchase_unit_price' => $row->purchase_unit_price,
+        //         'unit_type_id' => $row->unit_type_id,
+        //         'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+        //         'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
+        //     ];
+        // });
+        // return $items;
     }
 }

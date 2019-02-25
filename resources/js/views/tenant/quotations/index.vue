@@ -19,12 +19,6 @@
                         <th>Número</th>
                         <th>Estado</th>
                         <th class="text-center">Moneda</th>
-                        <th class="text-right">T.Exportación</th>
-                        <th class="text-right">T.Gratuita</th>
-                        <th class="text-right">T.Inafecta</th>
-                        <th class="text-right">T.Exonerado</th>
-                        <th class="text-right">T.Gravado</th>
-                        <th class="text-right">T.Igv</th>
                         <th class="text-right">Total</th>
                         <th class="text-center">Descargas</th>
                         <!--<th class="text-center">Anulación</th>-->
@@ -57,12 +51,6 @@
                             }">{{ row.state_type_description }}</span>
                         </td>
                         <td class="text-center">{{ row.currency_type_id }}</td>
-                        <td class="text-right">{{ row.total_exportation }}</td>
-                        <td class="text-right">{{ row.total_free }}</td>
-                        <td class="text-right">{{ row.total_unaffected }}</td>
-                        <td class="text-right">{{ row.total_exonerated }}</td>
-                        <td class="text-right">{{ row.total_taxed }}</td>
-                        <td class="text-right">{{ row.total_igv }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-center">
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
@@ -88,16 +76,17 @@
                         <!--</td>-->
                         
                         <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2"
-                                    @click.prevent="clickVoided(row.id)"
-                                    v-if="row.btn_voided" dusk="annulment-voided">Anular</button>
-                            <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
-                               v-if="row.btn_note">Nota</a>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickResend(row.id)"
-                                    v-if="row.btn_resend">Reenviar</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickOptions(row.id)">Opciones</button>
+                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" type="button" class="btn waves-effect waves-light btn-xs btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Opciones
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        <a v-if="row.state_type_id==1" class="dropdown-item" :href="`/documents/create2/`+row.id">Crear venta</a>
+                                        <button type="button" class="dropdown-item" @click.prevent="clickCreateSale(row.download_pdf)">Descargar PDF</button>
+                                    </div>
+                                </div>
+                            </div>                            
                         </td>
                     </tr>
                 </data-table>
@@ -137,6 +126,9 @@
                 this.showDialogVoided = true
             },
             clickDownload(download) {
+                window.open(download, '_blank');
+            },
+            clickCreateSale(download) {
                 window.open(download, '_blank');
             },
             clickResend(quotation_id) {
