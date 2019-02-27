@@ -187,6 +187,8 @@ if ($hostname) {
             Route::get('dispatches/columns', 'Tenant\DispatchController@columns');
             Route::get('dispatches/records', 'Tenant\DispatchController@records');
             Route::get('dispatches/create', 'Tenant\DispatchController@create');
+            Route::get('dispatches/create2/{dispatche}', 'Tenant\DispatchController@create2');
+            Route::get('dispatches/datos/{dispatche}', 'Tenant\DispatchController@datos');
             Route::post('dispatches/tables', 'Tenant\DispatchController@tables');
             Route::post('dispatches', 'Tenant\DispatchController@store');
 

@@ -67,6 +67,7 @@ Vue.component('tenant-perceptions-index', require('./views/tenant/perceptions/in
 Vue.component('tenant-perceptions-form', require('./views/tenant/perceptions/form.vue'));
 Vue.component('tenant-dispatches-index', require('./views/tenant/dispatches/index.vue'));
 Vue.component('tenant-dispatches-form', require('./views/tenant/dispatches/form.vue'));
+Vue.component('tenant-dispatches-form2', require('./views/tenant/dispatches/form2.vue'));
 Vue.component('tenant-purchases-index', require('./views/tenant/purchases/index.vue'));
 Vue.component('tenant-purchases-form', require('./views/tenant/purchases/form.vue'));
 Vue.component('tenant-purchases-items', require('./views/tenant/dispatches/items.vue'));
