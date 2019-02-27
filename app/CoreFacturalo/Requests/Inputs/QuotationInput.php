@@ -334,7 +334,7 @@ class QuotationInput
         $date_of_due = $inputs['date_of_due'];
 
         return [
-            'type' => 'invoice',
+            'type' => 'quotation',
             'group_id' => ($inputs['document_type_id'] === '01')?'01':'02',
             'invoice' => [
                 'operation_type_id' => $operation_type_id,

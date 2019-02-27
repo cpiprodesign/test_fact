@@ -13,6 +13,7 @@ class Quotation extends ModelTenant
     protected $fillable = [
         'user_id',
         'establishment_id',
+        'establishment',
         'state_type_id',
         'group_id',
         'document_type_id',

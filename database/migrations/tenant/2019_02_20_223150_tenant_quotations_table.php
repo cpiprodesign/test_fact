@@ -17,6 +17,7 @@ class TenantQuotationsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('establishment_id');
+            $table->json('establishment');
             $table->char('state_type_id', 2);
             $table->char('group_id', 2);
             $table->string('document_type_id');

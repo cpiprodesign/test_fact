@@ -256,6 +256,7 @@ class DocumentController extends Controller
             $facturalo->updateQr();
             $facturalo->createPdf();
 
+
             if($request->input('quotation_id'))
             {
                 Quotation::where('id', $request->input('quotation_id'))

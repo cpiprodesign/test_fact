@@ -251,9 +251,9 @@
                     this.changeCurrencyType()
                 })
             this.loading_form = true
-            this.$eventHub.$on('reloadDataPersons', (customer_id) => {
-                this.reloadDataCustomers(customer_id)
-            })
+            // this.$eventHub.$on('reloadDataPersons', (customer_id) => {
+            //     this.reloadDataCustomers(customer_id)
+            // })
         },
         methods: {
             initForm() {
@@ -333,15 +333,17 @@
             },
             filterCustomers() {
                 this.form.customer_id = null
-                if(this.form.document_type_id === '01') {
-                    this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
-                } else {
-                    if(this.document_type_03_filter) {
-                        this.customers = _.filter(this.all_customers, (c) => { return c.identity_document_type_id !== '6' })
-                    } else {
-                        this.customers = this.all_customers
-                    }
-                }
+                this.customers = this.all_customers
+                
+                // if(this.form.document_type_id === '01') {
+                //     this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
+                // } else {
+                //     if(this.document_type_03_filter) {
+                //         this.customers = _.filter(this.all_customers, (c) => { return c.identity_document_type_id !== '6' })
+                //     } else {
+                //         this.customers = this.all_customers
+                //     }
+                // }
             },
             addRow(row) {
                 this.form.items.push(row)
@@ -410,8 +412,6 @@
             submit() {
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
-                    console.log(response);
-
                     if (response.data.success) {
                         this.resetForm();
 

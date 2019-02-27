@@ -144,25 +144,17 @@ class QuotationController extends Controller
     {
         $inputs = $request->all();
 
-        $quotation = Quotation::create($inputs);
-        foreach ($inputs['items'] as $row) {
-            $quotation->items()->create($row);
-        }
+        $facturalo = new Facturalo();
+        $facturalo->save($request->all());        
+        $facturalo->createPdfQuotation();
 
-        $this->create_pdf();
-        $this->quotation = Quotation::find($quotation->id);
 
         return [
             'success' => true,
             'data' => [
-                'id' => $quotation->id,
+                'id' => $this->document->id,
             ],
         ];
-    }
-
-    public function create_pdf()
-    {
-
     }
 
     public function email(DocumentEmailRequest $request)
