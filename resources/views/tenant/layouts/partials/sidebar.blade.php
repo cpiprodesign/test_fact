@@ -1,8 +1,5 @@
-@php
-    $path = explode('/', request()->path());
-    $path[1] = (array_key_exists(1, $path)> 0)?$path[1]:'';
-    $path[2] = (array_key_exists(2, $path)> 0)?$path[2]:'';
-    $path[0] = ($path[0] === '')?'documents':$path[0];
+@php $path = explode('/', request()->path()); $path[1] = (array_key_exists(1, $path)> 0)?$path[1]:''; $path[2] = (array_key_exists(2,
+$path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
 @endphp
 
 <aside id="sidebar-left" class="sidebar-left">
@@ -10,8 +7,7 @@
         <div class="sidebar-title">
             Menu
         </div>
-        <div class="sidebar-toggle d-none d-md-block" data-toggle-class="sidebar-left-collapsed" data-target="html"
-             data-fire-event="sidebar-left-toggle">
+        <div class="sidebar-toggle d-none d-md-block" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
             <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
         </div>
     </div>
@@ -23,6 +19,7 @@
                     <li class="
                         nav-parent
                         {{ ($path[0] === 'documents')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'pos')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'items')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'persons' && $path[1] === 'customers')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'summaries')?'nav-active nav-expanded':'' }}
@@ -36,6 +33,11 @@
                             <li class="{{ ($path[0] === 'documents' && $path[1] === 'create')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.documents.create')}}">
                                     Nuevo comprobante electrónico
+                                </a>
+                            </li>
+                            <li class="{{ ($path[0] === 'pos')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.pos.index')}}">
+                                    Punto de Venta
                                 </a>
                             </li>
                             <li class="{{ ($path[0] === 'documents' && $path[1] != 'create')?'nav-active':'' }}">
@@ -80,8 +82,7 @@
                             </li>
                         </ul>
                     </li>
-                    @endif
-                    @if(in_array('purchases', $vc_modules))
+                    @endif @if(in_array('purchases', $vc_modules))
                     <li class="
                         nav-parent
                         {{ ($path[0] === 'purchases')?'nav-active nav-expanded':'' }}
@@ -109,8 +110,7 @@
                             </li>
                         </ul>
                     </li>
-                    @endif
-                    @if(in_array('configuration', $vc_modules))
+                    @endif @if(in_array('configuration', $vc_modules))
                     <li class="nav-parent {{ in_array($path[0], ['users', 'establishments'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-users" aria-hidden="true"></i>
@@ -129,8 +129,7 @@
                             </li>
                         </ul>
                     </li>
-                    @endif
-                    @if(in_array('advanced', $vc_modules))
+                    @endif @if(in_array('advanced', $vc_modules))
                     <li class="
                         nav-parent
                         {{ ($path[0] === 'retentions')?'nav-active nav-expanded':'' }}
@@ -159,8 +158,7 @@
 
                         </ul>
                     </li>
-                    @endif
-                    @if(in_array('reports', $vc_modules))
+                    @endif @if(in_array('reports', $vc_modules))
                     <li class="nav-parent {{  (($path[0] === 'reports') && in_array($path[1], ['', 'purchases', 'kardex', 'inventories'])) ? 'nav-active nav-expanded' : ''}}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-chart-area" aria-hidden="true"></i>
@@ -189,8 +187,7 @@
                             </li>
                         </ul>
                     </li>
-                    @endif
-                    @if(in_array('configuration', $vc_modules))
+                    @endif @if(in_array('configuration', $vc_modules))
                     <li class="nav-parent {{ in_array($path[0], ['companies', 'catalogs', 'advanced'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-cogs" aria-hidden="true"></i>

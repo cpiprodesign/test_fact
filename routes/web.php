@@ -20,6 +20,7 @@ if ($hostname) {
             Route::get('/', function () {
                 return redirect()->route('tenant.documents.create');
             });
+
             Route::get('dashboard', 'Tenant\HomeController@index')->name('tenant.dashboard');
             Route::get('catalogs', 'Tenant\CatalogController@index')->name('tenant.catalogs.index');
             Route::get('advanced', 'Tenant\AdvancedController@index')->name('tenant.advanced.index');
@@ -122,6 +123,13 @@ if ($hostname) {
             Route::delete('persons/{person}', 'Tenant\PersonController@destroy');
             Route::post('persons/import', 'Tenant\PersonController@import');
 
+            //POS - Punto de Venta
+            // juliocapuano@gmail.com
+            Route::get('pos', 'Tenant\PosController@index')->name('tenant.pos.index');
+            Route::get('pos/columns', 'Tenant\PosController@columns');
+            Route::get('pos/records', 'Tenant\PosController@records');
+            Route::get('pos/register', 'Tenant\PosController@register')->name('tenant.pos.register');
+
             //Documents
             Route::get('documents', 'Tenant\DocumentController@index')->name('tenant.documents.index');
             Route::get('documents/columns', 'Tenant\DocumentController@columns');
@@ -187,7 +195,7 @@ if ($hostname) {
             Route::post('reports/inventories/search', 'Tenant\ReportInventoryController@search')->name('tenant.reports.inventories.search');
             Route::post('reports/inventories/pdf', 'Tenant\ReportInventoryController@pdf')->name('tenant.report.inventories.pdf');
             Route::post('reports/inventories/excel', 'Tenant\ReportInventoryController@excel')->name('tenant.report.inventories.report_excel');
-            
+
             Route::get('reports/kardex', 'Tenant\ReportKardexController@index')->name('tenant.reports.kardex.index');
             Route::post('reports/kardex/search', 'Tenant\ReportKardexController@search')->name('tenant.reports.kardex.search');
             Route::post('reports/kardex/pdf', 'Tenant\ReportKardexController@pdf')->name('tenant.report.kardex.pdf');

@@ -99,7 +99,7 @@
     <script src="{{ asset('porto-light/vendor/jquery-cookie/jquery-cookie.js')}}"></script>
         {{--<script src="{{asset('master/style-switcher/style.switcher.js')}}"></script>--}}
     <script src="{{ asset('porto-light/vendor/popper/umd/popper.min.js')}}"></script>
-    <!-- <script src="{{ asset('porto-light/vendor/bootstrap/js/bootstrap.js')}}"></script> -->
+{{--    <!-- <script src="{{ asset('porto-light/vendor/bootstrap/js/bootstrap.js')}}"></script> -->--}}
     {{-- <script src="{{ asset('porto-light/vendor/common/common.js')}}"></script> --}}
     <script src="{{ asset('porto-light/vendor/nanoscroller/nanoscroller.js')}}"></script>
     <script src="{{ asset('porto-light/vendor/magnific-popup/jquery.magnific-popup.js')}}"></script>
