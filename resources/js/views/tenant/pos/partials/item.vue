@@ -52,7 +52,7 @@
 
                                     <p class="pl-1">Información adicional atributos UBL 2.1</p>
                                 </header>
-                                <div class="card-body px-0" style="display: none;">
+                                <div class="card-body px-0">
                                     <div class="col-md-12 px-0" v-if="discount_types.length > 0">
                                         <label class="control-label">
                                             Descuentos

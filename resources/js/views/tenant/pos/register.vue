@@ -15,12 +15,14 @@
                 </div>
 
                 <div class="mt-3 overflow-auto h-100 border border-primary rounded rounded-0" style="max-height: 77vh">
-                    <div class="d-flex flex-row flex-wrap justify-content-around py-2c">
+                    <div class="d-flex flex-row flex-wrap justify-content-around py-2">
 
 
-                        <div class="card m-1 border border-success" style="height: 25vh; width: 25vh">
+                        <div v-for="option in items" class="card m-1 border border-success"
+                             style="height: 30vh; width: 30vh">
+                            <div class="card-header">{{option.full_description}}</div>
                             <div class="card-body p-2" style="width: 100%">
-                                Articulo
+                                {{option}}
                             </div>
                         </div>
 
@@ -38,29 +40,43 @@
                             Venta
                         </h5>
                     </div>
-                    <div class="card-body table-responsive p-0 overflow-auto" style="height: 60vh">
+                    <div class="card-body table-responsive p-0 overflow-auto" style="height: 40vh">
                         <table class="table table-striped table-bordered table-sm m-0 p-0">
                             <thead class="thead-dark">
                             <tr>
+                                <th class="text-center">#</th>
                                 <th class="text-center w-50">Art.</th>
                                 <th class="text-center">UN.</th>
                                 <th class="text-center">PU.</th>
+                                <th class="text-center">Sub-T.</th>
                                 <th class="text-center">Total</th>
                                 <th class="text-center">Act</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td class="pl-2">Articulo</td>
-                                <td class="text-center">10</td>
-                                <td class="text-right pr-2 ">200</td>
-                                <td class="text-right pr-2">2000</td>
+                            <tbody v-if="form.items.length > 0">
+                            <tr v-for="(row, index) in form.items">
+                                <td>{{ index + 1 }}</td>
+                                <td>
+                                    {{ row }}
+                                    {{ row.item.description }}
+                                    <br/>
+                                    <small>
+                                        {{ row.affectation_igv_type.description }}/{{ row.item.unit_type_id }}
+                                    </small>
+                                </td>
+                                <td class="text-right">{{ row.quantity }}</td>
+                                <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td>
+                                <td class="text-right">{{ currency_type.symbol }} {{ row.total_value }}</td>
+                                <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
+
                                 <td class="text-center pl-0 pr-0">
                                     <div class="btn-group btn-group-xs">
-                                        <button class="btn btn-danger btn-xs ">
+                                        <button class="btn btn-danger btn-xs"
+                                                @click.prevent="recalcItem(index,row.quantity--)">
                                             <i class="fas fa-minus-square"></i>
                                         </button>
-                                        <button class="btn btn-success btn-xs ">
+                                        <button class="btn btn-success btn-xs"
+                                                @click.prevent="recalcItem(index,row.quantity++)">
                                             <i class="fas fa-plus-square"></i>
                                         </button>
                                     </div>
@@ -68,34 +84,37 @@
                                         <i class="fas fa-pen-alt"></i>
                                     </button>
                                 </td>
+
+
+                                <!--                                <td class="text-right">{{ currency_type.symbol }} {{ row.total_value }}</td>-->
+                                <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
+                                <!--                                <td class="text-right">-->
+                                <!--                                    <button type="button"-->
+                                <!--                                            class="btn waves-effect waves-light btn-xs btn-danger"-->
+                                <!--                                            >x-->
+                                <!--                                    </button>-->
+                                <!--                                </td>-->
+
                             </tr>
                             </tbody>
+
                         </table>
                     </div>
                     <!--                    <div class="card-footer d-flex bg-light-info flex-row flex-wrap justify-content-around"-->
-                    <div class="card-footer  bg-success row"
-                         style="height: 24vh">
+                    <div class="card-footer bg-dark p-1" style="height: 44vh">
                         <div class="col-8">
-                            <!--                            <div class="form-group" :class="{'has-danger': errors.document_type_id}">-->
+                            <div class="form-group mb-1">
 
-                            <!--                                <el-select v-model="form.document_type_id" @change="changeDocumentType"-->
-                            <!--                                           popper-class="el-select-document_type" dusk="document_type_id"-->
-                            <!--                                           class="border-left rounded-left border-info">-->
-                            <!--                                    <el-option v-for="option in document_types" :key="option.id" :value="option.id"-->
-                            <!--                                               :label="option.description"></el-option>-->
-                            <!--                                </el-select>-->
-
-                            <!--                            </div>-->
-                            <div class="form-group">
-
-                                <label class="control-label text-white">
+                                <label class="text-white">
                                     Documento
                                 </label>
-                                <div class="btn-group-vertical btn-group-sm btn-group-toggle" data-toggle="buttons">
 
-                                    <label v-for="option in document_types"
-                                           class="btn btn-primary"
-                                           v-bind:for="'dt'+option.id"
+                                <div>
+                                    <label
+                                        v-for="option in document_types"
+                                        class="btn btn-primary btn-xs mr-2 mb-1"
+                                        v-bind:for="'dt'+option.id"
+                                        :class="{'active':form.document_type_id==option.id}"
                                     >
                                         <input
                                             type="radio"
@@ -103,31 +122,58 @@
                                             v-model="form.document_type_id"
                                             v-bind:value="option.id"
                                             v-bind:id="'dt'+option.id"
-                                        >
+                                        />
                                         {{option.description}}
                                     </label>
                                 </div>
-
                             </div>
-                        </div>
+                            <div class="form-group mb-1">
 
-                        <div class="col-4">
-                            <div class="form-group" :class="{'has-danger': errors.series_id}">
-                                <label class="control-label">Serie</label>
-                                <el-select v-model="form.series_id">
-                                    <el-option v-for="option in series" :key="option.id" :value="option.id"
-                                               :label="option.number"></el-option>
+                                <label class="text-white">
+                                    Serie
+                                </label>
+
+                                <div>
+                                    <label
+                                        v-for="option in series"
+                                        class="btn btn-info btn-xs mr-2 mb-1"
+                                        v-bind:for="'idS'+option.id"
+                                        :class="{'active':form.series_id==option.id}"
+                                    >
+                                        <input
+                                            type="radio"
+                                            @change="changeDocumentType"
+                                            v-model="form.series_id"
+                                            v-bind:value="option.id"
+                                            v-bind:id="'idS'+option.id"
+                                        />
+                                        {{option.number}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group mb-1">
+                                <label class="control-label text-white">
+                                    Cliente
+                                    <a href="#" class="btn btn-xs btn-primary"
+                                       @click.prevent="showDialogNewPerson = true">+</a>
+                                </label>
+                                <el-select v-model="form.customer_id" filterable
+                                           class="border-left rounded-left border-info"
+                                           popper-class="el-select-customers" dusk="customer_id">
+                                    <el-option v-for="option in customers" :key="option.id" :value="option.id"
+                                               :label="option.description"></el-option>
                                 </el-select>
-                                <small class="form-control-feedback" v-if="errors.series_id"
-                                       v-text="errors.series_id[0]"></small>
+                                <small class="form-control-feedback" v-if="errors.customer_id"
+                                       v-text="errors.customer_id[0]"></small>
                             </div>
+
                         </div>
-
-
                     </div>
 
 
                 </div>
+
+
             </div>
         </div>
         <!--    </div>-->
@@ -195,22 +241,7 @@
                             </div>
                         </div>
                         <div class="row mt-1">
-                            <div class="col-lg-6 pb-2">
-                                <div class="form-group" :class="{'has-danger': errors.customer_id}">
-                                    <label class="control-label font-weight-bold text-info">
-                                        Cliente
-                                        <a href="#" @click.prevent="showDialogNewPerson = true">[+ Nuevo]</a>
-                                    </label>
-                                    <el-select v-model="form.customer_id" filterable
-                                               class="border-left rounded-left border-info"
-                                               popper-class="el-select-customers" dusk="customer_id">
-                                        <el-option v-for="option in customers" :key="option.id" :value="option.id"
-                                                   :label="option.description"></el-option>
-                                    </el-select>
-                                    <small class="form-control-feedback" v-if="errors.customer_id"
-                                           v-text="errors.customer_id[0]"></small>
-                                </div>
-                            </div>
+
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.purchase_order}">
                                     <label class="control-label">Orden Compra</label>
@@ -336,9 +367,9 @@
 </template>
 
 <script>
-    import DocumentFormItem from '../documents/partials/item.vue'
+    import DocumentFormItem from './partials/item.vue'
     import PersonForm from '../persons/form.vue'
-    import DocumentOptions from '../documents/partials/options.vue'
+    import DocumentOptions from './partials/options.vue'
     import {functions, exchangeRate} from '../../../mixins/functions'
     import {calculateRowItem} from '../../../helpers/functions'
     import Logo from '../companies/logo.vue'
@@ -370,11 +401,16 @@
                 all_series: [],
                 series: [],
                 currency_type: {},
-                documentNewId: null
+                documentNewId: null,
+
+                items: []
             }
         },
         async created() {
             await this.initForm()
+            await this.$http.post(`/dispatches/tables`).then(response => {
+                this.items = response.data.items;
+            });
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.document_types = response.data.document_types_invoice
@@ -591,6 +627,20 @@
                     this.form.customer_id = customer_id
                 })
             },
+            recalcItem(index, value) {
+
+                // let Items = _.clone(this.form.items);
+                // Items[index].quantity = value;
+                // Items[index].total_value = _.round(Items[index].unit_price * value, 2);
+                // Items[index].total = _.round(Items[index].unit_value * value, 2);
+                //
+                // console.info(this.form.items)
+                //
+                //
+                // this.form.items = Items;
+                // this.calculateTotal();
+
+            }
         }
     }
 </script>
