@@ -11,18 +11,28 @@
                         </span>
                     </div>
 
-                    <input type="search" class="form-control" placeholder="Buscar productos">
+                    <input type="text" class="form-control" placeholder="Buscar productos" v-model="searchBox">
+                    <button type="button" class="btn" @click.prevent="showDialogNewItem=!showDialogNewItem">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
 
                 <div class="mt-3 overflow-auto h-100 border border-primary rounded rounded-0" style="max-height: 77vh">
-                    <div class="d-flex flex-row flex-wrap justify-content-around py-2">
+                    <div class="d-flex flex-row flex-wrap p-2">
 
 
-                        <div v-for="option in items" class="card m-1 border border-success"
-                             style="height: 30vh; width: 30vh">
-                            <div class="card-header">{{option.full_description}}</div>
-                            <div class="card-body p-2" style="width: 100%">
-                                {{option}}
+                        <div v-for="option in findItem" class="card m-1 btn-outline-success "
+                             style="width: 32%; cursor: pointer"
+                             @click.prevent="selectItem(option.id)"
+                        >
+                            <div class="card-header p-1 bg-success text-white">{{option.internal_id}}</div>
+                            <div class="card-body p-1 text-dark" style="width: 100%">
+                                <span class="font-weight-blod">{{option.description}}</span> <br>
+                                <small>{{option.unit_type_id}}</small>
+                                <br>
+                                <span class="font-weight-bold text-primary">
+                                    {{option.currency_type_symbol}} {{option.sale_unit_price}}
+                                </span>
                             </div>
                         </div>
 
@@ -57,7 +67,6 @@
                             <tr v-for="(row, index) in form.items">
                                 <td>{{ index + 1 }}</td>
                                 <td>
-                                    {{ row }}
                                     {{ row.item.description }}
                                     <br/>
                                     <small>
@@ -70,19 +79,24 @@
                                 <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
 
                                 <td class="text-center pl-0 pr-0">
-                                    <div class="btn-group btn-group-xs">
-                                        <button class="btn btn-danger btn-xs"
-                                                @click.prevent="recalcItem(index,row.quantity--)">
-                                            <i class="fas fa-minus-square"></i>
-                                        </button>
-                                        <button class="btn btn-success btn-xs"
-                                                @click.prevent="recalcItem(index,row.quantity++)">
-                                            <i class="fas fa-plus-square"></i>
-                                        </button>
-                                    </div>
-                                    <button class="btn btn-warning btn-xs ">
-                                        <i class="fas fa-pen-alt"></i>
+                                    <!--                                    <div class="btn-group btn-group-xs">-->
+                                    <!--                                        <button class="btn btn-danger btn-xs"-->
+                                    <!--                                                @click.prevent="recalcItem(index,row.quantity&#45;&#45;)">-->
+                                    <!--                                            <i class="fas fa-minus-square"></i>-->
+                                    <!--                                        </button>-->
+                                    <!--                                        <button class="btn btn-success btn-xs"-->
+                                    <!--                                                @click.prevent="recalcItem(index,row.quantity++)">-->
+                                    <!--                                            <i class="fas fa-plus-square"></i>-->
+                                    <!--                                        </button>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <button class="btn btn-warning btn-xs ">-->
+                                    <!--                                        <i class="fas fa-pen-alt"></i>-->
+                                    <!--                                    </button>-->
+                                    <button type="button"
+                                            class="btn waves-effect waves-light btn-xs btn-danger"
+                                            @click.prevent="clickRemoveItem(index)">x
                                     </button>
+
                                 </td>
 
 
@@ -101,72 +115,107 @@
                         </table>
                     </div>
                     <!--                    <div class="card-footer d-flex bg-light-info flex-row flex-wrap justify-content-around"-->
-                    <div class="card-footer bg-dark p-1" style="height: 44vh">
-                        <div class="col-8">
-                            <div class="form-group mb-1">
+                    <div class="card-footer bg-dark p-1 " style="height: 44vh">
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="form-group mb-1">
 
-                                <label class="text-white">
-                                    Documento
-                                </label>
-
-                                <div>
-                                    <label
-                                        v-for="option in document_types"
-                                        class="btn btn-primary btn-xs mr-2 mb-1"
-                                        v-bind:for="'dt'+option.id"
-                                        :class="{'active':form.document_type_id==option.id}"
-                                    >
-                                        <input
-                                            type="radio"
-                                            @change="changeDocumentType"
-                                            v-model="form.document_type_id"
-                                            v-bind:value="option.id"
-                                            v-bind:id="'dt'+option.id"
-                                        />
-                                        {{option.description}}
+                                    <label class="text-white">
+                                        Documento
                                     </label>
+
+                                    <div>
+                                        <label
+                                            v-for="option in document_types"
+                                            class="btn btn-primary btn-xs mr-2 mb-1"
+                                            v-bind:for="'dt'+option.id"
+                                            :class="{'active':form.document_type_id==option.id}"
+                                        >
+                                            <input
+                                                type="radio"
+                                                @change="changeDocumentType"
+                                                v-model="form.document_type_id"
+                                                v-bind:value="option.id"
+                                                v-bind:id="'dt'+option.id"
+                                            />
+                                            {{option.description}}
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group mb-1">
+                                <div class="form-group mb-1">
 
-                                <label class="text-white">
-                                    Serie
-                                </label>
-
-                                <div>
-                                    <label
-                                        v-for="option in series"
-                                        class="btn btn-info btn-xs mr-2 mb-1"
-                                        v-bind:for="'idS'+option.id"
-                                        :class="{'active':form.series_id==option.id}"
-                                    >
-                                        <input
-                                            type="radio"
-                                            @change="changeDocumentType"
-                                            v-model="form.series_id"
-                                            v-bind:value="option.id"
-                                            v-bind:id="'idS'+option.id"
-                                        />
-                                        {{option.number}}
+                                    <label class="text-white">
+                                        Serie
                                     </label>
-                                </div>
-                            </div>
-                            <div class="form-group mb-1">
-                                <label class="control-label text-white">
-                                    Cliente
-                                    <a href="#" class="btn btn-xs btn-primary"
-                                       @click.prevent="showDialogNewPerson = true">+</a>
-                                </label>
-                                <el-select v-model="form.customer_id" filterable
-                                           class="border-left rounded-left border-info"
-                                           popper-class="el-select-customers" dusk="customer_id">
-                                    <el-option v-for="option in customers" :key="option.id" :value="option.id"
-                                               :label="option.description"></el-option>
-                                </el-select>
-                                <small class="form-control-feedback" v-if="errors.customer_id"
-                                       v-text="errors.customer_id[0]"></small>
-                            </div>
 
+                                    <div>
+                                        <label
+                                            v-for="option in series"
+                                            class="btn btn-info btn-xs mr-2 mb-1"
+                                            v-bind:for="'idS'+option.id"
+                                            :class="{'active':form.series_id==option.id}"
+                                        >
+                                            <input
+                                                type="radio"
+                                                @change="changeDocumentType"
+                                                v-model="form.series_id"
+                                                v-bind:value="option.id"
+                                                v-bind:id="'idS'+option.id"
+                                            />
+                                            {{option.number}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-1">
+                                    <label class="control-label text-white">
+                                        Cliente
+                                        <a href="#" class="btn btn-xs btn-primary"
+                                           @click.prevent="showDialogNewPerson = true">+</a>
+                                    </label>
+                                    <el-select v-model="form.customer_id" filterable
+                                               class="border-left rounded-left border-info"
+                                               popper-class="el-select-customers" dusk="customer_id">
+                                        <el-option v-for="option in customers" :key="option.id" :value="option.id"
+                                                   :label="option.description"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.customer_id"
+                                           v-text="errors.customer_id[0]"></small>
+                                </div>
+
+                            </div>
+                            <div class="col-5 pt-3">
+                                <p class="text-right text-white mb-1" v-if="form.total_exportation > 0">OP.EXPORTACIÓN: {{
+                                    currency_type.symbol }} {{ form.total_exportation }}</p>
+                                <p class="text-right text-white mb-1" v-if="form.total_free > 0">OP.GRATUITAS: {{
+                                    currency_type.symbol}} {{
+                                    form.total_free }}</p>
+                                <p class="text-right text-white mb-1" v-if="form.total_unaffected > 0">OP.INAFECTAS: {{
+                                    currency_type.symbol }} {{ form.total_unaffected }}</p>
+                                <p class="text-right text-white mb-1" v-if="form.total_exonerated > 0">OP.EXONERADAS: {{
+                                    currency_type.symbol }} {{ form.total_exonerated }}</p>
+                                <p class="text-right text-white mb-1" v-if="form.total_taxed > 0">OP.GRAVADA: {{
+                                    currency_type.symbol }}
+                                    {{ form.total_taxed }}</p>
+                                <p class="text-right text-white mb-1" v-if="form.total_igv > 0">IGV: {{ currency_type.symbol
+                                    }} {{
+                                    form.total_igv }}</p>
+                                <h4 class="text-right text-white mb-1" v-if="form.total > 0"><b>TOTAL A PAGAR: </b>{{
+                                    currency_type.symbol }} {{ form.total }}</h4>
+                            </div>
+                        </div>
+                        <div class="row pt-3">
+                            <div class="col-6 pull-right">
+                                <el-button class="btn btn-danget btn-lg btn-block" type="primary" native-type="submit"
+                                           :loading="loading_submit"
+                                           v-if="form.items.length > 0">Generar
+                                </el-button>
+                            </div>
+                            <div class="col-6 pull-right">
+                                <el-button class="btn btn-submit btn-lg btn-block" type="primary" native-type="submit"
+                                           :loading="loading_submit"
+                                           v-if="form.items.length > 0">Generar
+                                </el-button>
+                            </div>
                         </div>
                     </div>
 
@@ -315,7 +364,7 @@
                             </div>
                             <div class="col-lg-12 col-md-6 d-flex align-items-end">
                                 <div class="form-group">
-                                    <button type="button" class="btn waves-effect waves-light btn-primary"
+                                    <button type="button" class="btn waves-effect waves-light btn-primary btn-xs"
                                             @click.prevent="showDialogAddItem = true">+ Agregar Producto
                                     </button>
                                 </div>
@@ -363,11 +412,16 @@
         <document-options :showDialog.sync="showDialogOptions"
                           :recordId="documentNewId"
                           :showClose="false"></document-options>
+
+        <item-form :showDialog.sync="showDialogNewItem"
+                   :external="true"></item-form>
     </div>
 </template>
 
 <script>
-    import DocumentFormItem from './partials/item.vue'
+    import ItemForm from './../items/form.vue'; //
+
+    import DocumentFormItem from './partials/item.vue';
     import PersonForm from '../persons/form.vue'
     import DocumentOptions from './partials/options.vue'
     import {functions, exchangeRate} from '../../../mixins/functions'
@@ -375,7 +429,7 @@
     import Logo from '../companies/logo.vue'
 
     export default {
-        components: {DocumentFormItem, PersonForm, DocumentOptions, Logo},
+        components: {ItemForm, DocumentFormItem, PersonForm, DocumentOptions, Logo},
         mixins: [functions, exchangeRate],
         data() {
             return {
@@ -403,14 +457,17 @@
                 currency_type: {},
                 documentNewId: null,
 
-                items: []
+                searchBox: '', // cuadro de busqueda de productos
+                showDialogNewItem: false, // dialogo para crear items
+                items: [],
+                tempItem: [],
+                affectation_igv_types: {}
             }
         },
         async created() {
-            await this.initForm()
-            await this.$http.post(`/dispatches/tables`).then(response => {
-                this.items = response.data.items;
-            });
+            await this.initForm();
+            await this.initTempItem();
+            await this.refreshItems();
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.document_types = response.data.document_types_invoice
@@ -438,6 +495,34 @@
             this.$eventHub.$on('reloadDataPersons', (customer_id) => {
                 this.reloadDataCustomers(customer_id)
             })
+        },
+        computed: {
+            findItem() {
+                var data = this.searchBox;
+                var lista = this.items
+                    .filter(function (item) {
+                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1
+
+                    })
+                    .sort(function (a, b) {
+                        if (a.internal_id > b.internal_id) {
+                            return 1;
+                        }
+                        if (a.internal_id < b.internal_id) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+                return lista;
+
+            },
+
+        },
+        watch: {
+            showDialogNewItem: function () {
+                this.refreshItems();
+            }
         },
         methods: {
             initForm() {
@@ -627,6 +712,66 @@
                     this.form.customer_id = customer_id
                 })
             },
+            ////////////////////////////////
+            refreshItems() {
+                this.$http.post(`/dispatches/tables`).then(response => {
+                    this.items = response.data.items;
+                });
+                this.$http.get(`/documents/item/tables`).then(response => {
+//                this.categories = response.categories
+                    this.affectation_igv_types = response.data.affectation_igv_types
+                })
+            },
+
+            initTempItem() {
+                this.errors = {}
+                this.tempItem = {
+//                    category_id: [1],
+                    item_id: null,
+                    item: {},
+                    affectation_igv_type_id: null,
+                    affectation_igv_type: {},
+                    has_isc: false,
+                    system_isc_type_id: null,
+                    percentage_isc: 0,
+                    suggested_price: 0,
+                    quantity: 1,
+                    unit_price: 0,
+                    charges: [],
+                    discounts: [],
+                    attributes: [],
+                }
+            },
+
+            selectItem(id) {
+                var index = _.findIndex(this.form.items, {item: {id: id}})
+
+                this.tempItem.item = _.find(this.items, {'id': id})
+                if (index > -1) {
+                    this.tempItem.quantity += this.form.items[index].quantity;
+                }
+
+                this.tempItem.id = this.tempItem.item.id
+                this.tempItem.unit_price = this.tempItem.item.sale_unit_price
+                this.tempItem.affectation_igv_type_id = this.tempItem.item.sale_affectation_igv_type_id
+                this.tempItem.item.unit_price = this.tempItem.unit_price
+                this.tempItem.affectation_igv_type = _.find(this.affectation_igv_types, {'id': this.tempItem.affectation_igv_type_id})
+                this.tempItem = calculateRowItem(this.tempItem, this.form.currency_type_id, this.form.exchange_rate_sale)
+
+                if (index > -1) {
+                    this.form.items[index] = this.tempItem;
+                } else {
+                    this.form.items.push(this.tempItem);
+                }
+
+                //this.initForm()
+                //this.initializeFields()
+                //this.$emit('add', this.row)
+                this.initTempItem();
+                this.calculateTotal();
+            },
+
+
             recalcItem(index, value) {
 
                 // let Items = _.clone(this.form.items);
