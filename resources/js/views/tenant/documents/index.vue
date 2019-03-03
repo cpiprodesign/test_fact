@@ -18,6 +18,7 @@
                         <th>Cliente</th>
                         <th>Número</th>
                         <th>Estado</th>
+                        <th>Estado de Pago</th>
                         <th class="text-center">Moneda</th>
                         <th class="text-right">T.Exportación</th>
                         <th class="text-right">T.Gratuita</th>
@@ -57,6 +58,10 @@
                             'bg-secondary': (row.state_type_id === '07'),
                             'bg-dark': (row.state_type_id === '09')
                         }">{{ row.state_type_description }}</span></td>
+                        <td>
+                            <span class="badge bg-secondary text-white bg-success" v-if="row.status_paid == 1">Pagado</span>
+                            <span class="badge bg-secondary text-white bg-dark" v-if="row.status_paid == 0">Pendiente</span>                            
+                        </td>
                         <td class="text-center">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total_exportation }}</td>
                         <td class="text-right">{{ row.total_free }}</td>
@@ -94,6 +99,7 @@
                                     v-if="row.btn_voided" dusk="annulment-voided">Anular</button>
                             <a :href="`/dispatches/create2/${row.id}`" class="btn waves-effect waves-light btn-xs btn-default m-1__2"
                                v-if="row.btn_note">Guía de remisión</a>
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2" @click.prevent="clickPay(row.id)" v-if="row.status_paid == 0" dusk="pay-voided">Pagar</button>
                             <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
                                v-if="row.btn_note">Nota</a>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
@@ -112,6 +118,8 @@
             <document-options :showDialog.sync="showDialogOptions"
                               :recordId="recordId"
                               :showClose="true"></document-options>
+            <documents-pay :showDialog.sync="showDialogPay"
+                            :recordId="recordId"></documents-pay>
         </div>
     </div>
 </template>
@@ -119,14 +127,16 @@
 <script>
 
     import DocumentsVoided from './partials/voided.vue'
+    import DocumentsPay from './partials/pay.vue'
     import DocumentOptions from './partials/options.vue'
     import DataTable from '../../../components/DataTable.vue'
 
     export default {
-        components: {DocumentsVoided, DocumentOptions, DataTable},
+        components: {DocumentsVoided, DocumentOptions, DataTable, DocumentsPay},
         data() {
             return {
                 showDialogVoided: false,
+                showDialogPay: false,
                 resource: 'documents',
                 recordId: null,
                 showDialogOptions: false
@@ -138,6 +148,10 @@
             clickVoided(recordId = null) {
                 this.recordId = recordId
                 this.showDialogVoided = true
+            },
+            clickPay(recordId = null) {
+                this.recordId = recordId
+                this.showDialogPay = true
             },
 //            clickTicket(voided_id, group_id) {
 //                this.$http.get(`/voided/ticket/${voided_id}/${group_id}`)

@@ -61,7 +61,9 @@ class Document extends ModelTenant
 
         'has_xml',
         'has_pdf',
-        'has_cdr'
+        'has_cdr',
+
+        'status_paid'
     ];
 
     protected $casts = [

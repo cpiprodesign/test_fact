@@ -28,6 +28,9 @@ class DocumentRequest extends FormRequest
             'date_of_issue' => [
                 'required',
             ],
+            'status_paid' => [
+                'required',
+            ],
             'note.note_credit_type_id' => [
                 'required_if:document_type_id, "07"',
             ],

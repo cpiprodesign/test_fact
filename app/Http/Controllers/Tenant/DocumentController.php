@@ -75,6 +75,17 @@ class DocumentController extends Controller
         return view('tenant.documents.form2', compact('quotation_id'));
     }
 
+    public function cambiar_estado_pago($document_id)
+    {
+        $flight = Document::find($document_id);
+        $flight->status_paid = 1;
+        $flight->save();
+
+        return [
+            'estado' => true
+        ];
+    }
+
     public function tables()
     {
         $customers = $this->table('customers');

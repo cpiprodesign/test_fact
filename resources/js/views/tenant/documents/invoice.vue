@@ -110,6 +110,17 @@
                                     <el-date-picker v-model="form.date_of_due" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                                     <small class="form-control-feedback" v-if="errors.date_of_due" v-text="errors.date_of_due[0]"></small>
                                 </div>
+                            </div>                            
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-lg-2">
+                                <div class="form-group" :class="{'has-danger': errors.status_paid}">
+                                    <label class="control-label font-weight-bold text-info">Estado de pago</label>
+                                    <el-select v-model="form.status_paid">
+                                        <el-option v-for="option in status_paid" :key="option.id" :value="option.id" :label="option.nombre"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.status_paid" v-text="errors.status_paid"></small>
+                                </div>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -216,6 +227,10 @@
                 discount_types: [],
                 charges_types: [],
                 all_customers: [],
+                status_paid: [
+                    {"id": "1", "nombre": "Pagado"}, 
+                    {"id": "0", "nombre": "Pendiente"}
+                ], 
                 customers: [],
                 company: null,
                 document_type_03_filter: null,
@@ -318,6 +333,9 @@
                 this.establishment = _.find(this.establishments, {'id': this.form.establishment_id})
                 this.filterSeries()
             },
+            // changeSatusPaid() {
+            //     this.form.status_paid = this.form.status_paid
+            // },
             changeDocumentType() {
                 this.filterSeries()
                 this.filterCustomers()

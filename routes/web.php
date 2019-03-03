@@ -140,6 +140,7 @@ if ($hostname) {
             Route::get('documents/item/tables', 'Tenant\DocumentController@item_tables');
             Route::get('documents/item/tables2/{document}', 'Tenant\DocumentController@item_tables2');
             Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
+            Route::get('documents/cambiar_estado_pago/{document}', 'Tenant\DocumentController@cambiar_estado_pago');
 
             //Quotations
             Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index');

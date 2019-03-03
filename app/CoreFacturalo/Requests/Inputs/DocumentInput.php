@@ -61,6 +61,7 @@ class DocumentInput
             'quotation_id' => $quotation_id,
             'soap_type_id' => $soap_type_id,
             'state_type_id' => '01',
+            'status_paid' => $inputs['status_paid'],
             'ubl_version' => '2.1',
             'filename' => $filename,
             'document_type_id' => $document_type_id,
