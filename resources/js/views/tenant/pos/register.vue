@@ -20,7 +20,6 @@
                 <div class="mt-3 overflow-auto h-100 border border-primary rounded rounded-0" style="max-height: 77vh">
                     <div class="d-flex flex-row flex-wrap p-2">
 
-
                         <div v-for="option in findItem" class="card m-1 btn-outline-success "
                              style="width: 32%; cursor: pointer"
                              @click.prevent="selectItem(option.id)"
@@ -79,19 +78,6 @@
                                 <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
 
                                 <td class="text-center pl-0 pr-0">
-                                    <!--                                    <div class="btn-group btn-group-xs">-->
-                                    <!--                                        <button class="btn btn-danger btn-xs"-->
-                                    <!--                                                @click.prevent="recalcItem(index,row.quantity&#45;&#45;)">-->
-                                    <!--                                            <i class="fas fa-minus-square"></i>-->
-                                    <!--                                        </button>-->
-                                    <!--                                        <button class="btn btn-success btn-xs"-->
-                                    <!--                                                @click.prevent="recalcItem(index,row.quantity++)">-->
-                                    <!--                                            <i class="fas fa-plus-square"></i>-->
-                                    <!--                                        </button>-->
-                                    <!--                                    </div>-->
-                                    <!--                                    <button class="btn btn-warning btn-xs ">-->
-                                    <!--                                        <i class="fas fa-pen-alt"></i>-->
-                                    <!--                                    </button>-->
                                     <button type="button"
                                             class="btn waves-effect waves-light btn-xs btn-danger"
                                             @click.prevent="clickRemoveItem(index)">x
@@ -114,106 +100,72 @@
 
                         </table>
                     </div>
-                    <!--                    <div class="card-footer d-flex bg-light-info flex-row flex-wrap justify-content-around"-->
-                    <div class="card-footer bg-dark p-1 " style="height: 44vh">
+                    <div class="card-footer bg-dark" style="height: 44vh">
                         <div class="row">
-                            <div class="col-7">
-                                <div class="form-group mb-1">
-
-                                    <label class="text-white">
-                                        Documento
-                                    </label>
-
-                                    <div>
-                                        <label
-                                            v-for="option in document_types"
-                                            class="btn btn-primary btn-xs mr-2 mb-1"
-                                            v-bind:for="'dt'+option.id"
-                                            :class="{'active':form.document_type_id==option.id}"
-                                        >
-                                            <input
-                                                type="radio"
-                                                @change="changeDocumentType"
-                                                v-model="form.document_type_id"
-                                                v-bind:value="option.id"
-                                                v-bind:id="'dt'+option.id"
-                                            />
-                                            {{option.description}}
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-1">
-
-                                    <label class="text-white">
-                                        Serie
-                                    </label>
-
-                                    <div>
-                                        <label
-                                            v-for="option in series"
-                                            class="btn btn-info btn-xs mr-2 mb-1"
-                                            v-bind:for="'idS'+option.id"
-                                            :class="{'active':form.series_id==option.id}"
-                                        >
-                                            <input
-                                                type="radio"
-                                                @change="changeDocumentType"
-                                                v-model="form.series_id"
-                                                v-bind:value="option.id"
-                                                v-bind:id="'idS'+option.id"
-                                            />
-                                            {{option.number}}
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-1">
-                                    <label class="control-label text-white">
-                                        Cliente
-                                        <a href="#" class="btn btn-xs btn-primary"
-                                           @click.prevent="showDialogNewPerson = true">+</a>
-                                    </label>
-                                    <el-select v-model="form.customer_id" filterable
-                                               class="border-left rounded-left border-info"
-                                               popper-class="el-select-customers" dusk="customer_id">
-                                        <el-option v-for="option in customers" :key="option.id" :value="option.id"
+                            <div class="col-6">
+                                <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
+                                    <label class="control-label text-white">Moneda</label>
+                                    <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
+                                        <el-option v-for="option in currency_types" :key="option.id" :value="option.id"
                                                    :label="option.description"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.customer_id"
-                                           v-text="errors.customer_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.currency_type_id"
+                                           v-text="errors.currency_type_id[0]"></small>
+                                </div>
+                                <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
+                                    <label class="control-label text-white">Tipo de cambio
+                                        <el-tooltip class="item" effect="dark" content="Valor obtenido de SUNAT"
+                                                    placement="top-end">
+                                            <i class="fa fa-info-circle"></i>
+                                        </el-tooltip>
+                                    </label>
+                                    <el-input v-model="form.exchange_rate_sale"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.exchange_rate_sale"
+                                           v-text="errors.exchange_rate_sale[0]"></small>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="button" class="btn waves-effect waves-light btn-primary btn-xs"
+                                            @click.prevent="showDialogAddItem = true">+ Agregar Producto Detallado
+                                    </button>
                                 </div>
 
                             </div>
-                            <div class="col-5 pt-3">
-                                <p class="text-right text-white mb-1" v-if="form.total_exportation > 0">OP.EXPORTACIÓN: {{
-                                    currency_type.symbol }} {{ form.total_exportation }}</p>
-                                <p class="text-right text-white mb-1" v-if="form.total_free > 0">OP.GRATUITAS: {{
-                                    currency_type.symbol}} {{
-                                    form.total_free }}</p>
-                                <p class="text-right text-white mb-1" v-if="form.total_unaffected > 0">OP.INAFECTAS: {{
-                                    currency_type.symbol }} {{ form.total_unaffected }}</p>
-                                <p class="text-right text-white mb-1" v-if="form.total_exonerated > 0">OP.EXONERADAS: {{
-                                    currency_type.symbol }} {{ form.total_exonerated }}</p>
-                                <p class="text-right text-white mb-1" v-if="form.total_taxed > 0">OP.GRAVADA: {{
-                                    currency_type.symbol }}
-                                    {{ form.total_taxed }}</p>
-                                <p class="text-right text-white mb-1" v-if="form.total_igv > 0">IGV: {{ currency_type.symbol
-                                    }} {{
-                                    form.total_igv }}</p>
-                                <h4 class="text-right text-white mb-1" v-if="form.total > 0"><b>TOTAL A PAGAR: </b>{{
-                                    currency_type.symbol }} {{ form.total }}</h4>
+                            <div class="col-6 pt-3">
+                                <p class="text-right text-white mb-1" v-if="form.total_exportation > 0">
+                                    OP.EXPORTACIÓN: {{ currency_type.symbol }} {{ form.total_exportation }}
+                                </p>
+                                <p class="text-right text-white mb-1" v-if="form.total_free > 0">
+                                    OP.GRATUITAS: {{ currency_type.symbol}} {{ form.total_free }}
+                                </p>
+                                <p class="text-right text-white mb-1" v-if="form.total_unaffected > 0">
+                                    OP.INAFECTAS: {{ currency_type.symbol }} {{ form.total_unaffected }}
+                                </p>
+                                <p class="text-right text-white mb-1" v-if="form.total_exonerated > 0">
+                                    OP.EXONERADAS: {{ currency_type.symbol }} {{ form.total_exonerated }}
+                                </p>
+                                <p class="text-right text-white mb-1" v-if="form.total_taxed > 0">
+                                    OP.GRAVADA: {{ currency_type.symbol }} {{ form.total_taxed }}
+                                </p>
+                                <p class="text-right text-white mb-1" v-if="form.total_igv > 0">
+                                    IGV: {{ currency_type.symbol }} {{ form.total_igv }}
+                                </p>
+                                <h4 class="text-right text-white mb-1" v-if="form.total > 0">
+                                    <b>TOTAL A PAGAR: </b>{{ currency_type.symbol }} {{ form.total }}
+                                </h4>
                             </div>
                         </div>
                         <div class="row pt-3">
-                            <div class="col-6 pull-right">
-                                <el-button class="btn btn-danget btn-lg btn-block" type="primary" native-type="submit"
-                                           :loading="loading_submit"
-                                           v-if="form.items.length > 0">Generar
+                            <div class="col-3">
+                                <el-button class="btn btn-danger btn-lg btn-block" type="danger"
+                                           @click.prevent="close">
+                                    Cancelar
                                 </el-button>
                             </div>
-                            <div class="col-6 pull-right">
+                            <div class="col-9">
                                 <el-button class="btn btn-submit btn-lg btn-block" type="primary" native-type="submit"
-                                           :loading="loading_submit"
-                                           v-if="form.items.length > 0">Generar
+                                           @click.prevent="showDialogMakeSale=true"
+                                           v-if="form.items.length > 0"> Procesar Pago
                                 </el-button>
                             </div>
                         </div>
@@ -231,7 +183,7 @@
         <!-- <div class="card-header bg-info">
             <h3 class="my-0">Nuevo Comprobante</h3>
         </div> -->
-        <div class="tab-content" v-if="loading_form">
+        <div class="tab-content" v-if="false">
             <div class="invoice">
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
@@ -264,30 +216,7 @@
                             <div class="col-lg-2">
 
                             </div>
-                            <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
-                                    <label class="control-label">Moneda</label>
-                                    <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
-                                        <el-option v-for="option in currency_types" :key="option.id" :value="option.id"
-                                                   :label="option.description"></el-option>
-                                    </el-select>
-                                    <small class="form-control-feedback" v-if="errors.currency_type_id"
-                                           v-text="errors.currency_type_id[0]"></small>
-                                </div>
-                            </div>
-                            <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
-                                    <label class="control-label">Tipo de cambio
-                                        <el-tooltip class="item" effect="dark" content="Valor obtenido de SUNAT"
-                                                    placement="top-end">
-                                            <i class="fa fa-info-circle"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <el-input v-model="form.exchange_rate_sale"></el-input>
-                                    <small class="form-control-feedback" v-if="errors.exchange_rate_sale"
-                                           v-text="errors.exchange_rate_sale[0]"></small>
-                                </div>
-                            </div>
+
                         </div>
                         <div class="row mt-1">
 
@@ -409,12 +338,208 @@
                      :external="true"
                      :document_type_id=form.document_type_id></person-form>
 
-        <document-options :showDialog.sync="showDialogOptions"
-                          :recordId="documentNewId"
-                          :showClose="false"></document-options>
+        <!--        <document-options :showDialog.sync="showDialogOptions"-->
+        <!--                          :recordId="documentNewId"-->
+        <!--                          :showClose="false"></document-options> //esto se va a reemplazar-->
 
         <item-form :showDialog.sync="showDialogNewItem"
                    :external="true"></item-form>
+
+        <form autocomplete="off" @submit.prevent="submit">
+            <el-dialog
+                :visible="showDialogMakeSale"
+                :close-on-modal="false"
+                :show-close="false"
+                top="5vh" width="50%"
+            >
+                <div class="row" v-if="payment.total>0">
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group">
+
+                            <label class="control-label">
+                                Documento
+                            </label>
+
+                            <div>
+                                <label
+                                    v-for="option in document_types"
+                                    class="btn btn-primary btn-sm mr-1 mb-1"
+                                    v-bind:for="'dt'+option.id"
+                                    :class="{'active':form.document_type_id==option.id}"
+                                >
+                                    <input
+                                        type="radio"
+                                        @change="changeDocumentType"
+                                        v-model="form.document_type_id"
+                                        v-bind:value="option.id"
+                                        v-bind:id="'dt'+option.id"
+                                    />
+                                    {{option.description.split(' ')[0]}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group">
+
+                            <label class="control-label">
+                                Serie
+                            </label>
+
+                            <div>
+                                <label
+                                    v-for="option in series"
+                                    class="btn btn-info btn-sm mr-1 mb-1"
+                                    v-bind:for="'idS'+option.id"
+                                    :class="{'active':form.series_id==option.id}"
+                                >
+                                    <input
+                                        type="radio"
+                                        v-model="form.series_id"
+                                        v-bind:value="option.id"
+                                        v-bind:id="'idS'+option.id"
+                                    />
+                                    {{option.number}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label">
+                                Cliente
+                                <a href="#" class="btn btn-xs btn-primary"
+                                   @click.prevent="showDialogNewPerson = true">+</a>
+                            </label>
+                            <el-select v-model="form.customer_id" filterable
+                                       class="border-left rounded-left border-info"
+                                       popper-class="el-select-customers" dusk="customer_id">
+                                <el-option v-for="option in customers" :key="option.id" :value="option.id"
+                                           :label="option.description"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.customer_id"
+                                   v-text="errors.customer_id[0]"></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-4" v-if="payment.total>0">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label class="control-label">Forma de Pago
+                                <button class="btn btn-success btn-xs"
+                                        v-if="informacion_adicional.pagos.length<4"
+                                        @click.prevent="informacion_adicional.pagos.push({tipo:''})">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </label>
+
+                            <div class="row" v-for="(info,index) in informacion_adicional.pagos">
+                                <div class="col-1 pt-4">
+                                    <button class="btn btn-danger btn-xs"
+                                            v-if="index>0"
+                                            @click.prevent="informacion_adicional.pagos.splice(index,1)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label class="control-label">Forma</label>
+                                        <select v-model="info.tipo" class="form-control form-control-sm" required>
+                                            <option value="Efectivo">Efectivo</option>
+                                            <option value="Credito">Crédito</option>
+                                            <option value="Debito">Debito</option>
+                                            <option value="Cheque">Cheque</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Monto en {{ currency_type.symbol }}</label>
+                                        <input v-model="info.monto" class="form-control form-control-sm text-right"
+                                               type="number" step="0.1" required>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+
+                                    <div class="form-group" v-if="info.tipo!=='Efectivo' && info.tipo!==''">
+                                        <label class="control-label">Num. Referencia</label>
+                                        <input v-model="info.ref"
+                                               class="form-control form-control-sm text-right"
+                                               type="text" required>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row " v-if="payment.total<=0">
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 embed-responsive embed-responsive-16by9">
+                        <embed class="embed-responsive-item"
+                               v-bind:src="'/print/document/'+this.factura_d.external_id+'/ticket#toolbar=1&view=FitH,top'"
+                               type="application/pdf"/>
+                    </div>
+                </div>
+
+
+                <div slot="title" class="dialog-header">
+
+                    <div class="row" v-if="payment.total>0">
+                        <div class="col-8">
+
+                            <h2 class="pt-1 mt-0">
+                                Procesar Pago
+                            </h2>
+                            <h5 class="text-success">
+                                {{tituloPago}}
+                            </h5>
+                        </div>
+                        <div class="col-4 text-right">
+                            <h4 class="m-0 pb-1">
+                                <span class="font-whe text-primary">Total a pagar</span>
+                                {{currency_type.symbol}} {{payment.total}}
+                            </h4>
+                            <h5 class="m-0 pb-1">
+                                <span class="text-success">Pagando:</span>
+                                {{currency_type.symbol}} {{payment.pagando}}
+                            </h5>
+                            <h5 class="m-0 pb-1">
+                                <span class="text-info">Diferencia:</span>
+                                {{currency_type.symbol}} {{payment.delta}}
+                            </h5>
+                        </div>
+                    </div>
+                    <h2 v-if="payment.total<=0">Documento {{ factura_d.number }}</h2>
+                </div>
+
+                <span slot="footer" class="dialog-footer">
+
+                <el-button size="mini" type="danger"
+                           @click.prevent="close"
+                           v-if="payment.total>0"
+                           class="btn-danger btn-xs"
+                >
+                    Cancelar venta
+                </el-button>
+                <el-button type="warning" @click.prevent="showDialogMakeSale = false"
+                           class="btn-warning btn-lg"
+                >
+                    Atras
+                </el-button>
+                <el-button type="primary" native-type="submit"
+                           v-if="payment.total>0"
+                           :loading="loading_submit"
+                           :disabled="payment.delta>0"
+                           class="btn-primary btn-lg"
+                >
+                    Generar
+                        </el-button>
+
+            </span>
+            </el-dialog>
+        </form>
     </div>
 </template>
 
@@ -428,8 +553,11 @@
     import {calculateRowItem} from '../../../helpers/functions'
     import Logo from '../companies/logo.vue'
 
+
     export default {
-        components: {ItemForm, DocumentFormItem, PersonForm, DocumentOptions, Logo},
+        components: {
+            ItemForm, DocumentFormItem, PersonForm, DocumentOptions, Logo
+        },
         mixins: [functions, exchangeRate],
         data() {
             return {
@@ -459,8 +587,17 @@
 
                 searchBox: '', // cuadro de busqueda de productos
                 showDialogNewItem: false, // dialogo para crear items
+                showDialogMakeSale: false, // dialogo para procesar la venta
+                factura_d: {},
+                informacion_adicional: {
+                    general: [],
+                    pagos: [
+                        {tipo: 'Efectivo', monto: ''}
+                    ]
+                },
                 items: [],
                 tempItem: [],
+                tituloPago: "",
                 affectation_igv_types: {}
             }
         },
@@ -497,6 +634,37 @@
             })
         },
         computed: {
+            payment() {
+                var pago = 0;
+                _.forEach(this.informacion_adicional.pagos, function (p) {
+                    if (p.monto > 0) {
+                        pago += p.monto * 1;
+                    }
+                });
+                return {
+                    total: _.round((this.form.total), 2),
+                    pagando: _.round(pago, 2),
+                    delta: _.round((this.form.total - pago), 2)
+                }
+            },
+            adicionalInfo() {
+                var _currency = this.currency_type.symbol;
+                let pagos = _.flatMap(this.informacion_adicional.pagos, function (p) {
+                    let v = ' -- ';
+                    v += p.tipo + ': ';
+                    v += _currency + '.' + p.monto;
+                    if (p.tipo !== 'Efectivo' && p.tipo !== '') {
+                        v += ' - (Ref:' + (p.ref ? p.ref : '###') + ')';
+                    }
+
+                    return v;
+                });
+
+                return _.join([
+                    'Forma de Pago:',
+                    _.join(pagos, '|')
+                ], '|');
+            },
             findItem() {
                 var data = this.searchBox;
                 var lista = this.items
@@ -514,17 +682,48 @@
                         // a must be equal to b
                         return 0;
                     });
+                if (lista.length === 1) {
+                    this.selectItem(lista[0].id);
+                    this.searchBox = '';
+                    return this.items;
+
+                }
                 return lista;
+
 
             },
 
         },
+
         watch: {
+            "form.document_type_id": function () {
+                this.titlePay();
+            },
+            "form.series_id": function () {
+                this.titlePay();
+            },
+            "form.customer_id": function () {
+                this.titlePay();
+            },
             showDialogNewItem: function () {
                 this.refreshItems();
             }
         },
+
         methods: {
+            titlePay() {
+                // form.document_type_id
+                // form.series_id
+                // form.customer_id
+                let document = _.find(this.document_types, {id: this.form.document_type_id});
+                let serie = _.find(this.series, {id: this.form.series_id});
+                let customer = this.form.customer_id ? _.find(this.customers, {id: this.form.customer_id}) : null;
+                this.tituloPago = [
+                    document.description,
+                    serie.number,
+                    this.form.customer_id ? customer.description : ""
+                ].join(' / ');
+            },
             initForm() {
                 this.errors = {}
                 this.form = {
@@ -561,8 +760,9 @@
                     discounts: [],
                     attributes: [],
                     guides: [],
+                    informacion_adicional: "",
                     actions: {
-                        format_pdf: 'a4',
+                        format_pdf: 'ticket',
                     }
                 }
             },
@@ -576,6 +776,10 @@
                 this.changeDocumentType()
                 this.changeDateOfIssue()
                 this.changeCurrencyType()
+
+                this.informacion_adicional.pagos = [
+                    {tipo: 'Efectivo', monto: ''}
+                ]
             },
             changeOperationType() {
 
@@ -682,14 +886,21 @@
             },
             submit() {
                 this.loading_submit = true
+                this.form.informacion_adicional = this.adicionalInfo;
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     console.log(response);
 
                     if (response.data.success) {
                         this.resetForm();
 
-                        this.documentNewId = response.data.data.id;
-                        this.showDialogOptions = true;
+                        // this.documentNewId = response.data.data.id;
+                        // this.showDialogOptions = true;
+                        this.$http.get(`/documents/record/${response.data.data.id}`).then(response => {
+                            this.factura_d = response.data.data;
+                            //window.open(`/print/document/${this.factura_d.external_id}/ticket`, '_blank');
+                            //this.titleDialog = 'Comprobante: ' + this.form.number;
+                        });
+
                     } else {
                         this.$message.error(response.data.message);
                     }
@@ -704,7 +915,25 @@
                 });
             },
             close() {
-                location.href = '/documents'
+
+                this.$confirm('Desea cancelar la venta actual?', 'Cancelar Venta', {
+                    confirmButtonText: 'Continuar',
+                    cancelButtonText: 'Cancelar',
+                    type: 'danger'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: 'La venta ha sido cancelada con exito'
+                    });
+                    this.showDialogMakeSale = false;
+                    this.resetForm();
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: 'Cancelacion suspendida'
+                    });
+                });
             },
             reloadDataCustomers(customer_id) {
                 this.$http.get(`/${this.resource}/table/customers`).then((response) => {
@@ -769,23 +998,8 @@
                 //this.$emit('add', this.row)
                 this.initTempItem();
                 this.calculateTotal();
-            },
-
-
-            recalcItem(index, value) {
-
-                // let Items = _.clone(this.form.items);
-                // Items[index].quantity = value;
-                // Items[index].total_value = _.round(Items[index].unit_price * value, 2);
-                // Items[index].total = _.round(Items[index].unit_value * value, 2);
-                //
-                // console.info(this.form.items)
-                //
-                //
-                // this.form.items = Items;
-                // this.calculateTotal();
-
             }
+
         }
     }
 </script>
