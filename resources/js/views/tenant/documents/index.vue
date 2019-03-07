@@ -3,13 +3,26 @@
         <div class="page-header pr-0">
             <h2><a href="/dashboard"><i class="fas fa-tachometer-alt"></i></a></h2>
             <ol class="breadcrumbs">
-                <li class="active"><span>Comprobantes</span></li>
+                <li class="active"><span>Comprobantes</span> </li>
+                <li><span class="text-muted">Facturas - Notas <small>(crédito y débito)</small> - Boletas - Anulaciones</small></span></li>
             </ol>
             <div class="right-wrapper pull-right">
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
         </div>
         <div class="card mb-0">
+            <div class="data-table-visible-columns">
+                <el-dropdown :hide-on-click="false">
+                    <el-button type="primary">
+                        Mostrar/Ocultar columnas<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item v-for="(column, index) in columns" :key="index">
+                            <el-checkbox v-model="column.visible">{{ column.title }}</el-checkbox>
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
             <div class="card-body ">
                 <data-table :resource="resource">
                     <tr slot="heading">
@@ -20,10 +33,10 @@
                         <th>Estado</th>
                         <th>Estado de Pago</th>
                         <th class="text-center">Moneda</th>
-                        <th class="text-right">T.Exportación</th>
-                        <th class="text-right">T.Gratuita</th>
-                        <th class="text-right">T.Inafecta</th>
-                        <th class="text-right">T.Exonerado</th>
+                        <th class="text-right" v-if="columns.total_exportation.visible">T.Exportación</th>
+                        <th class="text-right" v-if="columns.total_free.visible">T.Gratuita</th>
+                        <th class="text-right" v-if="columns.total_unaffected.visible">T.Inafecta</th>
+                        <th class="text-right" v-if="columns.total_exonerated.visible">T.Exonerado</th>
                         <th class="text-right">T.Gravado</th>
                         <th class="text-right">T.Igv</th>
                         <th class="text-right">Total</th>
@@ -63,10 +76,10 @@
                             <span class="badge bg-secondary text-white bg-dark" v-if="row.status_paid == 0">Pendiente</span>                            
                         </td>
                         <td class="text-center">{{ row.currency_type_id }}</td>
-                        <td class="text-right">{{ row.total_exportation }}</td>
-                        <td class="text-right">{{ row.total_free }}</td>
-                        <td class="text-right">{{ row.total_unaffected }}</td>
-                        <td class="text-right">{{ row.total_exonerated }}</td>
+                        <td class="text-right" v-if="columns.total_exportation.visible">{{ row.total_exportation }}</td>
+                        <td class="text-right" v-if="columns.total_free.visible">{{ row.total_free }}</td>
+                        <td class="text-right" v-if="columns.total_unaffected.visible">{{ row.total_unaffected }}</td>
+                        <td class="text-right" v-if="columns.total_exonerated.visible">{{ row.total_exonerated }}</td>
                         <td class="text-right">{{ row.total_taxed }}</td>
                         <td class="text-right">{{ row.total_igv }}</td>
                         <td class="text-right">{{ row.total }}</td>
@@ -92,7 +105,7 @@
                                     <!--@click.prevent="clickTicket(row.voided.id, row.group_id)"-->
                                     <!--v-if="row.btn_ticket">Consultar</button>-->
                         <!--</td>-->
-                        
+
                         <td class="text-right">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2"
                                     @click.prevent="clickVoided(row.id)"
@@ -139,7 +152,25 @@
                 showDialogPay: false,
                 resource: 'documents',
                 recordId: null,
-                showDialogOptions: false
+                showDialogOptions: false,
+                columns: {
+                    total_exportation: {
+                        title: 'T.Exportación',
+                        visible: false
+                    },
+                    total_free: {
+                        title: 'T.Gratuito',
+                        visible: false
+                    },
+                    total_unaffected: {
+                        title: 'T.Inafecto',
+                        visible: false
+                    },
+                    total_exonerated: {
+                        title: 'T.Exonerado',
+                        visible: false
+                    },
+                }
             }
         },
         created() {

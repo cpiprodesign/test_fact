@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -8,18 +7,19 @@
 require('./bootstrap');
 
 // window.Vue = require('vue');
-import Vue from 'vue'
-import ElementUI from 'element-ui'
-import Axios from 'axios'
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import Axios from 'axios';
 
-import lang from 'element-ui/lib/locale/lang/es'
-import locale from 'element-ui/lib/locale'
-locale.use(lang)
+import lang from 'element-ui/lib/locale/lang/es';
+import locale from 'element-ui/lib/locale';
+
+locale.use(lang);
 
 //Vue.use(ElementUI)
-Vue.use(ElementUI, {size: 'small'})
-Vue.prototype.$eventHub = new Vue()
-Vue.prototype.$http = Axios
+Vue.use(ElementUI, {size: 'small'});
+Vue.prototype.$eventHub = new Vue();
+Vue.prototype.$http = Axios;
 
 // import VueCharts from 'vue-charts'
 // Vue.use(VueCharts);
@@ -27,6 +27,10 @@ Vue.prototype.$http = Axios
 //
 // Vue.component('table-component', TableComponent);
 // Vue.component('table-column', TableColumn);
+
+//pos
+Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));
+Vue.component('tenant-pos-register', require('./views/tenant/pos/register.vue'));
 
 Vue.component('tenant-companies-form', require('./views/tenant/companies/form.vue'));
 Vue.component('tenant-companies-logo', require('./views/tenant/companies/logo.vue'));

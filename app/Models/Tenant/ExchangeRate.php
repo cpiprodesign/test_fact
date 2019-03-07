@@ -13,5 +13,9 @@ class ExchangeRate extends ModelTenant
         'buy',
         'sell',
         'date_original',
+        'purchase',
+        'purchase_original',
+        'sale',
+        'sale_original',
     ];
 }

@@ -18,6 +18,8 @@ File: scss
  */
 @import '~bootstrap/scss/bootstrap';
 
+@import "~@fortawesome/fontawesome-free/css/all.css";
+
 @import 'variable'; 
 @import 'app';
 @import 'sidebar';
@@ -40,4 +42,3 @@ File: scss
 
 @import 'components/table';
 @import 'custom';
-   

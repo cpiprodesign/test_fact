@@ -26,7 +26,8 @@
                         <div class="row">
                             <div class="col-lg-2 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.document_type_id}">
-                                    <label class="control-label font-weight-bold text-info">Tipo de comprobante</label>
+                                    <label class="control-label font-weight-bold text-info full-text">Tipo de comprobante</label>
+                                    <label class="control-label font-weight-bold text-info short-text">Tipo comprobante</label>
                                     <el-select v-model="form.document_type_id" @change="changeDocumentType" popper-class="el-select-document_type" dusk="document_type_id" class="border-left rounded-left border-info">
                                         <el-option v-for="option in document_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                     </el-select>
@@ -71,7 +72,11 @@
                             </div>
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
-                                    <label class="control-label">Tipo de cambio</label>
+                                    <label class="control-label">Tipo de cambio
+                                        <el-tooltip class="item" effect="dark" content="Valor obtenido de SUNAT" placement="top-end">
+                                            <i class="fa fa-info-circle"></i>
+                                        </el-tooltip>
+                                    </label>
                                     <el-input v-model="form.exchange_rate_sale"></el-input>
                                     <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                                 </div>
@@ -106,11 +111,12 @@
                             </div>
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.date_of_due}">
-                                    <label class="control-label">Fecha de vencimiento</label>
+                                    <label class="control-label full-text">Fecha de vencimiento</label>
+                                    <label class="control-label short-text">F. vencimiento</label>
                                     <el-date-picker v-model="form.date_of_due" type="date" value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                                     <small class="form-control-feedback" v-if="errors.date_of_due" v-text="errors.date_of_due[0]"></small>
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
                         <div class="row mt-1">
                             <div class="col-lg-2">
@@ -333,9 +339,6 @@
                 this.establishment = _.find(this.establishments, {'id': this.form.establishment_id})
                 this.filterSeries()
             },
-            // changeSatusPaid() {
-            //     this.form.status_paid = this.form.status_paid
-            // },
             changeDocumentType() {
                 this.filterSeries()
                 this.filterCustomers()

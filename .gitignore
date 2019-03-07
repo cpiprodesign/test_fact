@@ -1,4 +1,7 @@
 /node_modules
+/public/css/app.css
+/public/js/app.js
+/public/fonts/**/*
 /public/hot
 /public/downloads
 /public/storage
@@ -7,6 +10,10 @@
 /.idea
 /.vscode
 /.vagrant
+*.lock
+*lock.json
+*.orig
+**/*.orig
 Homestead.json
 Homestead.yaml
 npm-debug.log

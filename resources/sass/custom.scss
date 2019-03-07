@@ -70,12 +70,24 @@
 }
 
 .pricing-table h3 span {
-    box-shadow: none !important;
     font-size: 20px !important;
-    height: 130px !important;
-    width: 130px !important;
 }
 
 .pricing-table h3 {
     padding: 10px !important;
+}
+
+.data-table-visible-columns {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  z-index: 5;
+}
+
+.short-text { display: none; }
+.full-text { display: inline-block; }
+
+@media screen and (max-width: 1400px) and (min-width: 1024px) {
+    .short-text { display: inline-block; }
+    .full-text { display: none; }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Tenant;
 
 use App\CoreFacturalo\Facturalo;
@@ -60,7 +61,7 @@ class DocumentController extends Controller
     public function records(Request $request)
     {
         $records = Document::where($request->column, 'like', "%{$request->value}%")
-                            ->latest();
+            ->latest();
 
         return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
@@ -103,8 +104,8 @@ class DocumentController extends Controller
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
 
         return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_note',
-                       'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
-                       'discount_types', 'charge_types', 'company', 'document_type_03_filter');
+            'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
+            'discount_types', 'charge_types', 'company', 'document_type_03_filter');
     }
 
     public function tables2($quotation_id=false)
@@ -153,7 +154,7 @@ class DocumentController extends Controller
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
 
         return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
-                       'operation_types', 'discount_types', 'charge_types', 'attribute_types');
+            'operation_types', 'discount_types', 'charge_types', 'attribute_types');
     }
 
     public function item_tables2($quotation_id)
@@ -215,10 +216,10 @@ class DocumentController extends Controller
     public function table($table)
     {
         if ($table === 'customers') {
-            $customers = Person::whereType('customers')->orderBy('name')->get()->transform(function($row) {
+            $customers = Person::whereType('customers')->orderBy('name')->get()->transform(function ($row) {
                 return [
                     'id' => $row->id,
-                    'description' => $row->number.' - '.$row->name,
+                    'description' => $row->number . ' - ' . $row->name,
                     'name' => $row->name,
                     'number' => $row->number,
                     'identity_document_type_id' => $row->identity_document_type_id,
@@ -228,8 +229,8 @@ class DocumentController extends Controller
             return $customers;
         }
         if ($table === 'items') {
-            $items = Item::orderBy('description')->get()->transform(function($row) {
-                $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
+            $items = Item::orderBy('description')->get()->transform(function ($row) {
+                $full_description = ($row->internal_id) ? $row->internal_id . ' - ' . $row->description : $row->description;
                 return [
                     'id' => $row->id,
                     'full_description' => $full_description,

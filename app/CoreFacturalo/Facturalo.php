@@ -229,7 +229,6 @@ class Facturalo
     }
 
     public function createPdf($document = null, $type = null, $format = null) {
-    
         $template = new Template();
         $pdf = new Mpdf();
 
