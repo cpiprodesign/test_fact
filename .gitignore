@@ -12,6 +12,8 @@
 /.vagrant
 *.lock
 *lock.json
+*.orig
+**/*.orig
 Homestead.json
 Homestead.yaml
 npm-debug.log

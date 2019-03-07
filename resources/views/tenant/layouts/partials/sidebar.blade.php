@@ -36,7 +36,6 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                 </a>
                             </li>
                             <li class="{{ ($path[0] === 'pos')?'nav-active':'' }}">
-{{--                                <a class="nav-link" href="{{route('tenant.pos.index')}}">--}}
                                 <a class="nav-link" href="{{route('tenant.pos.register')}}" target="_blank">
                                     Punto de Venta
                                 </a>
@@ -79,6 +78,26 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <li class="#">
                                 <a class="nav-link" href="#">
                                     Ventas sin facturar (Pronto)
+                                </a>
+
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-parent">
+
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-clipboard-list" aria-hidden="true"></i>
+                            <span>COTIZACIONES</span>
+                        </a>
+                        <ul class="nav nav-children" style="">
+                            <li class="{{ ($path[0] === 'quotations' && $path[1] === 'create')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.quotations.create')}}">
+                                        Nueva cotización
+                                    </a>
+                            </li>
+                            <li class="{{ ($path[0] === 'quotations' && $path[1] != 'create')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.quotations.index')}}">
+                                        Listado de cotizaciones
                                 </a>
                             </li>
                         </ul>

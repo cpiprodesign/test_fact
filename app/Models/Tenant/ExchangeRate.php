@@ -10,6 +10,8 @@ class ExchangeRate extends ModelTenant
 
     protected $fillable = [
         'date',
+        'buy',
+        'sell',
         'date_original',
         'purchase',
         'purchase_original',

@@ -23,7 +23,18 @@ class TenantModulesTable extends Migration
 
         DB::table('modules')->insert([
             ['value' => 'documents', 'description' => 'Ventas'],
+            ['value' => 'items', 'description' => 'Productos'],
+            ['value' => 'customers', 'description' => 'Clientes'],
+            ['value' => 'suppliers', 'description' => 'Proveedores'],
             ['value' => 'purchases', 'description' => 'Compras'],
+            ['value' => 'summaries', 'description' => 'Resúmenes'],
+            ['value' => 'voided', 'description' => 'Anulaciones'],
+            ['value' => 'companies', 'description' => 'Empresa'],
+            ['value' => 'retentions', 'description' => 'Retenciones'],
+            ['value' => 'dispatches', 'description' => 'Guías de remisión'],
+            ['value' => 'users', 'description' => 'Usuarios'],
+            ['value' => 'establishments', 'description' => 'Establecimientos'],
+            ['value' => 'catalogs', 'description' => 'Catálogos'],
             ['value' => 'advanced', 'description' => 'Documentos Avanzados'],
             ['value' => 'reports', 'description' => 'Reportes'],
             ['value' => 'configuration', 'description' => 'Configuration'],

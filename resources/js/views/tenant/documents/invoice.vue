@@ -118,6 +118,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mt-1">
+                            <div class="col-lg-2">
+                                <div class="form-group" :class="{'has-danger': errors.status_paid}">
+                                    <label class="control-label font-weight-bold text-info">Estado de pago</label>
+                                    <el-select v-model="form.status_paid">
+                                        <el-option v-for="option in status_paid" :key="option.id" :value="option.id" :label="option.nombre"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.status_paid" v-text="errors.status_paid"></small>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="table-responsive">
@@ -222,6 +233,10 @@
                 discount_types: [],
                 charges_types: [],
                 all_customers: [],
+                status_paid: [
+                    {"id": "1", "nombre": "Pagado"}, 
+                    {"id": "0", "nombre": "Pendiente"}
+                ], 
                 customers: [],
                 company: null,
                 document_type_03_filter: null,

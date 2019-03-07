@@ -42,6 +42,15 @@ class DocumentInput
         $inputs['type'] = $array_partial['type'];
         $inputs['group_id'] = $array_partial['group_id'];
 
+        if(isset($inputs['quotation_id']))
+        {
+            $quotation_id =  $inputs['quotation_id'];            
+        }
+        else
+        {
+            $quotation_id = false;
+        }
+
         return [
             'type' => $inputs['type'],
             'group_id' => $inputs['group_id'],
@@ -49,8 +58,10 @@ class DocumentInput
             'external_id' => Str::uuid()->toString(),
             'establishment_id' => $inputs['establishment_id'],
             'establishment' => $establishment,
+            'quotation_id' => $quotation_id,
             'soap_type_id' => $soap_type_id,
             'state_type_id' => '01',
+            'status_paid' => $inputs['status_paid'],
             'ubl_version' => '2.1',
             'filename' => $filename,
             'document_type_id' => $document_type_id,

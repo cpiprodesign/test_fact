@@ -8,6 +8,8 @@ use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\UnitType;
 use App\Models\Tenant\Item;
+use App\Models\Tenant\Establishment;
+use App\Models\Tenant\EstablishmentItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\ItemRequest;
 use App\Http\Resources\Tenant\ItemCollection;
@@ -50,8 +52,9 @@ class ItemController extends Controller
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
         $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
         $affectation_igv_types = AffectationIgvType::whereActive()->get();
+        $establishments = Establishment::all();
 
-        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types');
+        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'establishments');
     }
 
     public function record($id)
@@ -59,6 +62,14 @@ class ItemController extends Controller
         $record = new ItemResource(Item::findOrFail($id));
 
         return $record;
+    }
+
+    public function stocks($id)
+    {
+        
+        $stocks = EstablishmentItem::where('item_id', $id)->get();
+
+        return $stocks;
     }
 
     public function store(ItemRequest $request)

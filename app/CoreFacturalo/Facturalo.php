@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\Tenant\Dispatch;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Retention;
+use App\Models\Tenant\Quotation;
 use App\Models\Tenant\Summary;
 use App\Models\Tenant\Voided;
 use Exception;
@@ -121,6 +122,13 @@ class Facturalo
                     $document->documents()->create($row);
                 }
                 $this->document = Retention::find($document->id);
+                break;
+            case 'quotation':
+                $document = Quotation::create($inputs);
+                foreach ($inputs['items'] as $row) {
+                    $document->items()->create($row);
+                }
+                $this->document = Quotation::find($document->id);
                 break;
             default:
                 $document = Dispatch::create($inputs);
@@ -280,6 +288,27 @@ class Facturalo
                 'margin_left' => 5
             ]);
         }
+
+        $pdf->WriteHTML($html);
+
+        if ($format_pdf != 'ticket') {
+            $html_footer = $template->pdfFooter();
+            $pdf->SetHTMLFooter($html_footer);
+        }
+        $this->uploadFile($pdf->output('', 'S'), 'pdf');
+    }
+
+    public function createPdfQuotation($document = null, $type = null, $format = null) {
+        $template = new Template();
+        $pdf = new Mpdf();
+
+        $format_pdf = $this->actions['format_pdf'];
+
+        $this->document = ($document != null) ? $document : $this->document;
+        $format_pdf = ($format != null) ? $format : $format_pdf;
+        $this->type = ($type != null) ? $type : $this->type;
+
+        $html = $template->pdf($this->type, $this->company, $this->document, $format_pdf);
 
         $pdf->WriteHTML($html);
 

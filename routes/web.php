@@ -91,6 +91,7 @@ if ($hostname) {
             Route::get('items/records', 'Tenant\ItemController@records');
             Route::get('items/tables', 'Tenant\ItemController@tables');
             Route::get('items/record/{item}', 'Tenant\ItemController@record');
+            Route::get('items/stocks/{item}', 'Tenant\ItemController@stocks');
             Route::post('items', 'Tenant\ItemController@store');
             Route::delete('items/{item}', 'Tenant\ItemController@destroy');
             Route::post('items/import', 'Tenant\ItemController@import');
@@ -135,15 +136,33 @@ if ($hostname) {
             Route::get('documents/columns', 'Tenant\DocumentController@columns');
             Route::get('documents/records', 'Tenant\DocumentController@records');
             Route::get('documents/create', 'Tenant\DocumentController@create')->name('tenant.documents.create');
+            Route::get('documents/create2/{document}', 'Tenant\DocumentController@create2')->name('tenant.documents.create2');
             Route::get('documents/tables', 'Tenant\DocumentController@tables');
+            Route::get('documents/tables2/{document}', 'Tenant\DocumentController@tables2');
             Route::get('documents/record/{document}', 'Tenant\DocumentController@record');
             Route::post('documents', 'Tenant\DocumentController@store');
+            Route::post('documents/{document}', 'Tenant\DocumentController@store2');
             Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
             Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
             Route::post('documents/email', 'Tenant\DocumentController@email');
             Route::get('documents/note/{document}', 'Tenant\NoteController@create');
             Route::get('documents/item/tables', 'Tenant\DocumentController@item_tables');
+            Route::get('documents/item/tables2/{document}', 'Tenant\DocumentController@item_tables2');
             Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
+            Route::get('documents/cambiar_estado_pago/{document}', 'Tenant\DocumentController@cambiar_estado_pago');
+
+            //Quotations
+            Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index');
+            Route::get('quotations/columns', 'Tenant\QuotationController@columns');
+            Route::get('quotations/records', 'Tenant\QuotationController@records');
+            Route::get('quotations/create', 'Tenant\QuotationController@create')->name('tenant.quotations.create');
+            Route::get('quotations/tables', 'Tenant\QuotationController@tables');
+            Route::get('quotations/record/{quotation}', 'Tenant\QuotationController@record');
+            Route::post('quotations', 'Tenant\QuotationController@store');
+            Route::get('quotations/send/{quotation}', 'Tenant\QuotationController@send');
+            Route::post('quotations/email', 'Tenant\QuotationController@email');
+            Route::get('quotations/item/tables', 'Tenant\QuotationController@item_tables');
+            Route::get('quotations/table/{table}', 'Tenant\QuotationController@table');
 
             //Summaries
             Route::get('summaries', 'Tenant\SummaryController@index')->name('tenant.summaries.index');
@@ -178,6 +197,8 @@ if ($hostname) {
             Route::get('dispatches/columns', 'Tenant\DispatchController@columns');
             Route::get('dispatches/records', 'Tenant\DispatchController@records');
             Route::get('dispatches/create', 'Tenant\DispatchController@create');
+            Route::get('dispatches/create2/{dispatche}', 'Tenant\DispatchController@create2');
+            Route::get('dispatches/datos/{dispatche}', 'Tenant\DispatchController@datos');
             Route::post('dispatches/tables', 'Tenant\DispatchController@tables');
             Route::post('dispatches', 'Tenant\DispatchController@store');
 
