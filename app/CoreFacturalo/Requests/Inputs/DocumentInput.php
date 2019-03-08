@@ -44,7 +44,7 @@ class DocumentInput
 
         if(isset($inputs['quotation_id']))
         {
-            $quotation_id =  $inputs['quotation_id'];            
+            $quotation_id =  $inputs['quotation_id'];
         }
         else
         {
@@ -61,7 +61,7 @@ class DocumentInput
             'quotation_id' => $quotation_id,
             'soap_type_id' => $soap_type_id,
             'state_type_id' => '01',
-            'status_paid' => $inputs['status_paid'],
+            'status_paid' => isset($inputs['status_paid'])?$inputs['status_paid']:true,
             'ubl_version' => '2.1',
             'filename' => $filename,
             'document_type_id' => $document_type_id,
@@ -100,7 +100,7 @@ class DocumentInput
             'detraction' => self::detraction($inputs),
             'invoice' => $invoice,
             'note' => $note,
-            'additional_information' => Functions::valueKeyInArray($inputs, 'additional_information'),
+            'additional_information' => Functions::valueKeyInArray($inputs, 'informacion_adicional'),
             'legends' => LegendInput::set($inputs),
             'actions' => ActionInput::set($inputs),
         ];

@@ -60,7 +60,7 @@ class ItemController extends Controller
     public function record($id)
     {
         $record = new ItemResource(Item::findOrFail($id));
-        
+
         return $record;
     }
 
@@ -79,10 +79,6 @@ class ItemController extends Controller
         $item->item_type_id = '01';
         $item->fill($request->all());
         $item->save();
-
-        // foreach ($request->input('establisment') as $row) {
-        //     $item->establisment_item()->create($row);
-        // }
 
         return [
             'success' => true,

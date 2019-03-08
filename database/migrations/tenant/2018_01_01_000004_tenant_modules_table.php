@@ -35,7 +35,9 @@ class TenantModulesTable extends Migration
             ['value' => 'users', 'description' => 'Usuarios'],
             ['value' => 'establishments', 'description' => 'Establecimientos'],
             ['value' => 'catalogs', 'description' => 'Catálogos'],
-            ['value' => 'advanced', 'description' => 'Avanzado'],
+            ['value' => 'advanced', 'description' => 'Documentos Avanzados'],
+            ['value' => 'reports', 'description' => 'Reportes'],
+            ['value' => 'configuration', 'description' => 'Configuration'],
         ]);
     }
 
