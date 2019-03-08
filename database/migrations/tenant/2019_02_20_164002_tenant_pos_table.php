@@ -42,9 +42,9 @@ class TenantPosTable extends Migration
             $table->foreign('establishment_id')->references('id')->on('establishments');
         });
 
-        DB::table('pos')->insert([
-            ['user_id' => 1, 'establishment_id' => 1, 'open_amount' => 500, 'ip' => '162.74.135.1']
-        ]);
+    //     DB::table('pos')->insert([
+    //         ['user_id' => 1, 'establishment_id' => 1, 'open_amount' => 500, 'ip' => '162.74.135.1']
+    //     ]);
     }
 
     /**
