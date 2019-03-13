@@ -14,12 +14,16 @@ class Pos extends ModelTenant
         'close_amount',
         'sales_count',
         'status',
-        'ip',
     ];
 
     public function establishment()
     {
         return $this->belongsTo(Establishment::class);
+    }
+
+    public function sales()
+    {
+        return $this->hasMany(PosSales::class);
     }
 
     public function user()
