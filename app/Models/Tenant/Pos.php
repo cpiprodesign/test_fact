@@ -22,6 +22,11 @@ class Pos extends ModelTenant
         return $this->belongsTo(Establishment::class);
     }
 
+    public function sales()
+    {
+        return $this->hasMany(PosSales::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
