@@ -1,12 +1,8 @@
 /node_modules
-/public/css/app.css
-/public/js/app.js
-/public/fonts/**/*
 /public/hot
 /public/downloads
 /public/storage
 /storage/*.key
-/vendor
 /.idea
 /.vscode
 /.vagrant
