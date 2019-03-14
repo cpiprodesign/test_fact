@@ -5,13 +5,13 @@ namespace App\Models\Tenant;
 
 class PosSales extends ModelTenant
 {
-    protected $with = ['establishment', 'user'];
+    protected $with = ['document','details'];
     protected $fillable = [
         'document_id',
         'pos_id',
-        'type',
-        'amount',
-        'reference',
+        'total',
+        'payed',
+        'delta',
     ];
 
 
@@ -23,6 +23,11 @@ class PosSales extends ModelTenant
     public function pos()
     {
         return $this->belongsTo(Pos::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(PosSalesDetails::class);
     }
 
 }

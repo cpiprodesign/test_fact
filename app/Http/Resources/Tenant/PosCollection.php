@@ -3,13 +3,14 @@
 namespace App\Http\Resources\Tenant;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Carbon;
 
 class PosCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return mixed
      */
     public function toArray($request)
@@ -26,7 +27,8 @@ class PosCollection extends ResourceCollection
                 'close_amount' => $row->close_amount,
                 'sales_count' => $row->sales_count,
                 'status' => $row->status,
-                'ip' => $row->ip,
+                'created_at' => Carbon::parse($row->created_at)->format('d/m/Y H:i'),
+                'deleted_at' => $row->deleted_at ? Carbon::parse($row->deleted_at)->format('d/m/Y H:i') : null,
 
             ];
         });

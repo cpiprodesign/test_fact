@@ -3,7 +3,7 @@
 $hostname = app(Hyn\Tenancy\Contracts\CurrentHostname::class);
 
 if ($hostname) {
-    Route::domain($hostname->fqdn)->group(function() {
+    Route::domain($hostname->fqdn)->group(function () {
 
         Auth::routes();
 
@@ -16,7 +16,7 @@ if ($hostname) {
         Route::get('print/{model}/{external_id}/{format?}', 'Tenant\DownloadController@toPrint');
 
 //        Route::middleware(['auth', 'module'])->group(function() {
-        Route::middleware(['auth'])->group(function() {
+        Route::middleware(['auth'])->group(function () {
             Route::get('/', function () {
                 return redirect()->route('tenant.documents.create');
             });
@@ -126,9 +126,15 @@ if ($hostname) {
 
             //POS - Punto de Venta
             // juliocapuano@gmail.com
+
+            Route::post('pos', 'Tenant\PosController@store');
+            Route::post('pos/destroy', 'Tenant\PosController@destroy');
+            Route::get('pos/{id}/details', 'Tenant\PosController@details');
             Route::get('pos', 'Tenant\PosController@index')->name('tenant.pos.index');
             Route::get('pos/columns', 'Tenant\PosController@columns');
             Route::get('pos/records', 'Tenant\PosController@records');
+            Route::get('pos/tables', 'Tenant\PosController@tables');
+            Route::post('pos/{id}/operations', 'Tenant\PosController@operations');
             Route::get('pos/register', 'Tenant\PosController@register')->name('tenant.pos.register');
 
             //Documents
@@ -300,12 +306,12 @@ if ($hostname) {
         });
     });
 } else {
-    Route::domain(env('APP_URL_BASE'))->group(function() {
+    Route::domain(env('APP_URL_BASE'))->group(function () {
         Route::get('login', 'System\LoginController@showLoginForm')->name('login');
         Route::post('login', 'System\LoginController@login');
         Route::post('logout', 'System\LoginController@logout')->name('logout');
 
-        Route::middleware('auth:admin')->group(function() {
+        Route::middleware('auth:admin')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('system.dashboard');
             });
@@ -328,7 +334,6 @@ if ($hostname) {
             Route::get('plans/record/{plan}', 'System\PlanController@record');
             Route::post('plans', 'System\PlanController@store');
             Route::delete('plans/{plan}', 'System\PlanController@destroy');
-
 
 
             //Users

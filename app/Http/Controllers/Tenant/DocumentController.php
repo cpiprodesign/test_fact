@@ -108,15 +108,15 @@ class DocumentController extends Controller
             'discount_types', 'charge_types', 'company', 'document_type_03_filter');
     }
 
-    public function tables2($quotation_id=false)
+    public function tables2($quotation_id = false)
     {
         $quotation = Quotation::whereId($quotation_id)->get();
         // $customers = $this->table('customers');
 
-        $customers = Person::whereType('customers')->whereId($quotation[0]->customer_id)->get()->transform(function($row) {
+        $customers = Person::whereType('customers')->whereId($quotation[0]->customer_id)->get()->transform(function ($row) {
             return [
                 'id' => $row->id,
-                'description' => $row->number.' - '.$row->name,
+                'description' => $row->number . ' - ' . $row->name,
                 'name' => $row->name,
                 'number' => $row->number,
                 'identity_document_type_id' => $row->identity_document_type_id,
@@ -137,8 +137,8 @@ class DocumentController extends Controller
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
 
         return compact('quotation', 'customers', 'establishments', 'series', 'document_types_invoice', 'document_types_note',
-                       'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
-                       'discount_types', 'charge_types', 'company', 'document_type_03_filter');
+            'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
+            'discount_types', 'charge_types', 'company', 'document_type_03_filter');
     }
 
     public function item_tables()
@@ -161,16 +161,15 @@ class DocumentController extends Controller
     {
         // $items = Quotation::getItems($quotation_id);
         // $items = Quotation::getItems($quotation_id);
-        $quotation = Quotation::where('id',$quotation_id)->first();
-        $quotation_items = QuotationItem::where('quotation_id',$quotation_id)->get();
+        $quotation = Quotation::where('id', $quotation_id)->first();
+        $quotation_items = QuotationItem::where('quotation_id', $quotation_id)->get();
 
         $items = array();
 
-        foreach($quotation_items as $quotation_item)
-        {
+        foreach ($quotation_items as $quotation_item) {
             $row = Item::whereId($quotation_item->item_id)->first();
 
-            $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;            
+            $full_description = ($row->internal_id) ? $row->internal_id . ' - ' . $row->description : $row->description;
 
             $items[] = [
                 'id' => $row->id,
@@ -188,7 +187,7 @@ class DocumentController extends Controller
                 'unit_price' => $quotation_item->unit_price,
                 'total_value' => $quotation_item->total_value,
                 'total' => $quotation_item->total,
-                'item'=> $row,
+                'item' => $row,
                 'item.description' => $row->description,
                 'currency_type_id' => $row->currency_type_id,
                 'currency_type_symbol' => $row->currency_type->symbol,
@@ -210,7 +209,7 @@ class DocumentController extends Controller
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
 
         return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
-                       'operation_types', 'discount_types', 'charge_types', 'attribute_types', 'quotation');
+            'operation_types', 'discount_types', 'charge_types', 'attribute_types', 'quotation');
     }
 
     public function table($table)
@@ -269,11 +268,10 @@ class DocumentController extends Controller
             $facturalo->createPdf();
 
 
-            if($request->input('quotation_id'))
-            {
+            if ($request->input('quotation_id')) {
                 Quotation::where('id', $request->input('quotation_id'))
                     ->update(['state_type_id' => '05']);
-                
+
             }
             return $facturalo;
         });

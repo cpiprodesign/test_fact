@@ -338,16 +338,13 @@
                      :external="true"
                      :document_type_id=form.document_type_id></person-form>
 
-        <!--        <document-options :showDialog.sync="showDialogOptions"-->
-        <!--                          :recordId="documentNewId"-->
-        <!--                          :showClose="false"></document-options> //esto se va a reemplazar-->
 
         <item-form :showDialog.sync="showDialogNewItem"
                    :external="true"></item-form>
 
         <form autocomplete="off" @submit.prevent="submit">
             <el-dialog
-                :visible="showDialogMakeSale"
+                :visible.sync="showDialogMakeSale"
                 :close-on-modal="false"
                 :show-close="false"
                 top="5vh" width="50%"
@@ -669,7 +666,9 @@
                 var data = this.searchBox;
                 var lista = this.items
                     .filter(function (item) {
-                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1
+
+                        // item_code_gs1
+                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.item_code_gs1.toLowerCase().indexOf(data.toLowerCase()) > -1;
 
                     })
                     .sort(function (a, b) {
@@ -891,12 +890,18 @@
                     console.log(response);
 
                     if (response.data.success) {
+
+                        // this.showDialogOptions = true;
+                        // this.documentNewId = response.data.data.id;
+                        var temp_add = {
+                            balance: this.payment,
+                            sale: this.informacion_adicional.pagos
+                        };
                         this.resetForm();
 
-                        // this.documentNewId = response.data.data.id;
-                        // this.showDialogOptions = true;
                         this.$http.get(`/documents/record/${response.data.data.id}`).then(response => {
                             this.factura_d = response.data.data;
+                            this.$http.post(`/pos/${this.factura_d.id}/operations`, temp_add);
                             //window.open(`/print/document/${this.factura_d.external_id}/ticket`, '_blank');
                             //this.titleDialog = 'Comprobante: ' + this.form.number;
                         });

@@ -46,8 +46,7 @@ class User extends Authenticatable
     public function hasAnyModule($modules)
     {
         if (is_array($modules)) {
-            foreach ($modules as $module)
-            {
+            foreach ($modules as $module) {
                 if ($this->hasModule($module)) {
                     return true;
                 }
@@ -71,5 +70,10 @@ class User extends Authenticatable
     public function establishment()
     {
         return $this->belongsTo(Establishment::class);
+    }
+
+    public function pos()
+    {
+        return $this->hasOne(Pos::class);
     }
 }

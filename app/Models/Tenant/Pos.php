@@ -3,9 +3,14 @@
 namespace App\Models\Tenant;
 
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Pos extends ModelTenant
 {
-    protected $with = ['establishment', 'user'];
+    use SoftDeletes;
+
+
+    protected $with = ['establishment','sales', 'user'];
     protected $fillable = [
         'id',
         'user_id',
@@ -14,6 +19,13 @@ class Pos extends ModelTenant
         'close_amount',
         'sales_count',
         'status',
+        'created_at',
+        'deleted_at'
+    ];
+
+    protected $dates = [
+        'created_at',
+        'deleted_at'
     ];
 
     public function establishment()
@@ -29,6 +41,13 @@ class Pos extends ModelTenant
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function active()
+    {
+        $pos = auth()->user()->pos()->orderBy('id', 'desc')->where('status', 'open');
+        $id = $pos->count() ? $pos->first()->id : null;
+        return $id;
     }
 
 }

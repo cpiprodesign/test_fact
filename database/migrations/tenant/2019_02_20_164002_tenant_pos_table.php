@@ -20,7 +20,7 @@ class TenantPosTable extends Migration
             // unity
             $table->integer('user_id')->unsigned();
             $table->integer('establishment_id')->unsigned();
-            $table->char('name', 50);
+//            $table->char('name', 50);
 
             // data
 
@@ -31,7 +31,7 @@ class TenantPosTable extends Migration
             $table->enum('status', ['open', 'suspended', 'blocked', 'close'])->default('open');
 
             // security
-            $table->ipAddress('ip');
+//            $table->ipAddress('ip');
 //            $table->uuid('hash');
 
             // log

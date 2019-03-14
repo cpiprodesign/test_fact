@@ -1,12 +1,19 @@
 <template>
     <div>
         <div class="page-header pr-0">
-            <button class="btn btn-sm btn-primary pull-right mt-2 mr-2 " @click.prevent="getPos()">
+            <button class="btn btn-sm btn-primary pull-right mt-2 mr-2 "
+                    v-if="!posActive"
+                    @click.prevent="showNewRegisterDialog = !showNewRegisterDialog">
                 <i class="fas fa-desktop mr-3"></i>
-                <span v-if="activePos"> Abrir Punto de Venta </span>
-                <span v-else> Nuevo Punto de Venta </span>
+                Nuevo Punto de Venta
 
             </button>
+            <a v-else href="./pos/register" target="_blank"
+               class="btn btn-sm btn-success pull-right mt-2 mr-2 "
+            >
+                <i class="fas fa-desktop mr-3"></i>
+                Abrir Punto de Venta
+            </a>
             <h2><a href="/dashboard">
                 <i class="fas fa-cash-register"></i>
             </a></h2>
@@ -23,71 +30,123 @@
                 <data-table :resource="resource">
                     <tr slot="heading">
                         <th>#</th>
-                        <th>IP</th>
                         <th>Ubicación</th>
                         <th>Usuario</th>
                         <th>Estado</th>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
+                        <th>Saldo</th>
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
-                        <td>{{ row.ip }}</td>
                         <td>{{ row.establishment.description}}</td>
                         <td>{{ row.user.name }}</td>
                         <td>{{ row.status }}</td>
+                        <td>{{ row.created_at }}</td>
+                        <td>{{ row.deleted_at }}</td>
+                        <td>S/. {{ row.close_amount }}</td>
                         <td class="text-right">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickCreate(row.id)">Editar
+                                    @click.prevent="posDetails(row.id)">Detalles
                             </button>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"
-                                    @click.prevent="clickDelete(row.id)">Eliminar
+                                    v-if="row.id==posId"
+                                    @click.prevent="posClose(row.id)">Cerrar
                             </button>
                         </td>
                     </tr>
                 </data-table>
             </div>
 
-            <items-form :showDialog.sync="showDialog"
-                        :recordId="recordId"></items-form>
-
-            <items-import :showDialog.sync="showImportDialog"></items-import>
+            <new-pos-register :show-dialog.sync="showNewRegisterDialog" @OpenPos="OpenPos"></new-pos-register>
+            <pos-details :show-dialog.sync="showPosDetailsDialog"
+                              :registers.sync="posDetailsData"></pos-details>
         </div>
 
     </div>
 </template>
 <script>
 
-    // import ItemsForm from './form.vue'
-    //import ItemsImport from './import.vue'
+    import NewPosRegister from './partials/newRegister'
+    import PosDetails from './partials/posDetails'
     import DataTable from '../../../components/DataTable.vue'
-    import {deletable} from '../../../mixins/deletable'
 
     export default {
 
-        // mixins: [deletable],
         components: {
-            // ItemsForm,
-            // ItemsImport,
-            DataTable
+            DataTable,
+            PosDetails,
+            NewPosRegister
         },
         data() {
             return {
-                // showDialog: false,
-                //showImportDialog: false,
+
+                showDialog: false,
+                showNewRegisterDialog: false,
+                showPosDetailsDialog: false,
+                posDetailsData: {},
                 resource: 'pos',
-                recordId: null,
-                activePos: false,
+                posActive: false,
+                posId: false,
             }
         },
         created() {
+            this.init();
+
         },
         methods: {
-            getPos() {
-                this.activePos = true;
+            async init() {
+                await this.$http.get(`/${this.resource}/tables`)
+                    .then(response => {
+                        this.posActive = response.data.pos > 0 ? true : false;
+                        this.posId = response.data.pos > 0 ? response.data.pos : false;
+                    })
+            },
+
+            OpenPos(form) {
+                this.$http.post(`/${this.resource}`, form)
+                    .then(response => {
+                        // console.info(response);
+                        // this.init()
+                        document.location.href = `./${this.resource}`;
+                    });
+
+            },
+            /**
+             * carga las operaciones de el
+             *
+             * @param id
+             * @returns {Promise<void>}
+             */
+            posDetails(id) {
+                this.$http.get(`/${this.resource}/${id}/details`)
+                    .then(response => {
+                        this.posDetailsData = response.data;
+                        this.showPosDetailsDialog = true;
+                    })
+            },
+
+            posClose() {
+                this.$confirm('Desea Realizar el Cierre de Caja?', {
+                    confirmButtonText: 'Cerrar',
+                    cancelButtonText: 'Cancelar',
+                    type: 'danger'
+                }).then(() => {
+                    this.$http.post(`/${this.resource}/destroy`)
+                    this.$message({
+                        type: 'success',
+                        message: 'Se realizo el cierre correctamente'
+                    });
+                    document.location.href = `./${this.resource}`;
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: 'Cierre Cancelado'
+                    });
+                });
             }
-        },
-        beforeCreate() {
-            getPost()
         }
     }
 </script>
