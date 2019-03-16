@@ -1,4 +1,5 @@
 @php
+    
     $establishment = $document->establishment;
     $customer = $document->customer;
     $invoice = $document->invoice;
@@ -26,75 +27,65 @@
         @endif
         <td width="50%" class="pl-3">
             <div class="text-left">
-                <h4 class="">{{ $company->name }}</h4>
-                <h5>{{ 'RUC '.$company->number }}</h5>
-                <h6>{{ ($establishment->address !== '-')? $establishment->address : '' }}</h6>
-                <h6>{{ ($establishment->email !== '-')? $establishment->email : '' }}</h6>
-                <h6>{{ ($establishment->telephone !== '-')? $establishment->telephone : '' }}</h6>
+                <h2 class="">{{ $company->name }}</h2>
+                <h3>{{ $document->description }}</h6>
+                <h3>{{ ($establishment->address !== '-')? $establishment->address : '' }}</h6>
+                <h3>{{ ($establishment->telephone !== '-')? $establishment->telephone : '' }}</h6>
+                <h3>{{ ($establishment->email !== '-')? $establishment->email : '' }}</h6>         
             </div>
         </td>
-        <td width="30%" class="border-box py-4 px-2 text-center">
-            <h5 class="text-center">{{ $document->document_type->description }}</h5>
-            <h3 class="text-center">{{ $document_number }}</h3>
+        <td width="30%" class="border-box py-4 px-1 text-center">
+            <h2 class="text-center">{{ 'RUC '.$company->number }}</h2>
+            <h4 class="text-center">{{ $document->document_type->description }}</h4>
+            <h3 class="text-center"><strong>N° {{ $document_number }}</strong></h3>
         </td>
     </tr>
-</table>
-<table class="full-width mt-5">
-    <tr>
-        <td width="15%">Cliente:</td>
-        <td width="45%">{{ $customer->name }}</td>
-        <td width="25%">Fecha de emisión:</td>
-        <td width="15%">{{ $document->date_of_issue->format('Y-m-d') }}</td>
-    </tr>
-    <tr>
-        <td>{{ $customer->identity_document_type->description }}:</td>
-        <td>{{ $customer->number }}</td>
-        @if($invoice)
-        <td>Fecha de vencimiento:</td>
-        <td>{{ $invoice->date_of_due->format('Y-m-d') }}</td>
-        @endif
-    </tr>
-    @if ($customer->address !== '')
-    <tr>
-        <td class="align-top">Dirección:</td>
-        <td colspan="3">{{ $customer->address }}</td>
-    </tr>
-    @endif
-</table>
-
-<table class="full-width mt-3">
-    @if ($document->purchase_order)
+</table><br>
+<div class="border-box py-4 px-1">
+    <table class="full-width mt-3 ">
         <tr>
-            <td width="25%">Orden de Compra: </td>
-            <td class="text-left">{{ $document->purchase_order }}</td>
+            <td width="15%">Cliente:</td>
+            <td width="45%">{{ $customer->name }}</td>
+            <td width="25%">Fecha de emisión:</td>
+            <td width="15%">{{ $document->date_of_issue->format('Y-m-d') }}</td>
         </tr>
-    @endif
-    @if ($document->guides)
-        @foreach($document->guides as $guide)
-            <tr>
-                <td>{{ $guide->document_type_id }}</td>
-                <td>{{ $guide->number }}</td>
-            </tr>
-        @endforeach
-    @endif
-</table>
+        <tr>
+            <td>{{ $customer->identity_document_type->description }}:</td>
+            <td>{{ $customer->number }}</td>
+            @if($invoice)
+            <td>Fecha de vencimiento:</td>
+            <td>{{ $invoice->date_of_due->format('Y-m-d') }}</td>
+            @endif
+        </tr>
+        @if ($customer->address !== '')
+        <tr>
+            <td class="align-top">Dirección:</td>
+            <td colspan="2">{{ $customer->address }}</td>
 
-<table class="full-width mt-10 mb-10">
+        </tr>
+        @endif
+    </table>
+</div>
+<div class="border-box py-4 px-1">
+<table class="full-width mt-12 mb-10">
     <thead class="">
     <tr class="bg-grey">
-        <th class="border-top-bottom text-center py-2">CANT.</th>
-        <th class="border-top-bottom text-center py-2">UNIDAD</th>
+        <th class="border-top-bottom text-left py-1">COD.</th>
         <th class="border-top-bottom text-left py-2">DESCRIPCIÓN</th>
+        <th class="border-top-bottom text-center py-1">CANT.</th>
+        <th class="border-top-bottom text-center py-2">UNIDAD</th>
         <th class="border-top-bottom text-right py-2">P.UNIT</th>
         <th class="border-top-bottom text-right py-2">DTO.</th>
         <th class="border-top-bottom text-right py-2">TOTAL</th>
     </tr>
     </thead>
     <tbody>
+
     @foreach($document->items as $row)
         <tr>
-            <td class="text-center align-top">{{ $row->quantity }}</td>
-            <td class="text-center align-top">{{ $row->item->unit_type_id }}</td>
+            <td class="text-center align-top">
+                        {{ $row->item->internal_id }}
+            </td>
             <td class="text-left">
                 {!! $row->item->description !!}
                 @if($row->attributes)
@@ -108,6 +99,8 @@
                     @endforeach
                 @endif
             </td>
+            <td class="text-center align-top">{{ number_format($row->quantity, 2) }}</td>
+            <td class="text-center align-top">{{ $row->item->unit_type_id }}</td>
             <td class="text-right align-top">{{ number_format($row->unit_price, 2) }}</td>
             <td class="text-right align-top">
                 @if($row->discounts)
@@ -125,9 +118,54 @@
             <td class="text-right align-top">{{ number_format($row->total, 2) }}</td>
         </tr>
         <tr>
-            <td colspan="6" class="border-bottom"></td>
+            <td colspan="7" class="border-bottom"></td>
         </tr>
     @endforeach
+    </tbody>
+</table>
+<table class="full-width mt-3">
+    @if ($document->purchase_order)
+        <tr>
+            <td width="25%"><strong>Orden de Compra:</strong> </td>
+            <td class="text-left">{{ $document->purchase_order }}</td>
+        </tr>
+    @endif
+    @if ($document->guides)
+        @foreach($document->guides as $guide)
+            <tr>
+                <td>{{ $guide->document_type_id }}</td>
+                <td>{{ $guide->number }}</td>
+            </tr>
+        @endforeach
+    @endif
+</table>
+<table>
+    <tr>
+        <td>
+            <strong>Información adicional</strong>
+            @foreach($document->additional_information as $information)
+                <p>{{ $information }}</p>
+            @endforeach
+        </td>
+    </tr>
+</table>
+</div><br>
+<div class="border-box py-4 px-1">
+    <table class="full-width">
+    <tr>
+        <td width="65%">
+            @foreach($document->legends as $row)
+                <p>Son: <span class="font-bold">{{ $row->value }} {{ $document->currency_type->description }}</span></p>
+            @endforeach
+            <br/>
+        </td>
+    </tr>
+  </table>
+    <table class="full-width mt-10 mb-10">
+    <thead>
+        
+    </thead>
+    <tbody>
         @if($document->total_exportation > 0)
             <tr>
                 <td colspan="5" class="text-right font-bold">OP. EXPORTACIÓN: {{ $document->currency_type->symbol }}</td>
@@ -172,19 +210,17 @@
             <td colspan="5" class="text-right font-bold">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold">{{ number_format($document->total, 2) }}</td>
         </tr>
+
     </tbody>
+    <tfoot>
+        
+    </tfoot>
 </table>
+</div><br>
+
 <table class="full-width">
     <tr>
         <td width="65%">
-            @foreach($document->legends as $row)
-                <p>Son: <span class="font-bold">{{ $row->value }} {{ $document->currency_type->description }}</span></p>
-            @endforeach
-            <br/>
-            <strong>Información adicional</strong>
-            @foreach($document->additional_information as $information)
-                <p>{{ $information }}</p>
-            @endforeach
             <div class="text-left"><img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></div>
             <p>Código Hash: {{ $document->hash }}</p>
         </td>
