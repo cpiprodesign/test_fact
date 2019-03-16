@@ -87,8 +87,27 @@ table {
 }
 
 .border-box {
-    border: thin solid #333;
+  border: thin solid #333;
 }
+
+.border-no-bottom
+{
+  border-top: thin solid #333;
+  border-left: thin solid #333;
+  border-right: thin solid #333;
+}
+
+.no-border
+{
+  border: 0;
+}
+.border-no-top
+{
+  border-bottom: thin solid #333;
+  border-left: thin solid #333;
+  border-right: thin solid #333;
+}
+
 .border-top {
     border-top: thin solid #333;
 }
