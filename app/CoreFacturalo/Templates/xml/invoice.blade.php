@@ -433,11 +433,11 @@
                         <cbc:ItemClassificationCode>{{ $row->item->item_code }}</cbc:ItemClassificationCode>
                     </cac:CommodityClassification>
                 @endif
-                @if($row->item->item_code_gs1)
+                {{-- @if($row->item->item_code_gs1)
                     <cac:StandardItemIdentification>
                         <cbc:ID>{{ $row->item->item_code_gs1 }}</cbc:ID>
                     </cac:StandardItemIdentification>
-                @endif
+                @endif --}}
                 @if($row->attributes)
                     @foreach($row->attributes as $attr)
                         <cac:AdditionalItemProperty>
