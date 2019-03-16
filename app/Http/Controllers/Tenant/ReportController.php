@@ -65,20 +65,7 @@ class ReportController extends Controller
             $d = $request->d;
             $a = $request->a;
             
-            if (is_null($td)) {
-                $reports = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->get();
-            }
-            else {
-                $reports = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->where('document_type_id', $td)
-                    ->where('customer_id', $customer_td)
-                    ->get();
-            }
+            $reports = $this->getReports2($td, $customer_td, $d, $a);  
         }
         else 
         {
@@ -100,20 +87,7 @@ class ReportController extends Controller
             $d = $request->d;
             $a = $request->a;
             
-            if (is_null($td)) {
-                $reports = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->get();
-            }
-            else {
-                $reports = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->where('document_type_id', $td)
-                    ->where('customer_id', $customer_td)
-                    ->get();
-            }
+            $reports = $this->getReports2($td, $customer_td, $d, $a);
         }
         else {
             $reports = $this->getReports($td, $customer_td);   
@@ -135,20 +109,7 @@ class ReportController extends Controller
             $d = $request->d;
             $a = $request->a;
             
-            if (is_null($td)) {
-                $records = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->get();
-            }
-            else {
-                $records = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->where('document_type_id', $td)
-                    ->where('customer_id', $customer_td)
-                    ->get();
-            }
+            $records = $this->getReports2($td, $customer_td, $d, $a);
         }
         else {            
             
@@ -191,6 +152,44 @@ class ReportController extends Controller
                 ->where('document_type_id', $td)
                 ->where('customer_id', $customer_td)
                 ->get();
+        }
+
+        return $reports;
+    }
+
+    public function getReports2($td, $customer_td, $d, $a)
+    {
+        if (is_null($td) && is_null($customer_td))
+        {
+            $reports = Document::with([ 'state_type', 'person'])
+                    ->whereBetween('date_of_issue', [$d, $a])
+                    ->latest()
+                    ->get();
+        }
+        else if(!is_null($td) && is_null($customer_td))
+        {
+            $reports = Document::with([ 'state_type', 'person'])
+                    ->whereBetween('date_of_issue', [$d, $a])
+                    ->latest()
+                    ->where('document_type_id', $td)
+                    ->get();
+        }
+        else if(is_null($td) && !is_null($customer_td))
+        {
+            $reports = Document::with([ 'state_type', 'person'])
+                    ->whereBetween('date_of_issue', [$d, $a])
+                    ->latest()
+                    ->where('customer_id', $customer_td)
+                    ->get();
+        }
+        else 
+        {
+            $reports = Document::with([ 'state_type', 'person'])
+                    ->whereBetween('date_of_issue', [$d, $a])
+                    ->latest()
+                    ->where('document_type_id', $td)
+                    ->where('customer_id', $customer_td)
+                    ->get();
         }
 
         return $reports;
