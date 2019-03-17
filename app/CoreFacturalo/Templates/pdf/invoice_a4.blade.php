@@ -4,11 +4,18 @@
     $invoice = $document->invoice;
     $path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
     $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
+
+    $establishment2 = \App\Models\Tenant\Establishment::find($document->establishment_id);
 @endphp
 <html>
     <head>
         <title>{{ $document_number }}</title>
         <link href="{{ $path_style }}" rel="stylesheet" />
+        <style>
+            html {
+                font-family: sans-serif;            
+            }
+        </style>
     </head>
     <body>
         <table class="full-width">
@@ -26,11 +33,11 @@
                 @endif
                 <td width="45%" class="pl-3">
                     <div class="text-left">
-                        <h2 class="">{{ $company->name }}</h2>
-                        <h3>{{ $document->description }}</h6>
-                        <h3>{{ ($establishment->address !== '-')? $establishment->address : '' }}</h6>
-                        <h3>{{ ($establishment->telephone !== '-')? $establishment->telephone : '' }}</h6>
-                        <h3>{{ ($establishment->email !== '-')? $establishment->email : '' }}</h6>         
+                        <h3 class="">{{ $company->name }}</h3>
+                        <h5>{{ $establishment2->description }}</h5>
+                        <h6>{{ strtoupper($establishment2->getAddressFullAttribute()) }}</h6>
+                        <h6>{{ ($establishment2->telephone !== '-')? $establishment2->telephone : '' }}</h6>
+                        <h6>{{ ($establishment2->email !== '-')? $establishment2->email : '' }}</h6>
                     </div>
                 </td>
                 <td width="35%" class="border-box py-4 px-1 text-center">
@@ -217,16 +224,7 @@
                         <p>Código Hash: {{ $document->hash }}</p>
                     </td>
                 </tr>
-            </table>
-            
+            </table>            
         </div>
-        {{-- <table class="full-width">
-            <tr>
-                <td width="65%">
-                    <div class="text-center"><img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></div>
-                    <p>Código Hash: {{ $document->hash }}</p>
-                </td>
-            </tr>
-        </table> --}}
     </body>
 </html>
