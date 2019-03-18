@@ -97,7 +97,7 @@
                     </div>
                 </div>
             </div>
-            <br>
+            <!-- <br>
             <div class="row">
                 <div class="col-md-12">
                     <table class="table table-sm">
@@ -115,7 +115,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div> -->
             <div class="form-actions text-right pt-2">
                 <el-button @click.prevent="close()">Cancelar</el-button>
                 <el-button type="primary" native-type="submit" :loading="loading_submit">Guardar</el-button>
