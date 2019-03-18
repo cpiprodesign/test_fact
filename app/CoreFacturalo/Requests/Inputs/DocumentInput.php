@@ -100,7 +100,7 @@ class DocumentInput
             'detraction' => self::detraction($inputs),
             'invoice' => $invoice,
             'note' => $note,
-            'additional_information' => Functions::valueKeyInArray($inputs, 'informacion_adicional'),
+            'additional_information' => $inputs['additional_information'],
             'legends' => LegendInput::set($inputs),
             'actions' => ActionInput::set($inputs),
         ];
