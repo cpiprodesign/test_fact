@@ -54,6 +54,7 @@
                                 <th>Cliente</th>
                                 <th>RUC</th>
                                 <th>Estado</th>
+                                <th>Estado de pago</th>
                                 <th>Total Gravado</th>
                                 <th>Total IGV</th>
                                 <th>Total</th>
@@ -69,6 +70,13 @@
                                 <td class="celda">{{$value->customer->name}}</td>
                                 <td class="celda">{{$value->customer->number}}</td>
                                 <td class="celda">{{$value->state_type->description}}</td>
+                                <td class="celda">
+                                    @if($value->status_paid == 1)
+                                        Pagado
+                                    @else
+                                        Pendiente
+                                    @endif
+                                </td>
                                 <td class="celda">{{$value->total_taxed}}</td>
                                 <td class="celda">{{$value->total_igv}}</td>
                                 <td class="celda">{{$value->total}}</td>

@@ -78,6 +78,7 @@ Vue.component('tenant-purchases-items', require('./views/tenant/dispatches/items
 
 Vue.component('tenant-attribute_types-index', require('./views/tenant/attribute_types/index.vue'));
 Vue.component('tenant-calendar', require('./views/tenant/components/calendar.vue'));
+Vue.component('tenant-calendar2', require('./views/tenant/components/calendar2.vue'));
 
 // System
 Vue.component('system-clients-index', require('./views/system/clients/index.vue'));
