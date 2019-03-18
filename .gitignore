@@ -1,5 +1,7 @@
 /node_modules
 /public/hot
+/public/js/app.js
+/public/css/app.css
 /public/downloads
 /public/storage
 /storage/*.key
@@ -22,3 +24,4 @@ error_log
 .env.dusk.local
 debug.log
 phpunit.dusk.xml
+vendor/mpdf/mpdf/tmp/
