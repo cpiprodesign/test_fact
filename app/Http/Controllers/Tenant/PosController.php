@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Http\Resources\Tenant\PosCollection;
+use App\Models\Tenant\Company;
 use App\Models\Tenant\Pos;
-use App\Models\Tenant\PosSales;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use phpDocumentor\Reflection\Types\Integer;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class PosController extends Controller
 {
@@ -103,5 +104,16 @@ class PosController extends Controller
                 'reference' => isset($detail['ref']) ? $detail['ref'] : null,
             ])->save();
         }
+    }
+
+    public function pdf($pos_id) {
+        $company = Company::first();
+        $pos = $this->details($pos_id);
+
+//        return view('tenant.reports.pos.report_pdf', compact(    "company", 'pos'));
+        $pdf = PDF::loadView('tenant.reports.pos.report_pdf', compact("company", 'pos'));
+        $filename = 'Reporte_Pos'.$pos->created_at->format('_Ymd_Hm');
+
+        return $pdf->download($filename.'.pdf');
     }
 }
