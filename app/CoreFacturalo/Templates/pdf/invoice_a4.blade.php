@@ -1,4 +1,4 @@
-@php    
+@php 
     $establishment = $document->establishment;
     $customer = $document->customer;
     $invoice = $document->invoice;
@@ -142,15 +142,15 @@
                         </tr>
                     @endforeach
                 @endif
-            </table>
-            <table class="mt-3">
+            </table>            
+            <table>               
                 <tr>
-                    <td>
-                        <strong>Información adicional</strong>
-                        @foreach($document->additional_information as $information)
-                            <p>{{ $information }}</p>
-                        @endforeach
-                    </td>
+                     @if(isset($document->additional_information))
+                        <tr>
+                            <td colspan="2"><b>Observaciones:</td>
+                            <td colspan="5">{!! nl2br(e($document->additional_information[0])) !!}</td>
+                        </tr>
+                    @endif
                 </tr>
             </table>
         </div>
