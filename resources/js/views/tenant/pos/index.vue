@@ -47,10 +47,16 @@
                         <td>{{ row.deleted_at }}</td>
                         <td>S/. {{ row.close_amount }}</td>
                         <td class="text-right">
+                            <a class="btn waves-effect waves-light btn-xs btn-danger" :href="`pos/report/pdf/${row.id}`"
+                               title="Descargar Reporte"
+                            >
+                                <i class="far fa-file-pdf"></i> Reporte
+                            </a>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="posDetails(row.id)">Detalles
                             </button>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"
+                                    title="Cerrar Caja"
                                     v-if="row.id==posId"
                                     @click.prevent="posClose(row.id)">Cerrar
                             </button>
