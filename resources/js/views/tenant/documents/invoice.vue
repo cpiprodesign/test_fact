@@ -128,6 +128,13 @@
                                     <small class="form-control-feedback" v-if="errors.status_paid" v-text="errors.status_paid"></small>
                                 </div>
                             </div>
+                            <div class="col-lg-6">
+                                <div class="form-group" :class="{'has-danger': errors.additional_information}">
+                                    <label class="control-label">informacion_adicional</label>
+                                    <el-input v-model="form.additional_information" type="textarea" autosize style="height: 50px !important"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.additional_information" v-text="errors.additional_information[0]"></small>
+                                </div>
+                            </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-12">
@@ -309,6 +316,7 @@
                     total_taxes: 0,
                     total_value: 0,
                     total: 0,
+                    additional_information:null,
                     operation_type_id: null,
                     date_of_due: moment().format('YYYY-MM-DD'),
                     items: [],
