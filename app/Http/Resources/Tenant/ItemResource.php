@@ -32,6 +32,11 @@ class ItemResource extends JsonResource
             'stock_min' => $this->stock_min,
             'sale_affectation_igv_type_id' => $this->sale_affectation_igv_type_id,
             'purchase_affectation_igv_type_id' => $this->purchase_affectation_igv_type_id,
+
+            'trademark_id' => $this->trademark_id,
+            'item_category_id' => $this->item_category_id,
+
+
         ];
     }
 }

@@ -9,7 +9,7 @@ use App\Models\Tenant\Catalogs\UnitType;
 
 class Item extends ModelTenant
 {
-    protected $with = ['item_type', 'unit_type', 'currency_type'];
+    protected $with = ['item_type', 'unit_type', 'currency_type','trademark', 'itemCategory'];
     protected $fillable = [
         'description',
         'item_type_id',
@@ -31,6 +31,9 @@ class Item extends ModelTenant
         'stock',
         'stock_min',
 
+        'trademark_id',
+        'item_category_id',
+
         'attributes',
     ];
 
@@ -47,6 +50,16 @@ class Item extends ModelTenant
     public function item_type()
     {
         return $this->belongsTo(ItemType::class);
+    }
+
+    public function trademark()
+    {
+        return $this->belongsTo(Trademarks::class);
+    }
+
+    public function itemCategory()
+    {
+        return $this->belongsTo(ItemCategory::class);
     }
 
     public function unit_type()

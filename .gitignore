@@ -1,5 +1,4 @@
 /node_modules
-/vendor/*
 /public/hot
 /public/downloads
 /public/storage
@@ -22,8 +21,5 @@ error_log
 .env.dusk.local
 debug.log
 phpunit.dusk.xml
-<<<<<<< HEAD
 .env
-vendor/*
-=======
->>>>>>> dev
+vendor/mpdf/mpdf/tmp/
