@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Tenant;
 
 use App\Imports\ItemsImport;
@@ -14,6 +15,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\ItemRequest;
 use App\Http\Resources\Tenant\ItemCollection;
 use App\Http\Resources\Tenant\ItemResource;
+use App\Models\Tenant\ItemCategory;
+use App\Models\Tenant\Trademarks;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
@@ -35,7 +38,7 @@ class ItemController extends Controller
     public function records(Request $request)
     {
         $records = Item::where($request->column, 'like', "%{$request->value}%")
-                       ->orderBy('description');
+            ->orderBy('description');
 
         return new ItemCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
@@ -54,7 +57,10 @@ class ItemController extends Controller
         $affectation_igv_types = AffectationIgvType::whereActive()->get();
         $establishments = Establishment::all();
 
-        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'establishments');
+        $trademarks = Trademarks::orderBy('name')->get();
+        $item_category = ItemCategory::WhereNull('parent_id')->orderBy('description')->get();
+
+        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'trademarks', 'item_category', 'establishments');
     }
 
     public function record($id)
@@ -64,13 +70,14 @@ class ItemController extends Controller
         return $record;
     }
 
-    public function stocks($id)
-    {
-        
-        $stocks = EstablishmentItem::where('item_id', $id)->get();
-
-        return $stocks;
-    }
+//    No Funcional
+//    public function stocks($id)
+//    {
+//
+//        $stocks = EstablishmentItem::where('item_id', $id)->get();
+//
+//        return $stocks;
+//    }
 
     public function store(ItemRequest $request)
     {
@@ -78,11 +85,12 @@ class ItemController extends Controller
         $item = Item::firstOrNew(['id' => $id]);
         $item->item_type_id = '01';
         $item->fill($request->all());
+
         $item->save();
 
         return [
             'success' => true,
-            'message' => ($id)?'Producto editado con éxito':'Producto registrado con éxito',
+            'message' => ($id) ? 'Producto editado con éxito' : 'Producto registrado con éxito',
             'id' => $item->id
         ];
     }
@@ -107,19 +115,19 @@ class ItemController extends Controller
                 $data = $import->getData();
                 return [
                     'success' => true,
-                    'message' =>  __('app.actions.upload.success'),
+                    'message' => __('app.actions.upload.success'),
                     'data' => $data
                 ];
             } catch (Exception $e) {
                 return [
                     'success' => false,
-                    'message' =>  $e->getMessage()
+                    'message' => $e->getMessage()
                 ];
             }
         }
         return [
             'success' => false,
-            'message' =>  __('app.actions.upload.error'),
+            'message' => __('app.actions.upload.error'),
         ];
     }
 }

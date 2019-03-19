@@ -293,6 +293,19 @@ if ($hostname) {
             Route::post('tribute_concept_types', 'Tenant\TributeConceptTypeController@store');
             Route::delete('tribute_concept_types/{id}', 'Tenant\TributeConceptTypeController@destroy');
 
+            //Trademarks // juliocapuano@gmail.com
+            Route::get('trademarks/records', 'Tenant\TrademarksController@records');
+            Route::get('trademarks/record/{id}', 'Tenant\TrademarksController@record');
+            Route::post('trademarks', 'Tenant\TrademarksController@store');
+            Route::delete('trademarks/{id}', 'Tenant\TrademarksController@destroy');
+
+            //Trademarks // juliocapuano@gmail.com
+            Route::get('item_category/tables', 'Tenant\ItemCategoryController@tables');
+            Route::get('item_category/records', 'Tenant\ItemCategoryController@records');
+            Route::get('item_category/record/{id}', 'Tenant\ItemCategoryController@record');
+            Route::post('item_category', 'Tenant\ItemCategoryController@store');
+            Route::delete('item_category/{id}', 'Tenant\ItemCategoryController@destroy');
+
             //purchases
             Route::get('purchases', 'Tenant\PurchaseController@index')->name('tenant.purchases.index');
             Route::get('purchases/columns', 'Tenant\PurchaseController@columns');

@@ -3223,6 +3223,7 @@ return array(
     'Mpdf\\Writer\\ResourceWriter' => $vendorDir . '/mpdf/mpdf/src/Writer/ResourceWriter.php',
     'Nexmo\\Account\\Balance' => $vendorDir . '/nexmo/client/src/Account/Balance.php',
     'Nexmo\\Account\\Client' => $vendorDir . '/nexmo/client/src/Account/Client.php',
+    'Nexmo\\Account\\Config' => $vendorDir . '/nexmo/client/src/Account/Config.php',
     'Nexmo\\Account\\PrefixPrice' => $vendorDir . '/nexmo/client/src/Account/PrefixPrice.php',
     'Nexmo\\Account\\Price' => $vendorDir . '/nexmo/client/src/Account/Price.php',
     'Nexmo\\Account\\Secret' => $vendorDir . '/nexmo/client/src/Account/Secret.php',
