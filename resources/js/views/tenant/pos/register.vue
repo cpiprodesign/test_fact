@@ -668,7 +668,7 @@
                     .filter(function (item) {
 
                         // item_code_gs1
-                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.item_code_gs1.toLowerCase().indexOf(data.toLowerCase()) > -1;
+                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1 ; //|| item.item_code_gs1.toLowerCase().indexOf(data.toLowerCase()) > -1;
 
                     })
                     .sort(function (a, b) {
