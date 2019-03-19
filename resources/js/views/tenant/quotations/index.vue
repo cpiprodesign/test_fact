@@ -20,7 +20,7 @@
                         <th>Estado</th>
                         <th class="text-center">Moneda</th>
                         <th class="text-right">Total</th>
-                        <th class="text-center">Descargas</th>
+                        <!-- <th class="text-center">Descargas</th> -->
                         <!--<th class="text-center">Anulación</th>-->
                         <th class="text-right">Acciones</th>
                     <tr>
@@ -52,17 +52,6 @@
                         </td>
                         <td class="text-center">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
-                        <td class="text-center">
-                            <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickDownload(row.download_xml)"
-                                    v-if="row.has_xml">XML</button>
-                            <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickDownload(row.download_pdf)"
-                                    v-if="row.has_pdf">PDF</button>
-                            <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickDownload(row.download_cdr)"
-                                    v-if="row.has_cdr">CDR</button>
-                        </td>
                         <!--<td class="text-center">-->
                             <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-danger"-->
                                     <!--@click.prevent="clickDownload(row.download_xml_voided)"-->
@@ -83,7 +72,7 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                         <a v-if="row.state_type_id==1" class="dropdown-item" :href="`/documents/create2/`+row.id">Crear venta</a>
-                                        <button type="button" class="dropdown-item" @click.prevent="clickCreateSale(row.download_pdf)">Descargar PDF</button>
+                                        <a class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
                                     </div>
                                 </div>
                             </div>                            
@@ -126,7 +115,7 @@
                 this.showDialogVoided = true
             },
             clickDownload(download) {
-                window.open(download, '_blank');
+                window.open(download);
             },
             clickCreateSale(download) {
                 window.open(download, '_blank');

@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInitb9af0588aaf1bc2f9628c7ea354ee6b3
 {
     public static $files = array (
-        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
@@ -27,6 +26,7 @@ class ComposerStaticInitb9af0588aaf1bc2f9628c7ea354ee6b3
         '0b0974a5566a1077e4f2e111341112c1' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_server.php',
         '1ca3bc274755662169f9629d5412a1da' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_uploaded_files.php',
         '40360c0b9b437e69bcbb7f1349ce029e' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/parse_cookie_header.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '538ca81a9a966a6716601ecf48f4eaef' => __DIR__ . '/..' . '/opis/closure/functions.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
@@ -90,8 +90,8 @@ class ComposerStaticInitb9af0588aaf1bc2f9628c7ea354ee6b3
         '6ab8ad87a734f276a6bcd5a0fe1289be' => __DIR__ . '/..' . '/markbaker/matrix/classes/src/operations/divideinto.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
-        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
         '0d8253363903f0ac7b0978dcde4e28a0' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/helpers.php',
+        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -259,8 +259,8 @@ class ComposerStaticInitb9af0588aaf1bc2f9628c7ea354ee6b3
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'Zend\\Diactoros\\' => 
         array (
@@ -750,6 +750,7 @@ class ComposerStaticInitb9af0588aaf1bc2f9628c7ea354ee6b3
         'App\\Http\\Controllers\\Tenant\\EstablishmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/EstablishmentController.php',
         'App\\Http\\Controllers\\Tenant\\ExchangeRateController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/ExchangeRateController.php',
         'App\\Http\\Controllers\\Tenant\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/HomeController.php',
+        'App\\Http\\Controllers\\Tenant\\ItemCategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/ItemCategoryController.php',
         'App\\Http\\Controllers\\Tenant\\ItemController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/ItemController.php',
         'App\\Http\\Controllers\\Tenant\\NoteController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/NoteController.php',
         'App\\Http\\Controllers\\Tenant\\OptionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/OptionController.php',
@@ -766,6 +767,7 @@ class ComposerStaticInitb9af0588aaf1bc2f9628c7ea354ee6b3
         'App\\Http\\Controllers\\Tenant\\SearchController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/SearchController.php',
         'App\\Http\\Controllers\\Tenant\\SeriesController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/SeriesController.php',
         'App\\Http\\Controllers\\Tenant\\SummaryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/SummaryController.php',
+        'App\\Http\\Controllers\\Tenant\\TrademarksController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/TrademarksController.php',
         'App\\Http\\Controllers\\Tenant\\TributeConceptTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/TributeConceptTypeController.php',
         'App\\Http\\Controllers\\Tenant\\UnitTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/UnitTypeController.php',
         'App\\Http\\Controllers\\Tenant\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Tenant/UserController.php',
@@ -911,6 +913,7 @@ class ComposerStaticInitb9af0588aaf1bc2f9628c7ea354ee6b3
         'App\\Models\\Tenant\\Group' => __DIR__ . '/../..' . '/app/Models/Tenant/Group.php',
         'App\\Models\\Tenant\\Invoice' => __DIR__ . '/../..' . '/app/Models/Tenant/Invoice.php',
         'App\\Models\\Tenant\\Item' => __DIR__ . '/../..' . '/app/Models/Tenant/Item.php',
+        'App\\Models\\Tenant\\ItemCategory' => __DIR__ . '/../..' . '/app/Models/Tenant/ItemCategory.php',
         'App\\Models\\Tenant\\ItemType' => __DIR__ . '/../..' . '/app/Models/Tenant/ItemType.php',
         'App\\Models\\Tenant\\Kardex' => __DIR__ . '/../..' . '/app/Models/Tenant/Kardex.php',
         'App\\Models\\Tenant\\ModelTenant' => __DIR__ . '/../..' . '/app/Models/Tenant/ModelTenant.php',
@@ -934,6 +937,7 @@ class ComposerStaticInitb9af0588aaf1bc2f9628c7ea354ee6b3
         'App\\Models\\Tenant\\Summary' => __DIR__ . '/../..' . '/app/Models/Tenant/Summary.php',
         'App\\Models\\Tenant\\SummaryDocument' => __DIR__ . '/../..' . '/app/Models/Tenant/SummaryDocument.php',
         'App\\Models\\Tenant\\Supplier' => __DIR__ . '/../..' . '/app/Models/Tenant/Supplier.php',
+        'App\\Models\\Tenant\\Trademarks' => __DIR__ . '/../..' . '/app/Models/Tenant/Trademarks.php',
         'App\\Models\\Tenant\\User' => __DIR__ . '/../..' . '/app/Models/Tenant/User.php',
         'App\\Models\\Tenant\\Voided' => __DIR__ . '/../..' . '/app/Models/Tenant/Voided.php',
         'App\\Models\\Tenant\\VoidedDocument' => __DIR__ . '/../..' . '/app/Models/Tenant/VoidedDocument.php',
