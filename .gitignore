@@ -1,5 +1,5 @@
 /node_modules
-/vendor
+/vendor/*
 /public/hot
 /public/downloads
 /public/storage
@@ -23,32 +23,3 @@ error_log
 .env.dusk.local
 debug.log
 phpunit.dusk.xml
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.cw.dat
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.cw127.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GDEFdata.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.gid.dat
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GPOSdata.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GSUB.arab.DFLT.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GSUB.arab.KUR .json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GSUB.arab.SND .json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GSUB.arab.URD .json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GSUB.nko .DFLT.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GSUBdata.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.GSUBGPOStables.dat
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensed.mtx.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.cw.dat
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.cw127.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GDEFdata.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.gid.dat
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GPOSdata.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GSUB.arab.DFLT.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GSUB.arab.KUR .json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GSUB.arab.SND .json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GSUB.arab.URD .json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GSUB.nko .DFLT.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GSUBdata.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.GSUBGPOStables.dat
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavusanscondensedB.mtx.json
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavuserifcondensed.cw.dat
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavuserifcondensed.gid.dat
-vendor/mpdf/mpdf/tmp/ttfontdata/dejavuserifcondensed.mtx.json
