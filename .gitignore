@@ -22,3 +22,4 @@ error_log
 .env.dusk.local
 debug.log
 phpunit.dusk.xml
+vendor/mpdf/mpdf/tmp/
