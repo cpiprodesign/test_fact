@@ -51,6 +51,15 @@ class DocumentInput
             $quotation_id = false;
         }
 
+        if(isset($inputs['additional_information']))
+        {
+            $additional_information =  $inputs['additional_information'];
+        }
+        else 
+        {
+            $additional_information =  "";
+        }
+
         return [
             'type' => $inputs['type'],
             'group_id' => $inputs['group_id'],
@@ -100,7 +109,7 @@ class DocumentInput
             'detraction' => self::detraction($inputs),
             'invoice' => $invoice,
             'note' => $note,
-            'additional_information' => $inputs['additional_information'],
+            'additional_information' => $additional_information,
             'legends' => LegendInput::set($inputs),
             'actions' => ActionInput::set($inputs),
         ];

@@ -110,8 +110,6 @@ class PosController extends Controller
         $company = Company::first();
         $pos = $this->details($pos_id);
 
-
-
 //        return view('tenant.reports.pos.report_pdf', compact(    "company", 'pos'));
         $pdf = PDF::loadView('tenant.reports.pos.report_pdf', compact("company", 'pos'));
         $filename = 'Reporte_Pos'.$pos->created_at->format('_Ymd_Hm');
