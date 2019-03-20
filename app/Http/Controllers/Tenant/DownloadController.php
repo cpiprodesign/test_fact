@@ -86,7 +86,7 @@ class DownloadController extends Controller
         (new Facturalo)->createPdf($document, $type, $format);
     }
 
-    private function reloadPDF2($docuemnt,$type, $format){
+    private function reloadPDF2($document,$type, $format){
         (new Facturalo)->createPdf($document, $type, $format);
 
     }

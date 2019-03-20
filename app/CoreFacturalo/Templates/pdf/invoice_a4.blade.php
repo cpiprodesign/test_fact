@@ -105,7 +105,15 @@
                                     @endforeach
                                 @endif
                             </td>
-                            <td class="text-center align-top">{{ number_format($row->quantity, 2) }}</td>
+                                @php
+                                    $decimal = 0;
+                                @endphp
+                                @if (strlen(stristr($row->quantity, '.00')) == 0)
+                                    @php
+                                        $decimal = 2;
+                                    @endphp
+                                @endif
+                            <td class="align-top">{{ number_format($row->quantity, $decimal) }}</td>
                             <td class="text-center align-top">{{ $row->item->unit_type_id }}</td>
                             <td class="text-right align-top">{{ number_format($row->unit_price, 2) }}</td>
                             <td class="text-right align-top">
