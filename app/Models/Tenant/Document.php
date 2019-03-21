@@ -5,6 +5,7 @@ namespace App\Models\Tenant;
 use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\DocumentType;
 
+
 class Document extends ModelTenant
 {
     protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'invoice', 'note'];
@@ -72,102 +73,102 @@ class Document extends ModelTenant
 
     public function getEstablishmentAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setEstablishmentAttribute($value)
     {
-        $this->attributes['establishment'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['establishment'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getCustomerAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setCustomerAttribute($value)
     {
-        $this->attributes['customer'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['customer'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getChargesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setChargesAttribute($value)
     {
-        $this->attributes['charges'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['charges'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getDiscountsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setDiscountsAttribute($value)
     {
-        $this->attributes['discounts'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['discounts'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getPrepaymentsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setPrepaymentsAttribute($value)
     {
-        $this->attributes['prepayments'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['prepayments'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getGuidesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setGuidesAttribute($value)
     {
-        $this->attributes['guides'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['guides'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getRelatedAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setRelatedDocumentsAttribute($value)
     {
-        $this->attributes['related'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['related'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getPerceptionAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setPerceptionAttribute($value)
     {
-        $this->attributes['perception'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['perception'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getDetractionAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setDetractionAttribute($value)
     {
-        $this->attributes['detraction'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['detraction'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getLegendsAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setLegendsAttribute($value)
     {
-        $this->attributes['legends'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['legends'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getAdditionalInformationAttribute($value)
@@ -186,15 +187,21 @@ class Document extends ModelTenant
         return $this->belongsTo(SoapType::class);
     }
 
+    public function establishment_item()
+    {
+        return $this->hasMany(EstablishmentItem::class, 'establishment_id', 'establishment_id');
+    }
+
     public function state_type()
     {
         return $this->belongsTo(StateType::class);
     }
-    
-    public function person() {
+
+    public function person()
+    {
         return $this->belongsTo(Person::class, 'customer_id');
     }
-    
+
     public function group()
     {
         return $this->belongsTo(Group::class);
@@ -232,7 +239,7 @@ class Document extends ModelTenant
 
     public function getNumberFullAttribute()
     {
-        return $this->series.'-'.$this->number;
+        return $this->series . '-' . $this->number;
     }
 
     public function getNumberToLetterAttribute()

@@ -150,24 +150,24 @@
                 </div>
             </div>
 
-            <!-- <div class="row pt-3">
-                <div class="col-6">
+            <div class="row pt-3">
+                <div class="col-8">
                     <h4>Sede</h4>
                 </div>
-                <div class="col-6">
-                    <h4>Cantida</h4>
+                <div class="col-4">
+                    <h4>Stock Local </h4>
                 </div>
             </div>
-            <div class="row" v-for="(row,index) in establishments" :key="row.id">
-                <div class="col-4">
+            <div class="row pb-1" v-for="(row,index) in form.establisment_item" :key="row.id">
+                <div class="col-8">
                     {{ row.description }}
-                                        <input typeof="hidden" v-bind:value="row.id" v-model="form.establishments[index].establishment_id">
+                    <!--                    <input typeof="hidden" v-bind:value="row.id" v-model="form.establishments[index].establishment_id">-->
                 </div>
-                <div class="col-7">
-                                       <el-input v-model="form.establishments[index].quantity"></el-input>
+                <div class="col-4">
+                                        <el-input v-model.sync="row.quantity"></el-input>
                 </div>
 
-            </div> -->
+            </div>
 
             <div class="form-actions text-right pt-2">
                 <el-button @click.prevent="close()">Cancelar</el-button>
@@ -210,12 +210,7 @@
                         this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0) ? this.affectation_igv_types[0].id : null
                         this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0) ? this.affectation_igv_types[0].id : null
 
-                        this.establishments = response.data.establishments
-                        this.form.establishment_items = this.establishments;
-
-                        // if (this.form.establishment_items.length) {
-                        // }
-
+                        this.establishments = response.data.establishments;
                         this.trademarks = response.data.trademarks
                         this.item_category = response.data.item_category
                     }
@@ -247,7 +242,7 @@
                     sale_affectation_igv_type_id: null,
                     purchase_affectation_igv_type_id: null,
 
-                    establishment_items: [],
+                    establisment_item: [],
 
                     stock: 0,
                     stock_min: 1,
@@ -265,8 +260,34 @@
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
-                            this.form = response.data.data
-                        })
+                                this.form = response.data.data
+
+                                let temp_establisment_item = [];
+
+                                for (let i = 0; i < this.establishments.length; i++) {
+                                    let filter = {"establishment_id": this.establishments[i].id, "item_id": this.recordId};
+                                    let item = _.find(this.form.establisment_item, filter);
+
+                                    if (typeof item === 'object') {
+                                        temp_establisment_item.push({
+                                            "establishment_id": this.establishments[i].id,
+                                            "description": this.establishments[i].description,
+                                            "item_id": this.recordId,
+                                            "quantity": item.quantity
+                                        })
+                                    } else {
+                                        temp_establisment_item.push({
+                                            "establishment_id": this.establishments[i].id,
+                                            "description": this.establishments[i].description,
+                                            "item_id": this.recordId,
+                                            "quantity": 0
+                                        })
+                                    }
+                                }
+                                this.form.establisment_item = temp_establisment_item;
+                                temp_establisment_item = [];
+                            }
+                        )
                 }
             }
             ,

@@ -96,6 +96,10 @@ class PurchaseController extends Controller
             foreach ($data['items'] as $row)
             {
                 $doc->items()->create($row);
+
+                $update = $doc->establishment_item()->firstOrNew(['item_id' => $row['item_id']]);
+                $update->quantity += $row['quantity'];
+                $update->save();
             }     
 
             return $doc;

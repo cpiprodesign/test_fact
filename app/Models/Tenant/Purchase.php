@@ -67,7 +67,11 @@ class Purchase extends ModelTenant
     {
         $this->attributes['establishment'] = (is_null($value))?null:json_encode($value);
     }
- 
+
+    public function establishment_item()
+    {
+        return $this->hasMany(EstablishmentItem::class, 'establishment_id', 'establishment_id');
+    }
 
     public function getSupplierAttribute($value)
     {

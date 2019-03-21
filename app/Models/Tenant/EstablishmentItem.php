@@ -9,6 +9,8 @@ use App\Models\Tenant\Catalogs\SystemIscType;
 class EstablishmentItem extends ModelTenant
 
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'establishment_id',
         'item_id',

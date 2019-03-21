@@ -85,8 +85,14 @@ class ItemController extends Controller
         $item = Item::firstOrNew(['id' => $id]);
         $item->item_type_id = '01';
         $item->fill($request->all());
-
         $item->save();
+
+        // aqui la cosa de actualizar el stock
+        foreach ($request->establisment_item as $stock_by_location) {
+            $stock = $item->establisment_item()->firstOrNew(['establishment_id' => $stock_by_location['establishment_id']]);
+            $stock->quantity =$stock_by_location['quantity'];
+            $stock->save();
+        }
 
         return [
             'success' => true,

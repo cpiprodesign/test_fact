@@ -467,9 +467,11 @@
             close() {
                 location.href = '/documents'
             },
+
             reloadDataCustomers(customer_id) {
                 this.$http.get(`/${this.resource}/table/customers`).then((response) => {
                     this.customers = response.data
+                    this.all_customers = response.data
                     this.form.customer_id = customer_id
                 })
             },

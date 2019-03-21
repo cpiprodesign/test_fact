@@ -9,7 +9,7 @@ use App\Models\Tenant\Catalogs\UnitType;
 
 class Item extends ModelTenant
 {
-    protected $with = ['item_type', 'unit_type', 'currency_type','trademark', 'itemCategory'];
+    protected $with = ['item_type', 'unit_type', 'currency_type', 'trademark', 'itemCategory', 'establisment_item'];
     protected $fillable = [
         'description',
         'item_type_id',
@@ -39,12 +39,12 @@ class Item extends ModelTenant
 
     public function getAttributesAttribute($value)
     {
-        return (is_null($value))?null:(object) json_decode($value);
+        return (is_null($value)) ? null : (object)json_decode($value);
     }
 
     public function setAttributesAttribute($value)
     {
-        $this->attributes['attributes'] = (is_null($value))?null:json_encode($value);
+        $this->attributes['attributes'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function item_type()
@@ -89,7 +89,7 @@ class Item extends ModelTenant
 
     public function establisment_item()
     {
-        return $this->hasMany(EstableshimentItem::class);
+        return $this->hasMany(EstablishmentItem::class);
     }
 
     public function sale_affectation_igv_type()
@@ -97,7 +97,7 @@ class Item extends ModelTenant
         return $this->belongsTo(AffectationIgvType::class, 'sale_affectation_igv_type_id');
     }
 
-    
+
     public function purchase_affectation_igv_type()
     {
         return $this->belongsTo(AffectationIgvType::class, 'purchase_affectation_igv_type_id');

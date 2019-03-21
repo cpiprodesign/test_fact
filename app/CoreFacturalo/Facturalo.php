@@ -16,6 +16,7 @@ use App\CoreFacturalo\WS\Signed\XmlSigned;
 use App\CoreFacturalo\WS\Validator\XmlErrorCodeProvider;
 use App\Models\Tenant\Company;
 use App\Mail\Tenant\DocumentEmail;
+use App\Models\Tenant\Establishment;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Tenant\Dispatch;
 use App\Models\Tenant\Document;
@@ -53,7 +54,7 @@ class Facturalo
     public function __construct()
     {
         $this->company = Company::active();
-        $this->isDemo = ($this->company->soap_type_id === '01')?true:false;
+        $this->isDemo = ($this->company->soap_type_id === '01') ? true : false;
         $this->signer = new XmlSigned();
         $this->wsClient = new WsClient();
         $this->setDataSoapType();
@@ -81,7 +82,7 @@ class Facturalo
 
     public function save($inputs)
     {
-        $this->actions = array_key_exists('actions', $inputs)?$inputs['actions']:[];
+        $this->actions = array_key_exists('actions', $inputs) ? $inputs['actions'] : [];
         $this->type = $inputs['type'];
 
         switch ($this->type) {
@@ -98,6 +99,13 @@ class Facturalo
                 $document = Document::create($inputs);
                 foreach ($inputs['items'] as $row) {
                     $document->items()->create($row);
+
+                    //aqui actualiza la cantidad en base a facturas
+                    $update = $document->establishment_item()->firstOrNew(['item_id' => $row['item_id']]);
+                    $update->quantity -= $row['quantity'];
+                    $update->save();
+
+
                 }
                 $document->invoice()->create($inputs['invoice']);
                 $this->document = Document::find($document->id);
@@ -144,7 +152,7 @@ class Facturalo
     {
         $send_email = ($this->actions['send_email'] === true) ? true : false;
 
-        if($send_email){
+        if ($send_email) {
 
             $company = $this->company;
             $document = $this->document;
@@ -193,8 +201,7 @@ class Facturalo
 
     public function updateStateDocuments($state_type_id)
     {
-        foreach ($this->document->documents as $doc)
-        {
+        foreach ($this->document->documents as $doc) {
             $doc->document->update([
                 'state_type_id' => $state_type_id
             ]);
@@ -228,7 +235,8 @@ class Facturalo
         return $qr;
     }
 
-    public function createPdf($document = null, $type = null, $format = null) {
+    public function createPdf($document = null, $type = null, $format = null)
+    {
         $template = new Template();
         $pdf = new Mpdf();
 
@@ -242,26 +250,26 @@ class Facturalo
 
         if ($format_pdf === 'ticket') {
 
-            $company_name      = (strlen($this->company->name) / 20) * 10;
-            $company_address   = (strlen($this->document->establishment->address) / 30) * 10;
-            $company_number    = $this->document->establishment->telephone != '' ? '10' : '0';
-            $customer_name     = strlen($this->document->customer->name) > '25' ? '10' : '0';
-            $customer_address  = (strlen($this->document->customer->address) / 200) * 10;
-            $p_order           = $this->document->purchase_order != '' ? '10' : '0';
+            $company_name = (strlen($this->company->name) / 20) * 10;
+            $company_address = (strlen($this->document->establishment->address) / 30) * 10;
+            $company_number = $this->document->establishment->telephone != '' ? '10' : '0';
+            $customer_name = strlen($this->document->customer->name) > '25' ? '10' : '0';
+            $customer_address = (strlen($this->document->customer->address) / 200) * 10;
+            $p_order = $this->document->purchase_order != '' ? '10' : '0';
 
             $total_exportation = $this->document->total_exportation != '' ? '10' : '0';
-            $total_free        = $this->document->total_free != '' ? '10' : '0';
-            $total_unaffected  = $this->document->total_unaffected != '' ? '10' : '0';
-            $total_exonerated  = $this->document->total_exonerated != '' ? '10' : '0';
-            $total_taxed       = $this->document->total_taxed != '' ? '10' : '0';
-            $quantity_rows     = count($this->document->items);
+            $total_free = $this->document->total_free != '' ? '10' : '0';
+            $total_unaffected = $this->document->total_unaffected != '' ? '10' : '0';
+            $total_exonerated = $this->document->total_exonerated != '' ? '10' : '0';
+            $total_taxed = $this->document->total_taxed != '' ? '10' : '0';
+            $quantity_rows = count($this->document->items);
             $discount_global = 0;
             foreach ($this->document->items as $it) {
                 if ($it->discounts) {
                     $discount_global = $discount_global + 1;
                 }
             }
-            $legends           = $this->document->legends != '' ? '10' : '0';
+            $legends = $this->document->legends != '' ? '10' : '0';
 
             $pdf = new Mpdf([
                 'mode' => 'utf-8',
@@ -298,7 +306,8 @@ class Facturalo
         $this->uploadFile($pdf->output('', 'S'), 'pdf');
     }
 
-    public function createPdfQuotation($document = null, $type = null, $format = null) {
+    public function createPdfQuotation($document = null, $type = null, $format = null)
+    {
         $template = new Template();
         $pdf = new Mpdf();
 
@@ -328,7 +337,7 @@ class Facturalo
     private function senderXmlSigned()
     {
         $this->setDataSoapType();
-        $sender = in_array($this->type, ['summary', 'voided'])?new SummarySender():new BillSender();
+        $sender = in_array($this->type, ['summary', 'voided']) ? new SummarySender() : new BillSender();
         $sender->setClient($this->wsClient);
         $sender->setCodeProvider(new XmlErrorCodeProvider());
 
@@ -337,7 +346,7 @@ class Facturalo
 
     public function senderXmlSignedBill()
     {
-        if(!$this->actions['send_xml_signed']) {
+        if (!$this->actions['send_xml_signed']) {
             $this->response = [
                 'sent' => false,
             ];
@@ -350,7 +359,7 @@ class Facturalo
     public function onlySenderXmlSignedBill()
     {
         $res = $this->senderXmlSigned();
-        if($res->isSuccess()) {
+        if ($res->isSuccess()) {
             $cdrResponse = $res->getCdrResponse();
             $this->uploadFile($res->getCdrZip(), 'cdr');
             $this->updateState(self::ACCEPTED);
@@ -368,12 +377,12 @@ class Facturalo
     public function senderXmlSignedSummary()
     {
         $res = $this->senderXmlSigned();
-        if($res->isSuccess()) {
+        if ($res->isSuccess()) {
             $ticket = $res->getTicket();
             $this->updateTicket($ticket);
             $this->updateState(self::SENT);
-            if($this->type === 'summary') {
-                if($this->document->summary_status_type_id === '1') {
+            if ($this->type === 'summary') {
+                if ($this->document->summary_status_type_id === '1') {
                     $this->updateStateDocuments(self::SENT);
                 } else {
                     $this->updateStateDocuments(self::CANCELING);
@@ -402,14 +411,14 @@ class Facturalo
         $extService->setClient($this->wsClient);
         $extService->setCodeProvider(new XmlErrorCodeProvider());
         $res = $extService->getStatus($ticket);
-        if(!$res->isSuccess()) {
+        if (!$res->isSuccess()) {
             throw new Exception("Code: {$res->getError()->getCode()}; Description: {$res->getError()->getMessage()}");
         } else {
             $cdrResponse = $res->getCdrResponse();
             $this->uploadFile($res->getCdrZip(), 'cdr');
             $this->updateState(self::ACCEPTED);
-            if($this->type === 'summary') {
-                if($this->document->summary_status_type_id === '1') {
+            if ($this->type === 'summary') {
+                if ($this->document->summary_status_type_id === '1') {
                     $this->updateStateDocuments(self::ACCEPTED);
                 } else {
                     $this->updateStateDocuments(self::VOIDED);
@@ -431,9 +440,9 @@ class Facturalo
         $consultCdrService->setClient($this->wsClient);
         $consultCdrService->setCodeProvider(new XmlErrorCodeProvider());
         $res = $consultCdrService->getStatusCdr($this->company->number, $this->document->document_type_id,
-                                                $this->document->series, $this->document->number);
+            $this->document->series, $this->document->number);
 
-        if(!$res->isSuccess()) {
+        if (!$res->isSuccess()) {
             throw new Exception("Code: {$res->getError()->getCode()}; Description: {$res->getError()->getMessage()}");
         } else {
             $cdrResponse = $res->getCdrResponse();
@@ -462,32 +471,32 @@ class Facturalo
 
     private function setPathCertificate()
     {
-        if($this->isDemo) {
-            $this->pathCertificate = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.
-                'WS'.DIRECTORY_SEPARATOR.
-                'Signed'.DIRECTORY_SEPARATOR.
-                'Resources'.DIRECTORY_SEPARATOR.
+        if ($this->isDemo) {
+            $this->pathCertificate = app_path('CoreFacturalo' . DIRECTORY_SEPARATOR .
+                'WS' . DIRECTORY_SEPARATOR .
+                'Signed' . DIRECTORY_SEPARATOR .
+                'Resources' . DIRECTORY_SEPARATOR .
                 'certificate.pem');
         } else {
-            $this->pathCertificate = storage_path('app'.DIRECTORY_SEPARATOR.
-                'certificates'.DIRECTORY_SEPARATOR.$this->company->certificate);
+            $this->pathCertificate = storage_path('app' . DIRECTORY_SEPARATOR .
+                'certificates' . DIRECTORY_SEPARATOR . $this->company->certificate);
         }
     }
 
     private function setSoapCredentials()
     {
-        $this->soapUsername = ($this->isDemo)?'20000000000MODDATOS':$this->company->soap_username;
-        $this->soapPassword = ($this->isDemo)?'moddatos':$this->company->soap_password;
+        $this->soapUsername = ($this->isDemo) ? '20000000000MODDATOS' : $this->company->soap_username;
+        $this->soapPassword = ($this->isDemo) ? 'moddatos' : $this->company->soap_password;
 
         switch ($this->type) {
             case 'retention':
-                $this->endpoint = ($this->isDemo)?SunatEndpoints::RETENCION_BETA:SunatEndpoints::RETENCION_PRODUCCION;
+                $this->endpoint = ($this->isDemo) ? SunatEndpoints::RETENCION_BETA : SunatEndpoints::RETENCION_PRODUCCION;
                 break;
             case 'dispatch':
-                $this->endpoint = ($this->isDemo)?SunatEndpoints::GUIA_BETA:SunatEndpoints::GUIA_PRODUCCION;
+                $this->endpoint = ($this->isDemo) ? SunatEndpoints::GUIA_BETA : SunatEndpoints::GUIA_PRODUCCION;
                 break;
             default:
-                $this->endpoint = ($this->isDemo)?SunatEndpoints::FE_BETA:SunatEndpoints::FE_PRODUCCION;
+                $this->endpoint = ($this->isDemo) ? SunatEndpoints::FE_BETA : SunatEndpoints::FE_PRODUCCION;
                 break;
         }
     }

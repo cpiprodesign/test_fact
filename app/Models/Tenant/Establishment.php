@@ -47,4 +47,9 @@ class Establishment extends ModelTenant
         $address = ($this->address != '-')? $this->address.' ,' : '';
         return "{$address} {$this->department->description} - {$this->province->description} - {$this->district->description}";
     }
+
+    public function establishment_item()
+    {
+        return $this->hasMany(EstablishmentItem::class);
+    }
 }
