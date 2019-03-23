@@ -168,9 +168,11 @@ if ($hostname) {
             Route::get('quotations/columns', 'Tenant\QuotationController@columns');
             Route::get('quotations/records', 'Tenant\QuotationController@records');
             Route::get('quotations/create', 'Tenant\QuotationController@create')->name('tenant.quotations.create');
+            Route::get('quotations/edit/{quotation}', 'Tenant\QuotationController@edit')->name('tenant.quotations.edit');
             Route::get('quotations/tables', 'Tenant\QuotationController@tables');
             Route::get('quotations/record/{quotation}', 'Tenant\QuotationController@record');
             Route::post('quotations', 'Tenant\QuotationController@store');
+            Route::post('quotations/update/{quotation}', 'Tenant\QuotationController@update');
             Route::get('quotations/send/{quotation}', 'Tenant\QuotationController@send');
             Route::post('quotations/email', 'Tenant\QuotationController@email');
             Route::get('quotations/item/tables', 'Tenant\QuotationController@item_tables');

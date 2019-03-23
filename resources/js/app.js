@@ -53,6 +53,7 @@ Vue.component('tenant-documents-note', require('./views/tenant/documents/note.vu
 
 Vue.component('tenant-quotations-index', require('./views/tenant/quotations/index.vue'));
 Vue.component('tenant-quotations-invoice', require('./views/tenant/quotations/invoice.vue'))
+Vue.component('tenant-quotations-edit', require('./views/tenant/quotations/edit.vue'))
 
 Vue.component('tenant-summaries-index', require('./views/tenant/summaries/index.vue'));
 Vue.component('tenant-voided-index', require('./views/tenant/voided/index.vue'));

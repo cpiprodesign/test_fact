@@ -19,24 +19,41 @@ class QuotationInput
         $series = $inputs['series'];
         $number = $inputs['number'];
 
-        $company = Company::active();
-        $number = Functions::newNumber2($document_type_id, $series, $number, Quotation::class);
+        $quotation_id = $inputs['quotation_id'];
 
-        Functions::validateUniqueDocument2($document_type_id, $series, $number, Quotation::class);
+        $company = Company::active();
+        
+        if($quotation_id == null)
+        {
+            $number = Functions::newNumber2($document_type_id, $series, $number, Quotation::class);
+            Functions::validateUniqueDocument2($document_type_id, $series, $number, Quotation::class);
+            $created_at = date("Y-m-d H:i:s");
+        }
+        else
+        {
+            $quotation = Quotation::find($quotation_id);
+
+            if($inputs['establishment_id'] == $quotation->establishment_id)
+            {
+                $number = $quotation->number;
+            }
+            else 
+            {
+                $number = Functions::newNumber2($document_type_id, $series, $number, Quotation::class);
+                Functions::validateUniqueDocument2($document_type_id, $series, $number, Quotation::class);
+            }       
+            
+            $created_at = $quotation->created_at;
+        }        
 
         $filename = Functions::filename($company, $document_type_id, $series, $number);
         $establishment = EstablishmentInput::set($inputs['establishment_id']);
         $customer = PersonInput::set($inputs['customer_id']);
 
-        if(in_array($document_type_id, ['02'])) {
-            $array_partial = self::invoice($inputs);
-            $invoice = $array_partial['invoice'];
-            $note = null;
-        } else {
-            $array_partial = self::note($inputs);
-            $note = $array_partial['note'];
-            $invoice = null;
-        }
+        
+        $array_partial = self::invoice($inputs);
+        $invoice = $array_partial['invoice'];
+        $note = null;       
 
         $inputs['type'] = $array_partial['type'];
         $inputs['group_id'] = $array_partial['group_id'];
@@ -90,6 +107,7 @@ class QuotationInput
             'additional_information' => Functions::valueKeyInArray($inputs, 'additional_information'),
             'legends' => LegendInput::set($inputs),
             'actions' => ActionInput::set($inputs),
+            'created_at' => $created_at
         ];
     }
 

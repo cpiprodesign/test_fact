@@ -72,6 +72,7 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                         <a v-if="row.state_type_id==1" class="dropdown-item" :href="`/documents/create2/`+row.id">Crear venta</a>
+                                        <a v-if="row.state_type_id==1" class="dropdown-item" :href="`/quotations/edit/`+row.id">Editar</a>
                                         <a class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
                                     </div>
                                 </div>
