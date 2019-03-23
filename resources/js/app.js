@@ -28,6 +28,10 @@ Vue.prototype.$http = Axios;
 // Vue.component('table-component', TableComponent);
 // Vue.component('table-column', TableColumn);
 
+//dashboard
+Vue.component('tenant-dashboard-counts-bank', require('./views/tenant/dashboard/counts-bank.vue'));
+Vue.component('tenant-dashboard-grafic-box', require('./views/tenant/dashboard/grafic-box.vue'));
+
 //pos
 Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));
 Vue.component('tenant-pos-register', require('./views/tenant/pos/register.vue'));

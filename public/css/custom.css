@@ -42,3 +42,8 @@ html {
     display:block;
     margin: 15px 0;
 }
+
+.card-tenant-dashboard
+{
+    margin-bottom: 0px;
+}

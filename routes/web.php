@@ -27,6 +27,9 @@ if ($hostname) {
             });
 
             Route::get('dashboard', 'Tenant\HomeController@index')->name('tenant.dashboard');
+            Route::get('dashboard/counts_bank/{mounth}', 'Tenant\HomeController@counts_bank');
+            Route::get('dashboard/chart_cash_flow', 'Tenant\HomeController@chart_cash_flow');
+
             Route::get('catalogs', 'Tenant\CatalogController@index')->name('tenant.catalogs.index');
             Route::get('advanced', 'Tenant\AdvancedController@index')->name('tenant.advanced.index');
 
