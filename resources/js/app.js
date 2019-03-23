@@ -31,6 +31,7 @@ Vue.prototype.$http = Axios;
 //dashboard
 Vue.component('tenant-dashboard-counts-bank', require('./views/tenant/dashboard/counts-bank.vue'));
 Vue.component('tenant-dashboard-grafic-box', require('./views/tenant/dashboard/grafic-box.vue'));
+Vue.component('tenant-dashboard-alert-stock', require('./views/tenant/dashboard/alert-stock.vue'));
 
 //pos
 Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));

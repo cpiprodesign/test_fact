@@ -25,10 +25,10 @@
             <div class="row">
                 <div class="col-md-8">
                     <tenant-dashboard-grafic-box></tenant-dashboard-grafic-box>
+                    <tenant-dashboard-alert-stock></tenant-dashboard-alert-stock>
                 </div>
                 <div class="col-md-4">
-                    <tenant-dashboard-counts-bank></tenant-dashboard-counts-bank>
-                    
+                    <tenant-dashboard-counts-bank></tenant-dashboard-counts-bank>                    
                 </div>
             </div>
         </div>

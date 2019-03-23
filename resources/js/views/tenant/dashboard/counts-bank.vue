@@ -5,6 +5,16 @@
         </div>
         <div class="card-body">
             <section class="card card-horizontal card-tenant-dashboard">
+                <header class="card-header bg-info">
+                    <div class="card-header-icon"><i class="fas fa-shopping-cart"></i></div>
+                </header>
+                <div class="card-body p-4 text-center">
+                    <p class="font-weight-semibold mb-0 mx-4">Venta en el día</p>
+                    <h5 class="font-weight-semibold mt-0">S/. {{ total_sell }}</h5>
+                    <div class="summary-footer"><a href="#client-list" class="text-muted text-uppercase">Ver detalle</a></div>               
+                </div>
+            </section>
+            <section class="card card-horizontal card-tenant-dashboard">
                 <header class="card-header bg-success">
                     <div class="card-header-icon"><i class="fas fa-users"></i></div>
                 </header>
@@ -14,7 +24,7 @@
                 </div>
             </section>
             <section class="card card-horizontal card-tenant-dashboard">
-                <header class="card-header bg-success">
+                <header class="card-header bg-warning">
                     <div class="card-header-icon"><i class="fas fa-users"></i></div>
                 </header>
                 <div class="card-body p-4 text-center">
@@ -38,6 +48,7 @@
                 loading_form: false,
                 total_invoices: 0,
                 total_charge: 0,
+                total_sell: 0,
                 form: {},
                 customers: [],
                 company: null,
@@ -55,8 +66,9 @@
             //await this.initForm()
             await this.$http.get(`/${this.resource}/counts_bank/0`)
                 .then(response => {
-                    this.total_invoices = response.data.total_invoices.total
-                    this.total_charge = response.data.total_charge.total
+                    this.total_invoices = response.data.total_invoices
+                    this.total_charge = response.data.total_charge
+                    this.total_sell = response.data.total_sell
                 })
             this.loading_form = true
            
@@ -103,60 +115,6 @@
                         format_pdf:'a4',
                     }
                 }
-            },
-            resetForm() {
-                this.initForm()
-                this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
-                this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
-                this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
-                this.form.operation_type_id = (this.operation_types.length > 0)?this.operation_types[0].id:null
-                this.changeEstablishment()
-                this.changeDocumentType()
-                this.changeDateOfIssue()
-                this.changeCurrencyType()
-            },
-            changeOperationType() {
-
-            },
-            changeEstablishment() {
-                this.establishment = _.find(this.establishments, {'id': this.form.establishment_id})
-                this.filterSeries()
-            },
-            changeDocumentType() {
-                this.filterSeries()
-                this.filterCustomers()
-            },
-            changeDateOfIssue() {
-                this.form.date_of_due = this.form.date_of_issue
-                this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
-                    this.form.exchange_rate_sale = response
-                })
-            },
-            filterSeries() {
-                this.form.series_id = null
-                this.series = _.filter(this.all_series, {'establishment_id': this.form.establishment_id,
-                                                         'document_type_id': this.form.document_type_id})
-                this.form.series_id = (this.series.length > 0)?this.series[0].id:null
-            },
-            filterCustomers() {
-                this.form.customer_id = null
-                if(this.form.document_type_id === '01') {
-                    this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
-                } else {
-                    if(this.document_type_03_filter) {
-                        this.customers = _.filter(this.all_customers, (c) => { return c.identity_document_type_id !== '6' })
-                    } else {
-                        this.customers = this.all_customers
-                    }
-                }
-            },
-            addRow(row) {
-                this.form.items.push(row)
-                this.calculateTotal()
-            },
-            clickRemoveItem(index) {
-                this.form.items.splice(index, 1)
-                this.calculateTotal()
             },
             changeCurrencyType() {
                 this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
