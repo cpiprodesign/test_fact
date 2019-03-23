@@ -22,6 +22,7 @@ use App\Models\Tenant\Dispatch;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Retention;
 use App\Models\Tenant\Quotation;
+use App\Models\Tenant\QuotationItem;
 use App\Models\Tenant\Summary;
 use App\Models\Tenant\Voided;
 use Exception;
@@ -146,6 +147,25 @@ class Facturalo
                 $this->document = Dispatch::find($document->id);
                 break;
         }
+    }
+
+    public function updateQuotation($inputs, $quotation_id)
+    {
+        //eliminar
+        Quotation::where('id', $quotation_id)->delete();
+        QuotationItem::where('quotation_id', $quotation_id)->delete();
+
+        //crear
+        $document = Quotation::create($inputs);
+        
+        foreach ($inputs['items'] as $row)
+        {
+            $document->items()->create($row);
+        }
+
+        $this->documento = Quotation::find($document->id);
+
+        return $this->documento;
     }
 
     public function sendEmail()
@@ -314,8 +334,9 @@ class Facturalo
         $format_pdf = $this->actions['format_pdf'];
 
         $this->document = ($document != null) ? $document : $this->document;
+
         $format_pdf = ($format != null) ? $format : $format_pdf;
-        $this->type = ($type != null) ? $type : $this->type;
+        $this->type = ($type != null) ? $type : $this->type;        
 
         $html = $template->pdf($this->type, $this->company, $this->document, $format_pdf);
 
@@ -325,6 +346,7 @@ class Facturalo
             $html_footer = $template->pdfFooter();
             $pdf->SetHTMLFooter($html_footer);
         }
+
         $this->uploadFile($pdf->output('', 'S'), 'pdf');
     }
 

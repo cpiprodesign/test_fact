@@ -259,6 +259,7 @@
             initForm() {
                 this.errors = {}
                 this.form = {
+                    quotation_id: null,
                     establishment_id: null,
                     document_type_id: null,
                     series_id: null,
@@ -413,10 +414,7 @@
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     if (response.data.success) {
-                        this.resetForm();
-
-                        this.documentNewId = response.data.data.id;
-                        this.showDialogOptions = true;
+                       this.close()
                     }
                     else {
                         this.$message.error(response.data.message);

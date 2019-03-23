@@ -1,8 +1,8 @@
 <template>
     <div class="card mb-0 pt-2 pt-md-0">
-        <!-- <div class="card-header bg-info">
-            <h3 class="my-0">Nuevo Comprobante</h3>
-        </div> -->
+        <div class="card-header bg-info">
+            <h3 class="my-0>">Editar Cotización</h3>
+        </div>
         <div class="tab-content" v-if="loading_form">
             <div class="invoice">
                 <header class="clearfix">
@@ -112,17 +112,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-1">
-                            <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.status_paid}">
-                                    <label class="control-label font-weight-bold text-info">Estado de pago</label>
-                                    <el-select v-model="form.status_paid">
-                                        <el-option v-for="option in status_paid" :key="option.id" :value="option.id" :label="option.nombre"></el-option>
-                                    </el-select>
-                                    <small class="form-control-feedback" v-if="errors.status_paid" v-text="errors.status_paid"></small>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="table-responsive">
@@ -203,7 +192,7 @@
 <script>
     import DocumentFormItem from './partials/item.vue'
     import PersonForm from '../persons/form.vue'
-    import DocumentOptions from '../documents/partials/options.vue'
+    import DocumentOptions from '../quotations/partials/options.vue'
     import {functions, exchangeRate} from '../../../mixins/functions'
     import {calculateRowItem} from '../../../helpers/functions'
     import Logo from '../companies/logo.vue'
@@ -215,6 +204,7 @@
         data() {
             return {
                 resource: 'documents',
+                resource2: 'quotations',
                 showDialogAddItem: false,
                 showDialogNewPerson: false,
                 showDialogOptions: false,
@@ -231,7 +221,6 @@
                     {"id": "1", "nombre": "Pagado"}, 
                     {"id": "0", "nombre": "Pendiente"}
                 ], 
-                identity_document_type_id: null,
                 customers: [],
                 company: null,
                 document_type_03_filter: null,
@@ -246,7 +235,7 @@
         },
         async created() {
             await this.initForm()
-            await this.$http.get(`/${this.resource}/tables2/${this.quotation_id}`)
+            await this.$http.get(`/${this.resource}/tables2/${this.quotation_id}e`)
                 .then(response => {
                     this.document_types = response.data.document_types_invoice
                     this.currency_types = response.data.currency_types
@@ -264,23 +253,12 @@
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
                     this.form.operation_type_id = (this.operation_types.length > 0)?this.operation_types[0].id:null
 
-                    this.form.customer_id = response.data.quotation[0].customer_id                     
-                    this.identity_document_type_id = response.data.quotation[0].customer.identity_document_type_id
-
-                    if(this.identity_document_type_id == 1)
-                    {
-                        this.form.document_type_id = '03'
-                    }
-                    else
-                    {
-                        this.form.document_type_id = '01'
-                    }
+                    this.form.customer_id = response.data.quotation[0].customer_id
                     
                     this.changeEstablishment()
                     this.changeDateOfIssue()
                     this.changeDocumentType()
                     this.changeCurrencyType()
-                    
                 })
             await this.$http.get(`/${this.resource}/item/tables2/${this.quotation_id}`)
             .then(response => {
@@ -378,16 +356,7 @@
                 this.form.series_id = (this.series.length > 0)?this.series[0].id:null
             },
             filterCustomers() {
-                //this.form.customer_id = null
-                if(this.form.document_type_id === '01') {
-                    this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
-                } else {
-                    if(this.document_type_03_filter) {
-                        this.customers = _.filter(this.all_customers, (c) => { return c.identity_document_type_id !== '6' })
-                    } else {
-                        this.customers = this.all_customers
-                    }
-                }
+                this.customers = this.all_customers
             },
             addRow(row) {
                 this.form.items.push(row)
@@ -455,14 +424,14 @@
              },
             submit() {
                 this.loading_submit = true
-                this.$http.post(`/${this.resource}`, this.form).then(response => {
-                    console.log(response);
-
+                console.log(JSON.stringify(this.form))
+                this.$http.post(`/${this.resource2}/update/${this.quotation_id}`, this.form).then(response => {
+                    
                     if (response.data.success) {
-                        this.resetForm();
-
-                        this.documentNewId = response.data.data.id;
-                        this.showDialogOptions = true;
+                        //this.resetForm();
+                        this.close()
+                        //this.documentNewId = response.data.data.id;
+                        //this.showDialogOptions = true;
                     }
                     else {
                         this.$message.error(response.data.message);

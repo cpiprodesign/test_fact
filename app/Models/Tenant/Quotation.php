@@ -51,7 +51,9 @@ class Quotation extends ModelTenant
         'detraction',
         'legends',
 
-        'filename'
+        'filename',
+
+        'created_at'
     ];
 
     protected $casts = [
@@ -251,22 +253,5 @@ class Quotation extends ModelTenant
         });
 
         return $items;
-
-        // $items = Item::orderBy('description')->get()->transform(function($row) {
-        //     $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
-        //     return [
-        //         'id' => $row->id,
-        //         'full_description' => $full_description,
-        //         'description' => $row->description,
-        //         'currency_type_id' => $row->currency_type_id,
-        //         'currency_type_symbol' => $row->currency_type->symbol,
-        //         'sale_unit_price' => $row->sale_unit_price,
-        //         'purchase_unit_price' => $row->purchase_unit_price,
-        //         'unit_type_id' => $row->unit_type_id,
-        //         'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-        //         'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
-        //     ];
-        // });
-        // return $items;
     }
 }

@@ -20,6 +20,7 @@ use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Quotation;
+use App\Models\Tenant\QuotationItem;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\Person;
@@ -34,7 +35,7 @@ class QuotationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('input.request:quotation,web', ['only' => ['store']]);
+        $this->middleware('input.request:quotation,web', ['only' => ['store', 'update']]);
     }
 
     public function index()
@@ -61,6 +62,11 @@ class QuotationController extends Controller
     public function create()
     {
         return view('tenant.quotations.form');
+    }
+
+    public function edit($quotation_id)
+    {
+        return view('tenant.quotations.edit', compact('quotation_id'));
     }
 
     public function tables()
@@ -145,16 +151,63 @@ class QuotationController extends Controller
         $inputs = $request->all();
 
         $facturalo = new Facturalo();
-        $facturalo->save($request->all());        
+        $facturalo->save($request->all());
         $facturalo->createPdfQuotation();
 
+        return [
+            'success' => true            
+        ];
+    }
+
+    public function update(QuotationRequest $request, $quotation_id)
+    {
+        $inputs = $request->all();       
+
+        $array = [$inputs, $quotation_id];
+
+        $fact = DB::connection('tenant')->transaction(function () use ($array){
+
+            $inputs = $array[0];
+            $quotation_id = $array[1];           
+            
+            //eliminar
+            // Quotation::where('id', $quotation_id)->delete();
+            // QuotationItem::where('quotation_id', $quotation_id)->delete();
+
+            //crear
+            // $document = Quotation::create($inputs);
+            // foreach ($inputs['items'] as $row) {
+            //     $document->items()->create($row);
+            // }
+            // $this->document = Quotation::find($document->id);
+
+            // $facturalo = new Facturalo();
+            // $facturalo->createPdfQuotation($this->document, 'quotation', 'a4');
+
+            // return $facturalo;
+
+            //$inputs = $request->all();
+
+            $facturalo = new Facturalo();
+            $this->document = $facturalo->updateQuotation($inputs, $quotation_id);
+            // echo json_encode($facturalo); exit;
+            //$this->document = Quotation::find($id);
+            // $facturalo->createPdfQuotation();
+            $facturalo->createPdfQuotation($this->document, 'quotation', 'a4');
+
+            // return $facturalo;
+            return $this->document;            
+        });
+
+        $document = $fact;
+        // $response = $fact->getResponse();
 
         return [
             'success' => true,
             'data' => [
-                'id' => $this->document->id,
+                'id' => $document->id,
             ],
-        ];
+        ];        
     }
 
     public function email(DocumentEmailRequest $request)

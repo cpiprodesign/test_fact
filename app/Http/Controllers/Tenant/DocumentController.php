@@ -110,10 +110,20 @@ class DocumentController extends Controller
 
     public function tables2($quotation_id = false)
     {
-        $quotation = Quotation::whereId($quotation_id)->get();
-        // $customers = $this->table('customers');
+        if(strlen(stristr($quotation_id, 'e')) == 0)
+        {
+            $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
+        }
+        else 
+        {
+            $document_types_invoice = DocumentType::whereIn('id', ['02'])->get();
+        }
 
-        $customers = Person::whereType('customers')->whereId($quotation[0]->customer_id)->get()->transform(function ($row) {
+        $quotation_id = (int)$quotation_id;
+
+        $quotation = Quotation::whereId($quotation_id)->get();
+        
+        $customers = Person::whereType('customers')->get()->transform(function ($row) {
             return [
                 'id' => $row->id,
                 'description' => $row->number . ' - ' . $row->name,
@@ -125,7 +135,7 @@ class DocumentController extends Controller
         });
         $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();// Establishment::all();
         $series = Series::all();
-        $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
+        
         $document_types_note = DocumentType::whereIn('id', ['07', '08'])->get();
         $note_credit_types = NoteCreditType::whereActive()->orderByDescription()->get();
         $note_debit_types = NoteDebitType::whereActive()->orderByDescription()->get();
@@ -159,8 +169,6 @@ class DocumentController extends Controller
 
     public function item_tables2($quotation_id)
     {
-        // $items = Quotation::getItems($quotation_id);
-        // $items = Quotation::getItems($quotation_id);
         $quotation = Quotation::where('id', $quotation_id)->first();
         $quotation_items = QuotationItem::where('quotation_id', $quotation_id)->get();
 
