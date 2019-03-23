@@ -231,6 +231,7 @@
                     {"id": "1", "nombre": "Pagado"}, 
                     {"id": "0", "nombre": "Pendiente"}
                 ], 
+                identity_document_type_id: null,
                 customers: [],
                 company: null,
                 document_type_03_filter: null,
@@ -262,12 +263,24 @@
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
                     this.form.operation_type_id = (this.operation_types.length > 0)?this.operation_types[0].id:null
-                    this.form.customer_id = this.all_customers[0].id
+
+                    this.form.customer_id = response.data.quotation[0].customer_id                     
+                    this.identity_document_type_id = response.data.quotation[0].customer.identity_document_type_id
+
+                    if(this.identity_document_type_id == 1)
+                    {
+                        this.form.document_type_id = '03'
+                    }
+                    else
+                    {
+                        this.form.document_type_id = '01'
+                    }
                     
                     this.changeEstablishment()
                     this.changeDateOfIssue()
                     this.changeDocumentType()
                     this.changeCurrencyType()
+                    
                 })
             await this.$http.get(`/${this.resource}/item/tables2/${this.quotation_id}`)
             .then(response => {
@@ -442,7 +455,6 @@
              },
             submit() {
                 this.loading_submit = true
-                console.log(JSON.stringify(this.form))
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     console.log(response);
 

@@ -51,7 +51,9 @@ class Quotation extends ModelTenant
         'detraction',
         'legends',
 
-        'filename'
+        'filename',
+
+        'created_at'
     ];
 
     protected $casts = [
