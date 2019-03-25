@@ -6,6 +6,7 @@
     $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
 
     $establishment2 = \App\Models\Tenant\Establishment::find($document->establishment_id);
+    $customer2 = \App\Models\Tenant\Person::find($document->customer_id);
 @endphp
 <html>
     <head>
@@ -66,7 +67,7 @@
                 @if ($customer->address !== '')
                 <tr>
                     <td class="align-top">Dirección:</td>
-                    <td colspan="2">{{ $customer->address }}</td>
+                    <td colspan="2">{{ $customer2->getAddressFullAttribute() }}</td>
 
                 </tr>
                 @endif
