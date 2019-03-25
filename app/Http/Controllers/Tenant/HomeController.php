@@ -31,6 +31,12 @@ class HomeController extends Controller
         // return view('tenant.documents.form');
     }
 
+    public function sells()
+    {
+        return view('tenant.dashboard.sells');
+        // return view('tenant.documents.form');
+    }
+
     public function establishments()
     {
         $establishments = Establishment::all();
@@ -125,6 +131,116 @@ class HomeController extends Controller
         // $line = $this->chart_cash_flow($establishment_id);
 
         return compact('total_invoices', 'total_charge', 'total_sell', 'items', 'customers'); 
+    }
+
+    public function total($establishment_id = 0, $range="dia", $status_paid = 1)
+    {
+        if($establishment_id == 0)
+        {
+            if($range == 'dia')
+            {
+                $total = DB::connection('tenant')
+                    ->table('documents')
+                    ->select(DB::raw('SUM(total) as total'))
+                    ->where('status_paid', $status_paid)
+                    ->whereDate('created_at', date('Y-m-d'))
+                    ->first();
+            }
+            else if($range == 'mes')
+            {
+                $total = DB::connection('tenant')
+                    ->table('documents')
+                    ->select(DB::raw('SUM(total) as total'))
+                    ->where('status_paid', $status_paid)
+                    ->whereMonth('created_at', date('m'))
+                    ->whereYear('created_at', date('Y'))
+                    ->first();
+            }
+            else
+            {
+                $total = DB::connection('tenant')
+                    ->table('documents')
+                    ->select(DB::raw('SUM(total) as total'))
+                    ->where('status_paid', $status_paid)
+                    ->whereYear('created_at', date('Y'))
+                    ->first();
+            }            
+        }
+        else
+        {
+            if($range == 'dia')
+            {
+                $total = DB::connection('tenant')
+                    ->table('documents')
+                    ->select(DB::raw('SUM(total) as total'))
+                    ->where('status_paid', $status_paid)
+                    ->where('establishment_id', $establishment_id)
+                    ->whereDate('created_at', date('Y-m-d'))
+                    ->first();
+            }
+            else if($range == 'mes')
+            {
+                $total = DB::connection('tenant')
+                    ->table('documents')
+                    ->select(DB::raw('SUM(total) as total'))
+                    ->where('status_paid', $status_paid)
+                    ->where('establishment_id', $establishment_id)
+                    ->whereMonth('created_at', date('m'))
+                    ->whereYear('created_at', date('Y'))
+                    ->first();
+            }
+            else
+            {
+                $total = DB::connection('tenant')
+                    ->table('documents')
+                    ->select(DB::raw('SUM(total) as total'))
+                    ->where('status_paid', $status_paid)
+                    ->where('establishment_id', $establishment_id)
+                    ->whereYear('created_at', date('Y'))
+                    ->first();
+            }
+        }       
+
+        return $total;
+    }
+
+    public function load_sells($establishment_id = 0, $range="dia")
+    {
+        if($establishment_id == 0)
+        {
+            if($range == 'dia')
+            {
+                $sells = Document::whereDate('created_at', date('Y-m-d'))->get();
+            }
+            else if($range == 'mes')
+            {
+                $sells = Document::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get();
+            }
+            else
+            {
+                $sells = Document::whereYear('created_at', date('Y'))->get();
+            }
+        }
+        else 
+        {
+            if($range == 'dia')
+            {
+                $sells = Document::where('establishment_id', $establishment_id)->whereDate('created_at', date('Y-m-d'))->get();
+            }
+            else if($range == 'mes')
+            {
+                $sells = Document::where('establishment_id', $establishment_id)->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get();
+            }
+            else
+            {
+                $sells = Document::where('establishment_id', $establishment_id)->whereYear('created_at', date('Y'))->get();
+            }                      
+        }
+
+        $total_invoices = (int)$this->total($establishment_id, $range, 1)->total;
+        $total_charges = (int)$this->total($establishment_id, $range, 0)->total;
+        
+        return compact('sells', 'total_invoices', 'total_charges');
     }
 
     public function chart_cash_flow($establishment_id)

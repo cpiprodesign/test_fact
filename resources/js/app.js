@@ -30,6 +30,7 @@ Vue.prototype.$http = Axios;
 
 //dashboard
 Vue.component('tenant-dashboard-index', require('./views/tenant/dashboard/index.vue'));
+Vue.component('tenant-dashboard-sells', require('./views/tenant/dashboard/sells.vue'));
 
 //pos
 Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));

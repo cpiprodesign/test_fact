@@ -15,18 +15,6 @@
             </div>
         </div>
         <div class="card mb-0">
-            <!-- <div class="data-table-visible-columns">
-                <el-dropdown :hide-on-click="false">
-                    <el-button type="primary">
-                        Mostrar/Ocultar columnas<i class="el-icon-arrow-down el-icon--right"></i>
-                    </el-button>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="(column, index) in columns" :key="index">
-                            <el-checkbox v-model="column.visible">{{ column.title }}</el-checkbox>
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </div> -->
             <div class="card-body">
                 <div class="row" v-if="loaded">
                     <div class="col-md-8">
@@ -102,7 +90,7 @@
                             <div class="card-body p-4 text-center">
                                 <p class="font-weight-semibold mb-0 mx-4">Venta en el día</p>
                                 <h5 class="font-weight-semibold mt-0">S/. {{ total_sell }}</h5>
-                                <div class="summary-footer"><a :href="`pos`" class="text-muted text-uppercase">Ver detalle</a></div>               
+                                <div class="summary-footer"><a :href="`dashboard/sells`" class="text-muted text-uppercase">Ver detalle</a></div>               
                             </div>
                         </section>
                         <section class="card card-horizontal card-tenant-dashboard">
