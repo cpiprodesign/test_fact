@@ -20,7 +20,7 @@
                     <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>Flujo de caja de la última semana</h5>
+                                <h5>Flujo de caja de la última semana (Todos los establecimientos)</h5>
                                 <chart-line :data="dataChartLine" ></chart-line>
                             </div>
                         </div>
@@ -122,7 +122,7 @@
 
 <script>   
     import ChartLine from './charts/Line'
-    import DocumentsPay from '../documents/partials/pay.vue'
+    import DocumentsPay from './partials/pay.vue'
 
     export default {
         components: {ChartLine, DocumentsPay},
