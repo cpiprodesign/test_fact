@@ -139,28 +139,11 @@
                 total_sell: 0,
                 items: [],
                 customers: [], 
-                dataChartLine : {
-                    labels: null,
-                    datasets: [{
-                        data: null,
-                        label: "Total Facturado",
-                        backgroundColor: "#28a745",
-                        borderColor: "#28a745",
-                        fill: false
-                    }, {
-                        data: null,
-                        label: "Pagos pendientes",
-                        backgroundColor: "#ffcd56",
-                        borderColor: "#ffcd56",
-                        fill: false
-                    }
-                ]}        
+                dataChartLine : null
             }
         },
         async mounted() {
-        //     this.loaded = false
-        //   await this.load_grafic() 
-        //    this.loaded = true
+            await this.load_grafic()
         },
         async created() {
             this.loaded = false
@@ -169,13 +152,7 @@
                 .then(response => {
                     this.establishments = response.data.establishments
             })
-            await this.$http.get(`/${this.resource}/chart_cash_flow/${this.establishment_id}`)
-                .then(response => {
-                    let line = response.data.line
-                    this.dataChartLine.labels = line.labels
-                    this.dataChartLine.datasets[0].data = line.data
-                    this.dataChartLine.datasets[1].data = line.data2                    
-                })
+            
            
             await this.load()
             this.loaded = true

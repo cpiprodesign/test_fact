@@ -122,11 +122,11 @@
                 showDialogPay: false,
                 recordId: null,
                 documents: [],
-                range_id: "dia",
+                range_id: "Diario",
                 range: [
-                    {"id": "dia"}, 
-                    {"id": "mes"},
-                    {"id": "anio"}
+                    {"id": "Diario"}, 
+                    {"id": "Mensual"},
+                    {"id": "Anual"}
                 ], 
                 establishments: [],
                 establishment_id: 0,

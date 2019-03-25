@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Establishment;
 use Illuminate\Support\Facades\DB;
+use App\Models\Tenant\Module;
 
 class HomeController extends Controller
 {
@@ -27,8 +28,16 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('tenant.dashboard.index');
-        // return view('tenant.documents.form');
+        $modules = $this->permission_modules();
+
+        if(in_array('dashboard', $modules))
+        {
+            return view('tenant.dashboard.index');
+        }
+        else
+        {
+            return view('tenant.documents.form');
+        }
     }
 
     public function sells()
@@ -133,11 +142,11 @@ class HomeController extends Controller
         return compact('total_invoices', 'total_charge', 'total_sell', 'items', 'customers'); 
     }
 
-    public function total($establishment_id = 0, $range="dia", $status_paid = 1)
+    public function total($establishment_id = 0, $range="Diario", $status_paid = 1)
     {
         if($establishment_id == 0)
         {
-            if($range == 'dia')
+            if($range == 'Diario')
             {
                 $total = DB::connection('tenant')
                     ->table('documents')
@@ -146,7 +155,7 @@ class HomeController extends Controller
                     ->whereDate('created_at', date('Y-m-d'))
                     ->first();
             }
-            else if($range == 'mes')
+            else if($range == 'Mensual')
             {
                 $total = DB::connection('tenant')
                     ->table('documents')
@@ -168,7 +177,7 @@ class HomeController extends Controller
         }
         else
         {
-            if($range == 'dia')
+            if($range == 'Diario')
             {
                 $total = DB::connection('tenant')
                     ->table('documents')
@@ -178,7 +187,7 @@ class HomeController extends Controller
                     ->whereDate('created_at', date('Y-m-d'))
                     ->first();
             }
-            else if($range == 'mes')
+            else if($range == 'Mensual')
             {
                 $total = DB::connection('tenant')
                     ->table('documents')
@@ -204,15 +213,15 @@ class HomeController extends Controller
         return $total;
     }
 
-    public function load_sells($establishment_id = 0, $range="dia")
+    public function load_sells($establishment_id = 0, $range="Diario")
     {
         if($establishment_id == 0)
         {
-            if($range == 'dia')
+            if($range == 'Diario')
             {
                 $sells = Document::whereDate('created_at', date('Y-m-d'))->get();
             }
-            else if($range == 'mes')
+            else if($range == 'Mensual')
             {
                 $sells = Document::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get();
             }
@@ -223,11 +232,11 @@ class HomeController extends Controller
         }
         else 
         {
-            if($range == 'dia')
+            if($range == 'Diario')
             {
                 $sells = Document::where('establishment_id', $establishment_id)->whereDate('created_at', date('Y-m-d'))->get();
             }
-            else if($range == 'mes')
+            else if($range == 'Mensual')
             {
                 $sells = Document::where('establishment_id', $establishment_id)->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get();
             }
@@ -291,5 +300,21 @@ class HomeController extends Controller
         ];
 
         return compact('line'); 
+    }
+
+    public function permission_modules()
+    {
+        $modules = auth()->user()->modules()->pluck('value')->toArray();
+
+        if(count($modules) > 0) 
+        {
+            $vc_modules = $modules;
+        } 
+        else 
+        {
+            $vc_modules = Module::all()->pluck('value')->toArray();
+        }
+
+        return $vc_modules;
     }
 }
