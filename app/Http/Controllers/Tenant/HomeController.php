@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tenant\Document;
+use App\Models\Tenant\Establishment;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -30,53 +31,142 @@ class HomeController extends Controller
         // return view('tenant.documents.form');
     }
 
-    public function counts_bank($mounth = 0)
+    public function establishments()
     {
-        $total_invoices = DB::connection('tenant')
+        $establishments = Establishment::all();
+
+        return compact('establishments'); 
+    }
+
+    public function load($establishment_id = 0)
+    {
+        $establishment_id = (int)$establishment_id;
+
+        if($establishment_id == 0)
+        {
+            $total_invoices = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
                     ->where('status_paid', 1)
                     ->first();
     
-        $total_charge = DB::connection('tenant')
+            $total_charge = DB::connection('tenant')
+                        ->table('documents')
+                        ->select(DB::raw('SUM(total) as total'))
+                        ->where('status_paid', 0)
+                        ->first(); 
+            
+            $total_sell = DB::connection('tenant')
+                ->table('documents')
+                ->select(DB::raw('SUM(total) as total'))
+                ->where('status_paid', 1)
+                ->where(DB::raw('DATE(created_at)'), date("Y-m-d"))
+                ->first();            
+
+            $sql = "SELECT ite.`description`, eit.quantity, ite.`stock_min`,
+                (SELECT description FROM establishments est WHERE est.id = eit.establishment_id LIMIT 1) AS establecimiento
+                FROM items ite
+                INNER JOIN establishment_items eit ON eit.item_id = ite.id
+                WHERE eit.quantity < stock_min + 9";
+
+            $items = DB::connection('tenant')->select($sql, array($establishment_id));
+
+            $sql = "SELECT per.name, doc.total, doc.series, doc.number, doc.id, doc.document_type_id
+                    FROM documents doc
+                    INNER JOIN persons per ON per.id = doc.customer_id
+                    WHERE doc.status_paid = 0";
+
+            $customers = DB::connection('tenant')->select($sql, array($establishment_id));
+        }
+        else 
+        {
+            $total_invoices = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', 0)
-                    ->first(); 
-        
-        $total_sell = DB::connection('tenant')
-        ->table('documents')
-        ->select(DB::raw('SUM(total) as total'))
-        ->where('status_paid', 1)
-        ->where(DB::raw('DATE(created_at)'), date("Y-m-d"))
-        ->first(); 
+                    ->where('status_paid', 1)
+                    ->where('establishment_id', $establishment_id)
+                    ->first();
+    
+            $total_charge = DB::connection('tenant')
+                        ->table('documents')
+                        ->select(DB::raw('SUM(total) as total'))
+                        ->where('status_paid', 0)
+                        ->where('establishment_id', $establishment_id)
+                        ->first(); 
+            
+            $total_sell = DB::connection('tenant')
+                ->table('documents')
+                ->select(DB::raw('SUM(total) as total'))
+                ->where('status_paid', 1)
+                ->where(DB::raw('DATE(created_at)'), date("Y-m-d"))
+                ->where('establishment_id', $establishment_id)
+                ->first();        
+
+            $sql = "SELECT ite.`description`, eit.quantity, ite.`stock_min`,
+                (SELECT description FROM establishments est WHERE est.id = eit.establishment_id LIMIT 1) AS establecimiento
+                FROM items ite
+                INNER JOIN establishment_items eit ON eit.item_id = ite.id
+                WHERE eit.establishment_id = ? AND eit.quantity < stock_min + 9";
+
+            $items = DB::connection('tenant')->select($sql, array($establishment_id));
+
+            $sql = "SELECT per.name, doc.total, doc.series, doc.number, doc.id, doc.document_type_id
+                    FROM documents doc
+                    INNER JOIN persons per ON per.id = doc.customer_id
+                    WHERE doc.status_paid = 0 AND doc.establishment_id = ?";
+
+            $customers = DB::connection('tenant')->select($sql, array($establishment_id));
+        }
 
         $total_invoices = (int)$total_invoices->total;
         $total_charge = (int)$total_charge->total;
         $total_sell = (int)$total_sell->total;
 
-        return compact('total_invoices', 'total_charge', 'total_sell');        
+        // $line = $this->chart_cash_flow($establishment_id);
+
+        return compact('total_invoices', 'total_charge', 'total_sell', 'items', 'customers'); 
     }
 
-    public function chart_cash_flow()
+    public function chart_cash_flow($establishment_id)
     {
-        $documents = DB::connection('tenant')->select("SELECT DISTINCT(DATE(created_at)) AS created_at FROM documents ORDER BY created_at desc LIMIT 10");
-
         $labels = [];
         $data = [];
+        $data2 = [];
 
-        $sql = "SELECT SUM(total) AS total FROM documents WHERE status_paid = ?  AND DATE(created_at) = ?";
-
-        foreach($documents as $document)
+        if($establishment_id == 0)
         {
-            $labels[] = $document->created_at;
+            $documents = DB::connection('tenant')->select("SELECT DISTINCT(DATE(created_at)) AS created_at FROM documents ORDER BY created_at desc LIMIT 10");
 
-            $cantidad = DB::connection('tenant')->select($sql, array(1, $document->created_at));
-            $cantidad2 = DB::connection('tenant')->select($sql, array(0, $document->created_at));
+            $sql = "SELECT SUM(total) AS total FROM documents WHERE status_paid = ?  AND DATE(created_at) = ?";
 
-            $data[] = (int)$cantidad[0]->total;
-            $data2[] = (int)$cantidad2[0]->total;
+            foreach($documents as $document)
+            {
+                $labels[] = $document->created_at;
+
+                $cantidad = DB::connection('tenant')->select($sql, array(1, $document->created_at));
+                $cantidad2 = DB::connection('tenant')->select($sql, array(0, $document->created_at));
+
+                $data[] = (int)$cantidad[0]->total;
+                $data2[] = (int)$cantidad2[0]->total;
+            }
         }
+        else 
+        {
+            $documents = DB::connection('tenant')->select("SELECT DISTINCT(DATE(created_at)) AS created_at FROM documents WHERE establishment_id = $establishment_id ORDER BY created_at desc LIMIT 10");
+
+            $sql = "SELECT SUM(total) AS total FROM documents WHERE establishment_id = ? AND status_paid = ?  AND DATE(created_at) = ?";
+
+            foreach($documents as $document)
+            {
+                $labels[] = $document->created_at;
+
+                $cantidad = DB::connection('tenant')->select($sql, array($establishment_id, 1, $document->created_at));
+                $cantidad2 = DB::connection('tenant')->select($sql, array($establishment_id, 0, $document->created_at));
+
+                $data[] = (int)$cantidad[0]->total;
+                $data2[] = (int)$cantidad2[0]->total;
+            }
+        }        
 
         $line = [
             'labels' => $labels,
@@ -84,18 +174,6 @@ class HomeController extends Controller
             'data2' => $data2
         ];
 
-        return compact('line');
-    }
-
-    public function alert_stock($establishment_id)
-    {
-        $sql = "SELECT ite.`description`, eit.quantity, ite.`stock_min`, eit.quantity - ite.`stock_min` as difference
-                FROM items ite
-                INNER JOIN establishment_items eit ON eit.item_id = ite.id
-                WHERE eit.establishment_id = ? AND eit.quantity < stock_min + 9";
-
-        $items = DB::connection('tenant')->select($sql, array($establishment_id));
-
-        return compact('items');        
+        return compact('line'); 
     }
 }

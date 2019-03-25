@@ -1,7 +1,7 @@
 @extends('tenant.layouts.app')
 
 @push('styles')
-    <style type="text/css">
+    {{-- <style type="text/css">
         .v-modal {
             opacity: 0.2 !important;
         }
@@ -16,23 +16,9 @@
         .card-header {
 		    border-radius: 0px 0px 0px !important;
 		}
-    </style>
+    </style> --}}
 @endpush
 
 @section('content')
-    <div class="card mb-0 pt-2 pt-md-0">
-        <div class="tab-content">
-            <div class="row">
-                <div class="col-md-8">
-                    <tenant-dashboard-grafic-box></tenant-dashboard-grafic-box>
-                    <tenant-dashboard-alert-stock></tenant-dashboard-alert-stock>
-                </div>
-                <div class="col-md-4">
-                    <tenant-dashboard-counts-bank></tenant-dashboard-counts-bank>                    
-                </div>
-            </div>
-        </div>
-    </div>
-   
-
+    <tenant-dashboard-index></tenant-dashboard-index>
 @endsection
