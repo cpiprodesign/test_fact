@@ -32,6 +32,7 @@ if ($hostname) {
             Route::get('dashboard/establishments', 'Tenant\HomeController@establishments');
             Route::get('dashboard/load/{establishment_id}', 'Tenant\HomeController@load');
             Route::get('dashboard/chart_cash_flow/{establishment_id}', 'Tenant\HomeController@chart_cash_flow');            
+            Route::get('dashboard/chart_pie_total/{establishment_id}', 'Tenant\HomeController@chart_pie_total');            
 
             Route::get('catalogs', 'Tenant\CatalogController@index')->name('tenant.catalogs.index');
             Route::get('advanced', 'Tenant\AdvancedController@index')->name('tenant.advanced.index');

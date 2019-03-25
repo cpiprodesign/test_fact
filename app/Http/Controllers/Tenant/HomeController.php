@@ -173,13 +173,21 @@ class HomeController extends Controller
                     ->whereYear('created_at', date('Y'))
                     ->first();
             }
-            else
+            else if($range == 'Anual')
             {
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
                     ->where('status_paid', $status_paid)
                     ->whereYear('created_at', date('Y'))
+                    ->first();
+            }
+            else
+            {
+                $total = DB::connection('tenant')
+                    ->table('documents')
+                    ->select(DB::raw('SUM(total) as total'))
+                    ->where('status_paid', $status_paid)
                     ->first();
             }            
         }
@@ -206,7 +214,7 @@ class HomeController extends Controller
                     ->whereYear('created_at', date('Y'))
                     ->first();
             }
-            else
+            else if($range == 'Anual')
             {
                 $total = DB::connection('tenant')
                     ->table('documents')
@@ -214,6 +222,15 @@ class HomeController extends Controller
                     ->where('status_paid', $status_paid)
                     ->where('establishment_id', $establishment_id)
                     ->whereYear('created_at', date('Y'))
+                    ->first();
+            }
+            else
+            {
+                $total = DB::connection('tenant')
+                    ->table('documents')
+                    ->select(DB::raw('SUM(total) as total'))
+                    ->where('status_paid', $status_paid)
+                    ->where('establishment_id', $establishment_id)                    
                     ->first();
             }
         }       
@@ -308,6 +325,26 @@ class HomeController extends Controller
         ];
 
         return compact('line'); 
+    }
+
+    public function chart_pie_total($establishment_id)
+    {
+        $labels = [];
+        $data = [];
+
+        $labels = ["Total Pagado", "Total Pendiente"];
+
+        $total_invoices = (int)$this->total($establishment_id, "", 1)->total;
+        $total_charge = (int)$this->total($establishment_id, "", 0)->total;
+
+        $data = [$total_invoices, $total_charge];        
+
+        $pie = [
+            'labels' => $labels,
+            'data' => $data
+        ];
+
+        return compact('pie'); 
     }
 
     public function permission_modules()

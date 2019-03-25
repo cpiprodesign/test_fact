@@ -20,15 +20,15 @@
                     <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>Flujo de caja de la última semana (Todos los establecimientos)</h5>
-                                <chart-line :data="dataChartLine" ></chart-line>
+                                <h5 class="el-dialog__title">Flujo de caja de la última semana (Todos los establecimientos)</h5>
+                                <chart-line :data="dataChartLine" v-if="loaded_line" ></chart-line>
                             </div>
                         </div>
                         <div class="row">    
                             <div class="col-md-12">
-                                <h5> Productos por agotarse</h5>                                
+                                <h5 class="el-dialog__title">Productos por agotarse</h5>                                
                                 <table class="table table-sm">
-                                    <thead>
+                                    <thead class="table-active">
                                         <tr>
                                             <td>Producto</td>
                                             <td>Cantidad</td>
@@ -56,9 +56,9 @@
                                 </table>
                             </div>
                             <div class="col-md-12">
-                                <h5>Cuentas por cobrar</h5>
+                                <h5 class="el-dialog__title">Cuentas por cobrar</h5>
                                 <table class="table table-sm">
-                                    <thead>
+                                    <thead class="table-active">
                                         <tr>
                                             <td>Cliente</td>
                                             <td>Documento</td>
@@ -110,6 +110,10 @@
                                 <p class="font-weight-semibold mb-0 mx-4">Cuentas por Cobrar</p>
                                 <h5 class="font-weight-semibold mt-0">S/. {{ total_charge }}</h5>
                             </div>
+                        </section>                        
+                        <section class="card card-horizontal card-tenant-dashboard">
+                            <h5>Todos los establecimientos (% Pagos)</h5>
+                            <chart-pie :data="dataChartPie" v-if="loaded_pie"></chart-pie>
                         </section>
                     </div>
                 </div>
@@ -122,14 +126,17 @@
 
 <script>   
     import ChartLine from './charts/Line'
+    import ChartPie from './charts/Pie'
     import DocumentsPay from './partials/pay.vue'
 
     export default {
-        components: {ChartLine, DocumentsPay},
+        components: {ChartLine, ChartPie, DocumentsPay},
         data() {
             return {
                 resource: 'dashboard',
                 loaded: false,
+                loaded_line: false,
+                loaded_pie: false,
                 showDialogPay: false,
                 recordId: null,
                 establishments: [],
@@ -139,11 +146,13 @@
                 total_sell: 0,
                 items: [],
                 customers: [], 
-                dataChartLine : null
+                dataChartLine : null,
+                dataChartPie : null
             }
         },
         async mounted() {
             await this.load_grafic()
+            await this.load_grafic_pie()
         },
         async created() {
             this.loaded = false
@@ -159,7 +168,7 @@
         },
         methods: {
             load() {
-                // this.loaded = false
+                this.loaded = false
                 this.$http.get(`/${this.resource}/load/${this.establishment_id}`)
                     .then(response => {
 
@@ -171,9 +180,34 @@
                         this.total_sell = response.data.total_sell
                         
                     })
-                // this.loaded = true
+                this.loaded = true
+            },
+            load_grafic_pie(){
+                this.loaded_pie = false
+
+                this.dataChartPie = null;
+                this.dataChartPie =  {
+                    labels: null,
+                    datasets: [{
+                        label: "",
+                        backgroundColor: ["#28a745", "#ffcd56"],
+                        data: null
+                    }]
+                }
+
+                this.$http.get(`/${this.resource}/chart_pie_total/${this.establishment_id}`)
+                .then(response => {
+                    let pie = response.data.pie
+                    this.dataChartPie.labels = pie.labels
+                    this.dataChartPie.datasets[0].data = pie.data     
+                })
+                
+                this.loaded_pie = true
             },
             load_grafic(){
+
+                this.loaded_line = true
+                
                 this.dataChartLine = null;
                 this.dataChartLine = {
                     labels: null,
@@ -199,12 +233,13 @@
                     this.dataChartLine.datasets[0].data = line.data
                     this.dataChartLine.datasets[1].data = line.data2
                 })
+
+                this.loaded_line = true
             },
             changeEstablishment() {
-                this.loaded = false
                 this.load_grafic()
                 this.load()
-                this.loaded = true
+                this.load_grafic_pie()                
             },
             clickPay(recordId = null) {
                 this.recordId = recordId
