@@ -23,7 +23,7 @@ if ($hostname) {
 //        Route::middleware(['auth', 'module'])->group(function() {
         Route::middleware(['auth'])->group(function () {
             Route::get('/', function () {
-                return redirect()->route('tenant.documents.create');
+                return redirect()->route('tenant.dashboard');
             });
 
             Route::get('dashboard', 'Tenant\HomeController@index')->name('tenant.dashboard');
