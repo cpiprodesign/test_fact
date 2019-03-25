@@ -42,8 +42,16 @@ class HomeController extends Controller
 
     public function sells()
     {
-        return view('tenant.dashboard.sells');
-        // return view('tenant.documents.form');
+        $modules = $this->permission_modules();
+
+        if(in_array('dashboard', $modules))
+        {
+            return view('tenant.dashboard.sells');
+        }
+        else
+        {
+            return redirect('dashboard');
+        }
     }
 
     public function establishments()
