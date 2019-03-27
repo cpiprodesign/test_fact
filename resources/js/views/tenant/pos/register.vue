@@ -11,7 +11,8 @@
                         </span>
                     </div>
 
-                    <input type="text" class="form-control" placeholder="Buscar productos" v-model="searchBox">
+                    <input type="text" class="form-control" placeholder="Buscar productos" v-model="searchBox"
+                           @keyup.enter="enterAddItem">
                     <button type="button" class="btn" @click.prevent="showDialogNewItem=!showDialogNewItem">
                         <i class="fas fa-plus"></i>
                     </button>
@@ -663,12 +664,13 @@
                 ], '|');
             },
             findItem() {
+
                 var data = this.searchBox;
                 var lista = this.items
                     .filter(function (item) {
 
                         // item_code_gs1
-                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1 ; //|| item.item_code_gs1.toLowerCase().indexOf(data.toLowerCase()) > -1;
+                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1; //|| item.item_code_gs1.toLowerCase().indexOf(data.toLowerCase()) > -1;
 
                     })
                     .sort(function (a, b) {
@@ -681,12 +683,13 @@
                         // a must be equal to b
                         return 0;
                     });
-                if (lista.length === 1) {
-                    this.selectItem(lista[0].id);
-                    this.searchBox = '';
-                    return this.items;
-
-                }
+                // if (lista.length === 1 ) {
+                //
+                //     this.selectItem(lista[0].id);
+                //     this.searchBox = '';
+                //     return this.items;
+                //
+                // }
                 return lista;
 
 
@@ -710,6 +713,15 @@
         },
 
         methods: {
+            enterAddItem(e) {
+                // console.info(e);
+                // console.info(this.findItem);
+                var lista = this.findItem;
+                if (lista.length === 1) {
+                    this.selectItem(lista[0].id);
+                    this.searchBox = '';
+                }
+            },
             titlePay() {
                 // form.document_type_id
                 // form.series_id

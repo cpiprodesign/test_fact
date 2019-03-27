@@ -164,7 +164,7 @@
                     <!--                    <input typeof="hidden" v-bind:value="row.id" v-model="form.establishments[index].establishment_id">-->
                 </div>
                 <div class="col-4">
-                                        <el-input v-model.sync="row.quantity"></el-input>
+                    <el-input v-model.sync="row.quantity"></el-input>
                 </div>
 
             </div>
@@ -288,6 +288,20 @@
                                 temp_establisment_item = [];
                             }
                         )
+                } else {
+                    let temp_establisment_item = [];
+
+                    for (let i = 0; i < this.establishments.length; i++) {
+
+                        temp_establisment_item.push({
+                            "establishment_id": this.establishments[i].id,
+                            "description": this.establishments[i].description,
+                            // "item_id": this.recordId,
+                            "quantity": 0
+                        })
+                    }
+                    this.form.establisment_item = temp_establisment_item;
+                    temp_establisment_item = [];
                 }
             }
             ,
