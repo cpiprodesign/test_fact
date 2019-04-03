@@ -64,6 +64,13 @@ class Person extends ModelTenant
         if ($address === '') {
             return '';
         }
-        return "{$address} {$this->department->description} - {$this->province->description} - {$this->district->description}";
+
+        if(!is_null($this->department_id) && !is_null($this->province_id) && !is_null($this->district_id))
+        {
+            return "{$address} {$this->department->description} - {$this->province->description} - {$this->district->description}";
+        }
+        else {
+            return $address;
+        }
     }
 }
