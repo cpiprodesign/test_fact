@@ -19,7 +19,7 @@ class TenantItemCategoryTable extends Migration
             $table->increments('id');
 
             // data
-            $table->char('description')->unique()->nullable();
+            $table->char('description', 100)->unique()->nullable();
             $table->integer('parent_id')->unsigned()->nullable();
 
             // log

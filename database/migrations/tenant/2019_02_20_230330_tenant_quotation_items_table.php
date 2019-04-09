@@ -21,12 +21,12 @@ class TenantQuotationItemsTable extends Migration
             $table->integer('quantity');
             $table->decimal('unit_value', 12, 2);
 
-            $table->string('affectation_igv_type_id');
+            $table->string('affectation_igv_type_id', 3);
             $table->decimal('total_base_igv', 12, 2);
             $table->decimal('percentage_igv', 12, 2);
             $table->decimal('total_igv', 12, 2);
 
-            $table->string('system_isc_type_id')->nullable();
+            $table->string('system_isc_type_id', 3)->nullable();
             $table->decimal('total_base_isc', 12, 2)->default(0);
             $table->decimal('percentage_isc', 12, 2)->default(0);
             $table->decimal('total_isc', 12, 2)->default(0);
@@ -36,7 +36,7 @@ class TenantQuotationItemsTable extends Migration
             $table->decimal('total_other_taxes', 12, 2)->default(0);
             $table->decimal('total_taxes', 12, 2);
 
-            $table->string('price_type_id');
+            $table->string('price_type_id', 3);
             $table->decimal('unit_price', 12, 2);
 
             $table->decimal('total_value', 12, 2);

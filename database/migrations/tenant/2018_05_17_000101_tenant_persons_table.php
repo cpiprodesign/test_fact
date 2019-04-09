@@ -16,7 +16,7 @@ class TenantPersonsTable extends Migration
         Schema::create('persons', function (Blueprint $table) {
             $table->increments('id');
             $table->enum('type', ['customers', 'suppliers']);
-            $table->string('identity_document_type_id');
+            $table->string('identity_document_type_id', 2);
             $table->string('number');
             $table->string('name');
             $table->string('trade_name')->nullable();
@@ -29,7 +29,7 @@ class TenantPersonsTable extends Migration
             $table->string('telephone')->nullable();
             $table->timestamps();
 
-            $table->foreign('identity_document_type_id')->references('id')->on('cat_identity_document_types');
+            $table->foreign('identity_document_type_id', 2)->references('id')->on('cat_identity_document_types');
             $table->foreign('country_id')->references('id')->on('countries');
             $table->foreign('department_id')->references('id')->on('departments');
             $table->foreign('province_id')->references('id')->on('provinces');

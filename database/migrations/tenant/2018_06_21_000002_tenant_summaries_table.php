@@ -19,7 +19,7 @@ class TenantSummariesTable extends Migration
             $table->uuid('external_id');
             $table->char('soap_type_id', 2);
             $table->char('state_type_id', 2);
-            $table->string('summary_status_type_id');
+            $table->string('summary_status_type_id', 2);
             $table->string('ubl_version');
             $table->date('date_of_issue');
             $table->date('date_of_reference');

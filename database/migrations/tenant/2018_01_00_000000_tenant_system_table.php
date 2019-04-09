@@ -60,7 +60,7 @@ class TenantSystemTable extends Migration
         ]);
 
         Schema::create('banks', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id', 9);
             $table->string('description');
             $table->timestamps();
         });
@@ -75,11 +75,11 @@ class TenantSystemTable extends Migration
         ]);
 
         Schema::create('bank_accounts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id', 9);
             $table->unsignedInteger('bank_id');
             $table->string('description');
             $table->string('number');
-            $table->string('currency_type_id');
+            $table->string('currency_type_id',3);
 
             $table->foreign('bank_id')->references('id')->on('banks');
             $table->foreign('currency_type_id')->references('id')->on('cat_currency_types');

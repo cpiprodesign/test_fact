@@ -22,7 +22,7 @@ class TenantDispatchesTable extends Migration
             $table->char('soap_type_id', 2);
             $table->char('state_type_id', 2);
             $table->string('ubl_version');
-            $table->string('document_type_id');
+            $table->string('document_type_id', 3);
             $table->char('series', 4);
             $table->integer('number');
             $table->date('date_of_issue');
@@ -30,13 +30,13 @@ class TenantDispatchesTable extends Migration
             $table->unsignedInteger('customer_id');
             $table->json('customer');
             $table->text('observations');
-            $table->string('transport_mode_type_id');
-            $table->string('transfer_reason_type_id');
+            $table->string('transport_mode_type_id', 3);
+            $table->string('transfer_reason_type_id', 3);
             $table->string('transfer_reason_description');
             $table->date('date_of_shipping');
             $table->boolean('transshipment_indicator');
             $table->string('port_code')->nullable();
-            $table->string('unit_type_id');
+            $table->string('unit_type_id', 5);
             $table->decimal('total_weight', 10, 2);
             $table->integer('packages_number');
             $table->integer('container_number')->nullable();

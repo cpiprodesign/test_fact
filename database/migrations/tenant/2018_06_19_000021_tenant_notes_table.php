@@ -1,5 +1,5 @@
 <?php
-
+	
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -18,8 +18,8 @@ class TenantNotesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('document_id');
             $table->enum('note_type', ['credit', 'debit']);
-            $table->string('note_credit_type_id')->nullable();
-            $table->string('note_debit_type_id')->nullable();
+            $table->string('note_credit_type_id', 3)->nullable();
+            $table->string('note_debit_type_id', 3)->nullable();
             $table->string('note_description');
             $table->unsignedInteger('affected_document_id');
 

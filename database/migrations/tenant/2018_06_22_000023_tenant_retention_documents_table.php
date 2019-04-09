@@ -16,11 +16,11 @@ class TenantRetentionDocumentsTable extends Migration
         Schema::create('retention_documents', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('retention_id');
-            $table->string('document_type_id');
+            $table->string('document_type_id', 3);
             $table->string('series');
             $table->string('number');
             $table->date('date_of_issue');
-            $table->string('currency_type_id');
+            $table->string('currency_type_id', 4);
             $table->decimal('total_document', 10, 2);
             $table->json('payments');
             $table->json('exchange_rate');

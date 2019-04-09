@@ -21,14 +21,14 @@ class TenantPurchasesTable extends Migration
             $table->char('soap_type_id', 2);
             $table->char('state_type_id', 2); 
             $table->char('group_id', 2);
-            $table->string('document_type_id');
+            $table->string('document_type_id', 3);
             $table->char('series', 4);
             $table->integer('number');
             $table->date('date_of_issue');
             $table->time('time_of_issue');
             $table->unsignedInteger('supplier_id');
             $table->json('supplier');
-            $table->string('currency_type_id'); 
+            $table->string('currency_type_id', 4); 
             $table->decimal('exchange_rate_sale', 12, 2);
             $table->decimal('total_prepayment', 12, 2)->default(0);
             $table->decimal('total_charge', 12, 2)->default(0);

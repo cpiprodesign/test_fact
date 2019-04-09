@@ -23,7 +23,7 @@ class TenancyWebsitesNeedsDbHost extends AbstractMigration
     public function up()
     {
         Schema::table('websites', function (Blueprint $table) {
-            $table->string('managed_by_database_connection')
+            $table->string('managed_by_database_connection', 100)
                 ->nullable()
                 ->comment('References the database connection key in your database.php');
         });

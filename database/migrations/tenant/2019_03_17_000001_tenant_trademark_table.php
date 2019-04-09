@@ -19,7 +19,7 @@ class TenantTrademarkTable extends Migration
             $table->increments('id');
 
             // data
-            $table->char('name')->unique()->nullable();
+            $table->char('name', 100)->unique()->nullable();
 
             // log
             $table->timestamps();

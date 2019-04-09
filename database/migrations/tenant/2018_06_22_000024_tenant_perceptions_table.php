@@ -21,14 +21,14 @@ class TenantPerceptionsTable extends Migration
             $table->char('soap_type_id', 2);
             $table->char('state_type_id', 2);
             $table->string('ubl_version');
-            $table->string('document_type_id');
+            $table->string('document_type_id', 3);
             $table->unsignedInteger('series_id');
             $table->integer('number');
             $table->date('date_of_issue');
             $table->unsignedInteger('customer_id');
-            $table->string('currency_type_id');
+            $table->string('currency_type_id', 4);
             $table->text('observation');
-            $table->string('perception_type_id');
+            $table->string('perception_type_id', 3);
             $table->decimal('percent', 10, 2);
             $table->decimal('total_perception', 10, 2);
             $table->decimal('total', 10, 2);
