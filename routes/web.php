@@ -223,6 +223,8 @@ if ($hostname) {
             Route::post('dispatches/tables', 'Tenant\DispatchController@tables');
             Route::post('dispatches', 'Tenant\DispatchController@store');
 
+            Route::get('dispatches/resend/{document}', 'Tenant\DispatchController@resend');
+
             Route::get('reports', 'Tenant\ReportController@index')->name('tenant.reports.index');
             Route::post('reports/search', 'Tenant\ReportController@search')->name('tenant.search');
             Route::post('reports/pdf', 'Tenant\ReportController@pdf')->name('tenant.report_pdf');

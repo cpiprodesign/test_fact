@@ -6,7 +6,8 @@
                 <li class="active"><span>Guias de remisión</span></li>
             </ol>
             <div class="right-wrapper pull-right">
-                <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
+                <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i
+                    class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
         </div>
         <div class="card mb-0">
@@ -23,13 +24,26 @@
                     <tr slot-scope="{ index, row }" :class="{'text-danger': (row.state_type_id === '11')}">
                         <td>{{ index }}</td>
                         <td class="text-center">{{ row.date_of_issue }}</td>
-                        <td>{{ row.customer_name }} <br /> <small>{{ row.customer_number }}</small></td>
+                        <td>{{ row.customer_name }} <br/>
+                            <small>{{ row.customer_number }}</small>
+                        </td>
                         <td>{{ row.number }}</td>
                         <td class="text-center">{{ row.date_of_shipping }}</td>
                         <td class="text-center">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickDownload(row.download_external_xml)">XML</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickDownload(row.download_external_pdf)">PDF</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickDownload(row.download_external_cdr)">CDR</button>
+                            <div v-if="row.has_cdr * 1 === 1">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                                        @click.prevent="clickDownload(row.download_external_xml)">XML
+                                </button>
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                                        @click.prevent="clickDownload(row.download_external_pdf)">PDF
+                                </button>
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                                        @click.prevent="clickDownload(row.download_external_cdr)">CDR
+                                </button>
+                            </div>
+                            <button v-else type="button" class="btn waves-effect waves-light btn-xs btn-success"
+                                    @click.prevent="sendDocument(row)">Reenviar Documento
+                            </button>
                         </td>
                     </tr>
                 </data-table>
@@ -40,7 +54,7 @@
 
 <script>
     import DataTable from '../../../components/DataTable.vue'
-    
+
     export default {
         components: {DataTable},
         data() {
@@ -49,11 +63,28 @@
                 recordId: null,
             }
         },
-        created() {},
+        created() {
+        },
         methods: {
             clickDownload(download) {
                 window.open(download, '_blank');
             },
+
+            /**
+             * en caso de error reenvia el documento
+             * @param id
+             */
+            sendDocument(row) {
+                return this.$http.get(`/${this.resource}/resend/${row.id}`).then((response) => {
+                    // console.info(response);
+                    if (response.data.success) {
+                        this.$eventHub.$emit('reloadData');
+                        this.$message.success(response.data.message)
+                    } else {
+                        this.$message.error(response.data.message);
+                    }
+                });
+            }
         }
     }
 </script>
