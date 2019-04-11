@@ -42,9 +42,9 @@ class TenantItemsTable extends Migration
             $table->timestamps();
 
             $table->foreign('item_type_id')->references('id')->on('item_types');
-            $table->foreign('unit_type_id', 5)->references('id')->on('cat_unit_types');
-            $table->foreign('currency_type_id', 4)->references('id')->on('cat_currency_types');
-            $table->foreign('system_isc_type_id', 3)->references('id')->on('cat_system_isc_types');
+            $table->foreign('unit_type_id')->references('id')->on('cat_unit_types');
+            $table->foreign('currency_type_id')->references('id')->on('cat_currency_types');
+            $table->foreign('system_isc_type_id')->references('id')->on('cat_system_isc_types');
             $table->foreign('sale_affectation_igv_type_id')->references('id')->on('cat_affectation_igv_types');
             $table->foreign('purchase_affectation_igv_type_id')->references('id')->on('cat_affectation_igv_types');
         });
