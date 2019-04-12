@@ -59,6 +59,7 @@
             </div>
             <p class="text-center text-muted mt-3 mb-3">&copy; Copyright {{ date('Y') }}. Todos los derechos reservados</p>
         </div>
+        <script src="//code.tidio.co/8txsjuzw2uthkcsbyrwynuffhsdzpbwi.js"></script>
     </section>
 
 @endsection
