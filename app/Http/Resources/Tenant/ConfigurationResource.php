@@ -16,7 +16,8 @@ class ConfigurationResource extends JsonResource
         return [
             'id' => $this->id,
             'send_auto' => (bool) $this->send_auto,
-            'cron' => (bool) $this->cron
+            'cron' => (bool) $this->cron,
+            'decimal' => $this->decimal
         ];
     }
 }

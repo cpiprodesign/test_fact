@@ -22,6 +22,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="control-label">Cantidad de decimales</label>
+                            <div class="form-group" :class="{'has-danger': errors.decimal}">
+                                <el-input type="number" min="2" max="3" v-model="form.decimal" @blur="submit"></el-input>
+                                <small class="form-control-feedback" v-if="errors.decimal" v-text="errors.decimal[0]"></small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
