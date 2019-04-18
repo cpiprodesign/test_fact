@@ -102,10 +102,11 @@ class DocumentController extends Controller
         $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $company = Company::active();
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
+        $decimal = Configuration::first()->decimal;
 
         return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_note',
             'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
-            'discount_types', 'charge_types', 'company', 'document_type_03_filter');
+            'discount_types', 'charge_types', 'company', 'document_type_03_filter', 'decimal');
     }
 
     public function tables2($quotation_id = false)
@@ -162,7 +163,7 @@ class DocumentController extends Controller
         $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
         $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
-
+        
         return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
             'operation_types', 'discount_types', 'charge_types', 'attribute_types');
     }

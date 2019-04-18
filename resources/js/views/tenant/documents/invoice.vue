@@ -159,7 +159,7 @@
                                                 <td style="width: 300px">{{ row.item.description }}<br/><small>{{ row.affectation_igv_type.description }}</small></td>
                                                 <td class="text-center">{{ row.item.unit_type_id }}</td>
                                                 <td class="text-right">{{ row.quantity }}</td>
-                                                <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td>
+                                                <td class="text-right">{{ currency_type.symbol }} {{ formatPrice(row.unit_price, this.decimal) }}</td>
                                                 <td class="text-right">{{ currency_type.symbol }} {{ row.total_value }}</td>
                                                 <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
                                                 <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
@@ -253,7 +253,8 @@
                 all_series: [],
                 series: [],
                 currency_type: {},
-                documentNewId: null
+                documentNewId: null,
+                decimal: 2
             }
         },
         async created() {
@@ -275,6 +276,10 @@
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
                     this.form.operation_type_id = (this.operation_types.length > 0)?this.operation_types[0].id:null
+
+                    this.decimal = response.data.decimal;
+
+                    console.log("decimal "+this.decimal)
 
                     this.changeEstablishment()
                     this.changeDateOfIssue()
@@ -442,8 +447,7 @@
             submit() {
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
-                    console.log(response);
-
+                    
                     if (response.data.success) {
                         this.resetForm();
 
@@ -475,6 +479,10 @@
                     this.form.customer_id = customer_id
                 })
             },
+
+            formatPrice(value){
+                return value.toFixed(this.decimal);
+            }
         }
     }
 </script>

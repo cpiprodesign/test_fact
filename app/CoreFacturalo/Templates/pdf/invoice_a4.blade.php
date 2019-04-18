@@ -7,6 +7,7 @@
 
     $establishment2 = \App\Models\Tenant\Establishment::find($document->establishment_id);
     $customer2 = \App\Models\Tenant\Person::find($document->customer_id);
+    $configuration = \App\Models\Tenant\Configuration::first();
 @endphp
 <html>
     <head>
@@ -14,7 +15,7 @@
         <link href="{{ $path_style }}" rel="stylesheet" />
         <style>
             html {
-                font-family: sans-serif;            
+                font-family: sans-serif;
             }
         </style>
     </head>
@@ -116,7 +117,7 @@
                                 @endif
                             <td class="align-top">{{ number_format($row->quantity, $decimal) }}</td>
                             <td class="text-center align-top">{{ $row->item->unit_type_id }}</td>
-                            <td class="text-right align-top">{{ number_format($row->unit_price, 2) }}</td>
+                            <td class="text-right align-top">{{ number_format($row->unit_price, $configuration->decimal) }}</td>
                             <td class="text-right align-top">
                                 @if($row->discounts)
                                     @php
