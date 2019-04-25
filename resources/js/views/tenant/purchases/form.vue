@@ -66,7 +66,6 @@
                                 <small class="form-control-feedback" v-if="errors.supplier_id" v-text="errors.supplier_id[0]"></small>
                             </div>
                         </div>
-
                         <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.date_of_due}">
                                 <label class="control-label">Fecha de vencimiento</label>
@@ -81,7 +80,15 @@
                                 <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
                         </div>
-
+                        <div class="col-lg-2">
+                            <div class="form-group" :class="{'has-danger': errors.establishment_id}">
+                                <label class="control-label">Establecimiento</label>
+                                <el-select v-model="form.establishment_id">
+                                    <el-option v-for="option in establishments" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.establishment_id" v-text="errors.establishment_id[0]"></small>
+                            </div>
+                        </div>
                         <div class="col-lg-2 col-md-6 d-flex align-items-end pt-2">
                             <div class="form-group">
                                 <button type="button" class="btn waves-effect waves-light btn-primary" @click.prevent="showDialogAddItem = true">+ Agregar Producto</button>
@@ -185,7 +192,8 @@
                 suppliers: [],
                 company: null,
                 operation_types: [],
-                establishment: {},
+                establishments: [],
+                establishment: null,
                 all_series: [],
                 series: [],
                 currency_type: {},
@@ -199,13 +207,14 @@
 
                     this.document_types = response.data.document_types_invoice
                     this.currency_types = response.data.currency_types
-                    this.establishment = response.data.establishment
+                    this.establishments = response.data.establishments
                     this.all_suppliers = response.data.suppliers
                     this.discount_types = response.data.discount_types
                     this.charges_types = response.data.charges_types
                     this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
-                    this.form.establishment_id = (this.establishment.id) ? this.establishment.id:null
+                    this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
+
 
                     this.changeDateOfIssue()
                     this.changeDocumentType()
