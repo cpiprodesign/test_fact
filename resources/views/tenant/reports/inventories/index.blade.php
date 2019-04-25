@@ -20,22 +20,33 @@
                             </div> --}}
                         </form>
                     </div>
-                    @if(!empty($reports) && $reports->count())
+                    @if(!empty($reports) && count($reports) > 0)
                     <div class="box">
                         <div class="box-body no-padding">
                             <div style="margin-bottom: 10px">
-                                @if(isset($reports))
-                                    <form action="{{route('tenant.report.inventories.pdf')}}" class="d-inline" method="POST">
-                                        {{csrf_field()}}
-                                        <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
-                                        {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
-                                    </form>
-                                <form action="{{route('tenant.report.inventories.report_excel')}}" class="d-inline" method="POST">
-                                    {{csrf_field()}}
-                                    <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
-                                    {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
-                                </form>
-                                @endif
+                                <div class="row">
+                                    @if(isset($reports))
+                                        <div class="col-md-2">
+                                            <form action="{{route('tenant.report.inventories.pdf')}}" class="d-inline" method="POST">
+                                                {{csrf_field()}}
+                                                <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
+                                                {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
+                                            </form>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <form action="{{route('tenant.report.inventories.report_excel')}}" class="d-inline" method="POST">
+                                                {{csrf_field()}}
+                                                <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
+                                                {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
+                                            </form>
+                                        </div>
+                                    @endif
+                                    <div class="col-md-3" style="padding-top: 8px">
+                                        <select name="selEstablecimiento" id="selEstablecimiento" class="form-control">
+                                            <option value="{{$establishment->id}}">{{$establishment->description}}</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
                                 <thead class="">
