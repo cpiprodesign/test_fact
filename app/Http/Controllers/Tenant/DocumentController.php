@@ -200,8 +200,8 @@ class DocumentController extends Controller
                 'item.description' => $row->description,
                 'currency_type_id' => $row->currency_type_id,
                 'currency_type_symbol' => $row->currency_type->symbol,
-                'sale_unit_price' => $row->sale_unit_price,
-                'purchase_unit_price' => $row->purchase_unit_price,
+                'sale_unit_price' => $this->formatNumber($row->sale_unit_price),
+                'purchase_unit_price' => $this->formatNumber($row->purchase_unit_price),
                 'unit_type_id' => $row->unit_type_id,
                 'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
                 'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
@@ -245,8 +245,8 @@ class DocumentController extends Controller
                     'description' => $row->description,
                     'currency_type_id' => $row->currency_type_id,
                     'currency_type_symbol' => $row->currency_type->symbol,
-                    'sale_unit_price' => $row->sale_unit_price,
-                    'purchase_unit_price' => $row->purchase_unit_price,
+                    'sale_unit_price' => $this->formatNumber($row->sale_unit_price),
+                    'purchase_unit_price' => $this->formatNumber($row->purchase_unit_price),
                     'unit_type_id' => $row->unit_type_id,
                     'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
                     'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
@@ -346,5 +346,11 @@ class DocumentController extends Controller
             'success' => true,
             'message' => $response['description'],
         ];
+    }
+
+    public function formatNumber($value)
+    {
+        $decimal = Configuration::first()->decimal;
+        return number_format($value, $decimal);
     }
 }

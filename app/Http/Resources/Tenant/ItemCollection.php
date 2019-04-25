@@ -18,8 +18,8 @@ class ItemCollection extends ResourceCollection
     public function formatNumber($value)
     {
         $decimal = Configuration::first()->decimal;
-        return number_format($value, $decimal);        
-    }     
+        return number_format($value, $decimal);
+    }
 
     public function toArray($request)
     {
