@@ -81,7 +81,7 @@
                     <table class="">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                    <th>Código Interno</th>
                                 <th>Descripción</th>
                                 <th>Inventario actual</th>
                             </tr>
@@ -89,7 +89,7 @@
                         <tbody>
                             @foreach($reports as $key => $value)
                                 <tr>
-                                    <td class="celda">{{$value->id}}</td>
+                                    <td class="celda">{{$value->internal_id}}</td>
                                     <td class="celda">{{$value->description}}</td>
                                     <td class="celda">{{$value->stock}}</td>
                                 </tr>

@@ -13,11 +13,18 @@
                     <div>
                         <form action="{{route('tenant.reports.inventories.search')}}" class="el-form demo-form-inline el-form--inline" method="POST">
                             {{csrf_field()}}
-                            {{-- <div class="el-form-item col-xs-12">
-                                <div class="el-form-item__content">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <select name="selEstablishment" id="selEstablishment" class="form-control">
+                                        @foreach ($establishments as $establishment)
+                                            <option value="{{$establishment->id}}" @if ($establishment->id == $establishment_id) selected @endif>{{$establishment->description}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
                                     <button class="btn btn-custom" type="submit"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
-                            </div> --}}
+                            </div>
                         </form>
                     </div>
                     @if(!empty($reports) && count($reports) > 0)
@@ -29,6 +36,7 @@
                                         <div class="col-md-2">
                                             <form action="{{route('tenant.report.inventories.pdf')}}" class="d-inline" method="POST">
                                                 {{csrf_field()}}
+                                                <input type="hidden" value="{{$establishment_id}}" name="establishment_id">
                                                 <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
                                                 {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                             </form>
@@ -36,22 +44,18 @@
                                         <div class="col-md-2">
                                             <form action="{{route('tenant.report.inventories.report_excel')}}" class="d-inline" method="POST">
                                                 {{csrf_field()}}
+                                                <input type="hidden" value="{{$establishment_id}}" name="establishment_id">
                                                 <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
                                                 {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                             </form>
                                         </div>
-                                    @endif
-                                    <div class="col-md-3" style="padding-top: 8px">
-                                        <select name="selEstablecimiento" id="selEstablecimiento" class="form-control">
-                                            <option value="{{$establishment->id}}">{{$establishment->description}}</option>
-                                        </select>
-                                    </div>
+                                    @endif                                    
                                 </div>
                             </div>
                             <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
                                 <thead class="">
                                     <tr>
-                                        <th>#</th>
+                                        <th>Código Interno</th>
                                         <th>Descripción</th>
                                         <th>Inventario actual</th>
                                     </tr>
@@ -59,7 +63,7 @@
                                 <tbody>
                                     @foreach($reports as $key => $value)
                                     <tr>
-                                        <td>{{$value->id}}</td>
+                                        <td>{{$value->internal_id}}</td>
                                         <td>{{$value->description}}</td>
                                         <td>{{$value->stock}}</td>
                                     </tr>

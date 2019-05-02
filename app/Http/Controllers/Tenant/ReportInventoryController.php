@@ -23,11 +23,11 @@ class ReportInventoryController extends Controller
      */
     public function index() {
 
-        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
+        $establishments = Establishment::all();
 
-        $reports = $this->calcular_stock_x_establecimiento($establishment->id);
-        
-        return view('tenant.reports.inventories.index', compact('reports', 'establishment'));
+        $establishment_id = Establishment::where('id', auth()->user()->establishment_id)->first()->id;
+
+        return view('tenant.reports.inventories.index', compact('establishments', 'establishment_id'));
     }
     
     /**
@@ -36,13 +36,16 @@ class ReportInventoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function search(Request $request) {
-        $reports = Item::query()
-            ->with(['unit_type'])
-            ->where('item_type_id', '01')
-            ->latest()
-            ->get();
-        
-        return view('tenant.reports.inventories.index', compact('reports'));
+
+        if($request->has('selEstablishment'))
+        {
+            $establishments = Establishment::all();
+            $establishment_id = $request->selEstablishment;
+
+            $reports = $this->calcular_stock_x_establecimiento($establishment_id);
+
+            return view('tenant.reports.inventories.index', compact('reports', 'establishments', 'establishment_id'));
+        }        
     }
     
     /**
@@ -51,21 +54,21 @@ class ReportInventoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function pdf(Request $request) {
-        $company = Company::first();
-        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        
-        // $reports = Item::query()
-        //     ->with(['unit_type'])
-        //     ->where('item_type_id', '01')
-        //     ->latest()
-        //     ->get();
 
-        $reports = $this->calcular_stock_x_establecimiento($establishment->id);
-        
-        $pdf = PDF::loadView('tenant.reports.inventories.report_pdf', compact("reports", "company", "establishment"));
-        $filename = 'Reporte_Inventario'.date('YmdHis');
-        
-        return $pdf->download($filename.'.pdf');
+        if($request->has('establishment_id'))
+        {
+            $company = Company::first();
+            $establishment_id = $request->establishment_id;
+            
+            $reports = $this->calcular_stock_x_establecimiento($establishment_id);
+
+            $establishment = Establishment::where('id', $establishment_id)->first();
+            
+            $pdf = PDF::loadView('tenant.reports.inventories.report_pdf', compact("reports", "company", "establishment"));
+            $filename = 'Reporte_Inventario'.date('YmdHis');
+            
+            return $pdf->download($filename.'.pdf');
+        }
     }
     
     /**
@@ -73,27 +76,28 @@ class ReportInventoryController extends Controller
      * @param  Request $request
      * @return \Illuminate\Http\Response
      */
-    public function excel(Request $request) {
-        $company = Company::first();
-        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        
-        // $records = Item::query()
-        //     ->with(['unit_type'])
-        //     ->where('item_type_id', '01')
-        //     ->latest()
-        //     ->get();
-        $records = $this->calcular_stock_x_establecimiento($establishment->id);
-        
-        return (new InventoryExport)
+    public function excel(Request $request)
+    {
+        if($request->has('establishment_id'))
+        {
+            $company = Company::first();
+            $establishment_id = $request->establishment_id;
+            
+            $records = $this->calcular_stock_x_establecimiento($establishment_id);
+
+            $establishment = Establishment::where('id', $establishment_id)->first();
+            
+            return (new InventoryExport)
             ->records($records)
             ->company($company)
             ->establishment($establishment)
             ->download('ReporteInv'.Carbon::now().'.xlsx');
+        }
     }
 
     public function calcular_stock_x_establecimiento($establishment_id)
     {
-        $sql = "SELECT ite.id,  ite.`description`, eit.quantity as stock
+        $sql = "SELECT ite.id, ite.internal_id,  ite.`description`, eit.quantity as stock
         FROM items ite
         INNER JOIN establishment_items eit ON eit.item_id = ite.id
         WHERE eit.establishment_id = ? ORDER BY created_at desc";
