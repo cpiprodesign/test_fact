@@ -58,19 +58,19 @@
                         </thead>
                         <tbody>
                             @foreach($records as $key => $value)
-                            <tr>
-                                <td class="celda">{{$value->id}}</td>
-                                <td class="celda">{{$value->created_at}}</td>
-                                <td class="celda">{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
-                                <td class="celda">{{($value->type == 'sale') ? "{$value->document->series}-{$value->document->number}" : "{$value->purchase->series}-{$value->purchase->number}"}}</td>
-                                <td class="celda">{{($value->type == 'purchase') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
-                                <td class="celda">{{($value->type == 'sale') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
-                                @php
-                                    if ($value->type == 'purchase') $balance += $value->quantity;
-                                    if ($value->type == 'sale') $balance -= $value->quantity;
-                                @endphp
-                                <td class="celda">{{number_format($balance, 2)}}</td>
-                            </tr>
+                                <tr>
+                                    <td>{{$value->id}}</td>
+                                    <td>{{$value->created_at}}</td>
+                                    <td>{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
+                                    <td>{{$value->series}}-{{$value->number}}</td>
+                                    <td>{{($value->type == 'purchase') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
+                                    <td>{{($value->type == 'sale') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
+                                    @php
+                                        if ($value->type == 'purchase') $balance += $value->quantity;
+                                        if ($value->type == 'sale') $balance -= $value->quantity;
+                                    @endphp
+                                    <td>{{number_format($balance, 2)}}</td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>

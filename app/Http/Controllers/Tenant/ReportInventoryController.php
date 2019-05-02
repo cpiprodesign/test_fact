@@ -59,10 +59,9 @@ class ReportInventoryController extends Controller
         {
             $company = Company::first();
             $establishment_id = $request->establishment_id;
+            $establishment = Establishment::where('id', $establishment_id)->first();
             
             $reports = $this->calcular_stock_x_establecimiento($establishment_id);
-
-            $establishment = Establishment::where('id', $establishment_id)->first();
             
             $pdf = PDF::loadView('tenant.reports.inventories.report_pdf', compact("reports", "company", "establishment"));
             $filename = 'Reporte_Inventario'.date('YmdHis');

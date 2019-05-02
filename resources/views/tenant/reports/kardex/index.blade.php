@@ -13,20 +13,29 @@
                     <div>
                         <form action="{{route('tenant.reports.kardex.search')}}" class="el-form demo-form-inline el-form--inline" method="POST">
                             {{csrf_field()}}
-                            <div class="box ">
-                                <div class="box-body no-padding">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="">Establecimiento</label>
+                                    <select name="selEstablishment" id="selEstablishment" class="form-control">
+                                        @foreach ($establishments as $establishment)
+                                            <option value="{{$establishment->id}}" @if ($establishment->id == $establishment_id) selected @endif>{{$establishment->description}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
                                     {{Form::label('item_id', 'Producto')}}
                                     {{Form::select('item_id', $items->pluck('description', 'id'), old('item_id', request()->item_id), ['class' => 'form-control col-md-6'])}}
-                                </div>
-                                <div class="el-form-item col-xs-12">
-                                    <div class="el-form-item__content">
-                                        <button class="btn btn-custom" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                                    </div>
+                                </div>                                
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <button class="btn btn-custom" type="submit"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </form>
                     </div>
-                    @if(!empty($reports) && $reports->count())
+                    @if(!empty($reports) && count($reports) > 0)
                     <div class="box">
                         <div class="box-body no-padding">
                             <div style="margin-bottom: 10px">
@@ -34,12 +43,14 @@
                                     <form action="{{route('tenant.report.kardex.pdf')}}" class="d-inline" method="POST">
                                         {{csrf_field()}}
                                         <input type="hidden" name="item_id" value="{{old('item_id', request()->item_id)}}">
+                                        <input type="hidden" value="{{$establishment_id}}" name="establishment_id">
                                         <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
                                         {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                     </form>
                                 <form action="{{route('tenant.report.kardex.report_excel')}}" class="d-inline" method="POST">
                                     {{csrf_field()}}
                                     <input type="hidden" name="item_id" value="{{old('item_id', request()->item_id)}}">
+                                    <input type="hidden" value="{{$establishment_id}}" name="establishment_id">
                                     <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
                                     {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                 </form>
@@ -63,7 +74,7 @@
                                         <td>{{$value->id}}</td>
                                         <td>{{$value->created_at}}</td>
                                         <td>{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
-                                        <td>{{($value->type == 'sale') ? "{$value->document->series}-{$value->document->number}" : "{$value->purchase->series}-{$value->purchase->number}"}}</td>
+                                        <td>{{$value->series}}-{{$value->number}}</td>
                                         <td>{{($value->type == 'purchase') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
                                         <td>{{($value->type == 'sale') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
                                         @php
