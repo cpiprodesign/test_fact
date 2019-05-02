@@ -73,13 +73,13 @@
                                    v-text="errors.purchase_unit_price[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.stock}">
                             <label class="control-label">Stock</label>
                             <el-input v-model="form.stock"></el-input>
                             <small class="form-control-feedback" v-if="errors.stock" v-text="errors.stock[0]"></small>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.stock_min}">
                             <label class="control-label">Stock Mínimo</label>
@@ -207,6 +207,8 @@
                         this.system_isc_types = response.data.system_isc_types
                         this.affectation_igv_types = response.data.affectation_igv_types
 
+                        this.form.stock = 0
+
                         this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0) ? this.affectation_igv_types[0].id : null
                         this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0) ? this.affectation_igv_types[0].id : null
 
@@ -244,7 +246,7 @@
 
                     establisment_item: [],
 
-                    stock: 0,
+                    //stock: 0,
                     stock_min: 1,
                 }
             }
