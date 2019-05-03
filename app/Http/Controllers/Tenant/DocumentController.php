@@ -351,6 +351,6 @@ class DocumentController extends Controller
     public function formatNumber($value)
     {
         $decimal = Configuration::first()->decimal;
-        return number_format($value, $decimal);
+        return number_format($value, $decimal, ".", "");
     }
 }
