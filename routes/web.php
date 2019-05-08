@@ -107,6 +107,7 @@ if ($hostname) {
             Route::post('items', 'Tenant\ItemController@store');
             Route::delete('items/{item}', 'Tenant\ItemController@destroy');
             Route::post('items/import', 'Tenant\ItemController@import');
+            Route::get('items/stock_details/{item}', 'Tenant\ItemController@stock_details');
 
             //Customers
 //            Route::get('customers', 'Tenant\CustomerController@index')->name('tenant.customers.index');

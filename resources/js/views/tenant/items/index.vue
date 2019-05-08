@@ -32,7 +32,7 @@
                         <td>{{ row.unit_type_id }}</td>
                         <td>{{ row.description }}</td>
                         <td>{{ row.item_code }}</td>
-                        <td>{{ row.stock }}<br/>Mín:{{ row.stock_min }}</td>
+                        <td><button class="btn btn-custom btn-sm" @click.prevent="clickStock(row.id)"><i class="fa fa-search"></i> </button></td>
                         <td class="text-right">{{ row.sale_unit_price }}</td>
                         <td class="text-right">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
@@ -46,6 +46,9 @@
                         :recordId="recordId"></items-form>
 
             <items-import :showDialog.sync="showImportDialog"></items-import>
+
+            <items-stock :showStockDialog.sync="showStockDialog"
+                        :recordId="recordId"></items-stock>
         </div>
     </div>
 </template>
@@ -53,16 +56,18 @@
 
     import ItemsForm from './form.vue'
     import ItemsImport from './import.vue'
+    import ItemsStock from './stock.vue'
     import DataTable from '../../../components/DataTable.vue'
     import {deletable} from '../../../mixins/deletable'
 
     export default {
         mixins: [deletable],
-        components: {ItemsForm, ItemsImport, DataTable},
+        components: {ItemsForm, ItemsImport, ItemsStock, DataTable},
         data() {
             return {
                 showDialog: false,
                 showImportDialog: false,
+                showStockDialog: false,
                 resource: 'items',
                 recordId: null,
             }
@@ -73,6 +78,10 @@
             clickCreate(recordId = null) {
                 this.recordId = recordId
                 this.showDialog = true
+            },
+            clickStock(recordId = null) {
+                this.recordId = recordId
+                this.showStockDialog = true
             },
             clickImport() {
                 this.showImportDialog = true

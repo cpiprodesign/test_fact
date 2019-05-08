@@ -20,6 +20,7 @@ use App\Models\Tenant\Trademarks;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
+use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
@@ -68,6 +69,19 @@ class ItemController extends Controller
         $record = new ItemResource(Item::findOrFail($id));
 
         return $record;
+    }
+
+    public function stock_details($id)
+    {
+        $sql = "SELECT eit.quantity, ite.`stock_min`,
+                (SELECT description FROM establishments est WHERE est.id = eit.establishment_id LIMIT 1) AS establecimiento
+                FROM items ite
+                INNER JOIN establishment_items eit ON eit.item_id = ite.id
+                WHERE eit.item_id = ?";
+
+        $stock_details = DB::connection('tenant')->select($sql, array($id));
+
+        return compact('stock_details');
     }
 
 //    No Funcional
