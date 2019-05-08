@@ -27,6 +27,7 @@ use App\Models\Tenant\{
     Item
 };
 use Exception, DB;
+use Illuminate\Support\Facades\Storage;
 
 class DispatchController extends Controller
 {
@@ -116,34 +117,73 @@ class DispatchController extends Controller
     {
 
         $document = Dispatch::find($document_id);
+        $response = [];
 
         try {
-            $fact = DB::connection('tenant')->transaction(function () use ($document) {
-                $facturalo = new Facturalo();
-                $facturalo->setDocument($document);
-                $facturalo->setType('dispatch');
+            $fileXML = "signed/{$document->filename}.xml";
+            $has_xml_file = Storage::disk("tenant")->exists($fileXML);
 
-                $facturalo->loadXmlSigned(); // se carga el xml firmado
-                $facturalo->onlySenderXmlSignedBill();
-                return $facturalo;
+            $filePDF = "pdf/{$document->filename}.pdf";
+            $has_pdf_file = Storage::disk("tenant")->exists($filePDF);
+
+            $fileCDR = "cdr/R-{$document->filename}.zip";
+            $has_cdr_file = Storage::disk("tenant")->exists($fileCDR);
+
+
+            $facturalo = DB::connection('tenant')->transaction(function () use ($document) {
+                return new Facturalo();
             });
+            $facturalo->setDocument($document);
+            $facturalo->setType('dispatch');
 
-            $response = $fact->getResponse();
+            if (!$has_xml_file) { // corrige la existencia de xm
+                $facturalo->createXmlUnsigned();
+                $facturalo->signXmlUnsigned();
+            }
+            $document->has_xml = 1;
 
-            $document->has_cdr = 1;
+            if (!$has_pdf_file) { //corrige la existencia de pdf
+                $facturalo->createPdf(null, null, 'a4');
+            }
+            $document->has_pdf = 1;
+
+            if (!$has_cdr_file) { // corrige la existencia de cdr
+                try {
+                    $facturalo->consultCdr();
+                    $document->has_cdr = 1;
+                } catch (Exception $e) {
+                    $facturalo->loadXmlSigned(); // se carga el xml firmado
+                    $facturalo->onlySenderXmlSignedBill();
+                }
+                $response = $facturalo->getResponse();
+            } else {
+                $response = ['description' => 'Se ha corregido el índice del archivo CDR'];
+                $document->has_cdr = 1;
+            }
+
             $document->save();
 
             return [
                 'success' => true,
                 'message' => $response['description'],
             ];
+
         } catch (Exception $e) {
 
+            $status = false;
+
+            if (preg_match('/Code: 4000;/', $e->getMessage())) {
+                $status = true;
+                $document->has_cdr = 2;
+                $document->save();
+            }
+
             return [
-                'status' => false,
+                'success' => $status,
                 'code' => $e->getCode(),
                 'message' => $e->getMessage()
             ];
+
         }
 
     }
