@@ -246,7 +246,7 @@
 
                     establisment_item: [],
 
-                    //stock: 0,
+                    stock: 0,
                     stock_min: 1,
                 }
             }
