@@ -241,7 +241,7 @@ class DispatchController extends Controller
             });
 
         $customers = Person::query()
-            ->whereIn('identity_document_type_id', [6])
+            ->whereIn('identity_document_type_id', [6, 1])
             ->whereType('customers')
             ->orderBy('name')
             ->get()
