@@ -287,6 +287,7 @@
                                     }
                                 }
                                 this.form.establisment_item = temp_establisment_item;
+                                this.form.stock = 0;
                                 temp_establisment_item = [];
                             }
                         )
@@ -303,6 +304,7 @@
                         })
                     }
                     this.form.establisment_item = temp_establisment_item;
+                    this.form.stock = 0;
                     temp_establisment_item = [];
                 }
             }
