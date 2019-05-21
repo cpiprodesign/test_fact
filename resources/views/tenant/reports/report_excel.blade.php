@@ -33,10 +33,12 @@
                         <p><strong>Ruc: </strong></p>
                     </td>
                     <td align="center">{{$company->number}}</td>
+                    @if(!is_null($establishment))
                     <td>
-                        <p><strong>Establecimiento: </strong></p>
-                    </td>
-                    <td align="center">{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</td>
+                            <p><strong>Establecimiento: </strong></p>
+                        </td>
+                        <td align="center">{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</td>
+                    @endif
                 </tr>
             </table>
         </div>
@@ -48,6 +50,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Establecimiento</th>
                                 <th>Tipo Doc</th>
                                 <th>Número</th>
                                 <th>Fecha emisión</th>
@@ -61,26 +64,33 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $i = 1;
+                            @endphp
                             @foreach($records as $key => $value)
-                            <tr>
-                                <td class="celda">{{$value->number}}</td>
-                                <td class="celda">{{$value->document_type->id}}</td>
-                                <td class="celda">{{$value->series}}-{{$value->number}}</td>
-                                <td class="celda">{{$value->date_of_issue->format('Y-m-d')}}</td>
-                                <td class="celda">{{$value->customer->name}}</td>
-                                <td class="celda">{{$value->customer->number}}</td>
-                                <td class="celda">{{$value->state_type->description}}</td>
-                                <td class="celda">
-                                    @if($value->status_paid == 1)
-                                        Pagado
-                                    @else
-                                        Pendiente
-                                    @endif
-                                </td>
-                                <td class="celda">{{$value->total_taxed}}</td>
-                                <td class="celda">{{$value->total_igv}}</td>
-                                <td class="celda">{{$value->total}}</td>
-                            </tr>
+                                <tr>
+                                    <td class="celda">{{$i}}</td>
+                                    <td class="celda">{{$value->establishment}}</td>
+                                    <td class="celda">{{$value->document_type}}</td>
+                                    <td class="celda">{{$value->series}}-{{$value->number}}</td>
+                                    <td class="celda">{{$value->date_of_issue}}</td>
+                                    <td class="celda">{{$value->name}}</td>
+                                    <td class="celda">{{$value->document_number}}</td>
+                                    <td class="celda">{{$value->status_type}}</td>
+                                    <td class="celda">
+                                        @if($value->status_paid == 1)
+                                            Pagado
+                                        @else
+                                            Pendiente
+                                        @endif
+                                    </td>
+                                    <td class="celda">{{$value->total_taxed}}</td>
+                                    <td class="celda">{{$value->total_igv}}</td>
+                                    <td class="celda">{{$value->total}}</td>
+                                </tr>
+                                @php
+                                    $i++;
+                                @endphp
                             @endforeach
                         </tbody>
                     </table>

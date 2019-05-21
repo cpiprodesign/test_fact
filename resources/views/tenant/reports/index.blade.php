@@ -13,10 +13,10 @@
                     <div>
                         <form action="{{route('tenant.search')}}" class="el-form demo-form-inline el-form--inline" method="POST">
                             {{csrf_field()}}
-                            <tenant-calendar2 :document_types="{{json_encode($documentTypes)}}" :customers="{{json_encode($customers)}}" data_d="{{$d ?? ''}}" data_a="{{$a ?? ''}}" td="{{$td ?? null}}" customer_td="{{$customer_td ?? null}}"></tenant-calendar2>
+                            <tenant-calendar2 :document_types="{{json_encode($documentTypes)}}" :customers="{{json_encode($customers)}}" :establishments="{{json_encode($establishments)}}"  data_d="{{$d ?? ''}}" data_a="{{$a ?? ''}}" td="{{$td ?? null}}" customer_td="{{$customer_td ?? null}}" establishment_td="{{$establishment_td ?? null}}"></tenant-calendar2>
                         </form>
                     </div>
-                    @if(!empty($reports) && $reports->count())
+                    @if(!empty($reports) && count($reports))
                     <div class="box">
                         <div class="box-body no-padding">
                             <div style="margin-bottom: 10px">
@@ -27,6 +27,7 @@
                                         <input type="hidden" value="{{$a}}" name="a">
                                         <input type="hidden" value="{{$td}}" name="td">
                                         <input type="hidden" value="{{$customer_td}}" name="customer_td">
+                                        <input type="hidden" value="{{$establishment_td}}" name="establishment_td">
                                         <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
                                         {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                     </form>
@@ -36,51 +37,65 @@
                                     <input type="hidden" value="{{$td}}" name="td">
                                     <input type="hidden" value="{{$a}} " name="a">
                                     <input type="hidden" value="{{$customer_td}}" name="customer_td">
+                                    <input type="hidden" value="{{$establishment_td}}" name="establishment_td">
                                     <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
                                     {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                 </form>
                                 @endif
                             </div>
-                            <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
-                                <thead class="">
-                                    <tr>
-                                        <th class="">#</th>
-                                        <th class="">Tipo Documento</th>
-                                        <th class="">Número</th>
-                                        <th class="">Fecha emisión</th>
-                                        <th class="">Cliente</th>
-                                        <th class="">RUC</th>
-                                        <th class="">Estado</th>
-                                        <th class="">Estado de pago</th>
-                                        <th class="">Total Gravado</th>
-                                        <th class="">Total IGV</th>
-                                        <th class="">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($reports as $key => $value)
-                                    <tr>
-                                        <td>{{$value->number}}</td>
-                                        <td>{{$value->document_type->id}}</td>
-                                        <td>{{$value->series}}-{{$value->number}}</td>
-                                        <td>{{$value->date_of_issue->format('Y-m-d')}}</td>
-                                        <td>{{$value->person->name}}</td>
-                                        <td>{{$value->person->number}}</td>
-                                        <td>{{$value->state_type->description}}</td>
-                                        <td>
-                                            @if($value->status_paid == 1)
-                                                Pagado
-                                            @else
-                                                Pendiente
-                                            @endif
-                                        </td>
-                                        <td>{{$value->total_taxed}}</td>
-                                        <td>{{$value->total_igv}}</td>
-                                        <td>{{$value->total}}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
+                                        <thead class="">
+                                            <tr>
+                                                <th class="">#</th>
+                                                <th class="">Establecimiento</th>
+                                                <th class="">Tipo Documento</th>
+                                                <th class="">Número</th>
+                                                <th class="">Fecha emisión</th>
+                                                <th class="">Cliente</th>
+                                                <th class="">RUC</th>
+                                                <th class="">Estado</th>
+                                                <th class="">Estado de pago</th>
+                                                <th class="">Total Gravado</th>
+                                                <th class="">Total IGV</th>
+                                                <th class="">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                $i = 1;
+                                            @endphp
+                                            @foreach($reports as $key => $value)
+                                                <tr>
+                                                    <td>{{$i}}</td>
+                                                    <td>{{$value->establishment}}</td>
+                                                    <td>{{$value->document_type}}</td>
+                                                    <td>{{$value->series}}-{{$value->number}}</td>
+                                                    <td>{{$value->date_of_issue}}</td>
+                                                    <td>{{$value->name}}</td>
+                                                    <td>{{$value->document_number}}</td>
+                                                    <td>{{$value->status_type}}</td>
+                                                    <td>
+                                                        @if($value->status_paid == 1)
+                                                            Pagado
+                                                        @else
+                                                            Pendiente
+                                                        @endif
+                                                    </td>
+                                                    <td>{{$value->total_taxed}}</td>
+                                                    <td>{{$value->total_igv}}</td>
+                                                    <td>{{$value->total}}</td>
+                                                </tr>
+                                                @php
+                                                    $i++;
+                                                @endphp                                            
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
                             <div class="pagination-wrapper">
                                 {{-- {{ $reports->appends(['search' => Session::get('form_document_list')])->render()  }} --}}
                                 {{-- {{$reports->links()}} --}}

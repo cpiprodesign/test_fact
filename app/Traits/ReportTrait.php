@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Tenant\Catalogs\DocumentType;
 use App\Models\Tenant\Person;
+use App\Models\Tenant\Establishment;
 
 /**
  * 
@@ -30,6 +31,15 @@ trait ReportTrait
 
         foreach (Person::all() as $item) {
             if ($item->number == $document) return $item->id;
+        }
+        
+        return null;
+    }
+
+    public function getEstablishment($establishment) {
+        
+        foreach (Establishment::all() as $item) {
+            if ($item->description == $establishment) return $item->id;
         }
         
         return null;

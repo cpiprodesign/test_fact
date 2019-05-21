@@ -69,19 +69,22 @@
                     <td>
                         <p><strong>Ruc: </strong>{{$company->number}}</p>
                     </td>
-                    <td>
-                        <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
-                    </td>
+                    @if(!is_null($establishment))
+                        <td>
+                            <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
+                        </td>
+                    @endif           
                 </tr>
             </table>
         </div>
         @if(!empty($reports))
             <div class="">
-                <div class=" ">
+                <div class="">
                     <table class="">
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Establecimiento</th>
                                 <th>Tipo Doc</th>
                                 <th>Número</th>
                                 <th>Fecha emisión</th>
@@ -89,21 +92,25 @@
                                 <th>RUC</th>
                                 <th>Estado</th>
                                 <th>Estado de Pago</th>
-                                <th>Total Gravado</th>
-                                <th>Total IGV</th>
+                                {{-- <th>Total Gravado</th>
+                                <th>Total IGV</th> --}}
                                 <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $i = 1;
+                            @endphp
                             @foreach($reports as $key => $value)
                                 <tr>
-                                    <td class="celda">{{$value->number}}</td>
-                                    <td class="celda">{{$value->document_type->id}}</td>
+                                    <td class="celda">{{$i}}</td>
+                                    <td class="celda">{{$value->establishment}}</td>
+                                    <td class="celda">{{$value->document_type_id}}</td>
                                     <td class="celda">{{$value->series}}-{{$value->number}}</td>
-                                    <td class="celda">{{$value->date_of_issue->format('Y-m-d')}}</td>
-                                    <td class="celda">{{$value->customer->name}}</td>
-                                    <td class="celda">{{$value->customer->number}}</td>
-                                    <td class="celda">{{$value->state_type->description}}</td>
+                                    <td class="celda">{{$value->date_of_issue}}</td>
+                                    <td class="celda">{{$value->name}}</td>
+                                    <td class="celda">{{$value->document_number}}</td>
+                                    <td class="celda">{{$value->status_type}}</td>
                                     <td class="celda">
                                         @if($value->status_paid == 1)
                                             Pagado
@@ -111,11 +118,14 @@
                                             Pendiente
                                         @endif
                                     </td>
-                                    <td class="celda">{{$value->total_taxed}}</td>
-                                    <td class="celda">{{$value->total_igv}}</td>
+                                    {{-- <td class="celda">{{$value->total_taxed}}</td>
+                                    <td class="celda">{{$value->total_igv}}</td> --}}
                                     <td class="celda">{{$value->total}}</td>
                                 </tr>
-                            @endforeach
+                                @php
+                                    $i++;
+                                @endphp
+                             @endforeach
                         </tbody>
                     </table>
                 </div>
