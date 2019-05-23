@@ -66,6 +66,9 @@
                         <tbody>
                             @php
                                 $i = 1;
+                                $total_taxed = 0;
+                                $total_igv = 0;
+                                $total = 0;
                             @endphp
                             @foreach($records as $key => $value)
                                 <tr>
@@ -90,9 +93,21 @@
                                 </tr>
                                 @php
                                     $i++;
+                                    $total_taxed = $value->total_taxed + $total_taxed;
+                                    $total_igv = $value->total_igv + $total_igv;
+                                    $total = $value->total + $total;
                                 @endphp
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="8"></th>
+                                <th class="celda">Totales</th>
+                                <th class="celda">{{number_format($total_taxed, 2)}}</th>
+                                <th class="celda">{{number_format($total_igv, 2)}}</th>
+                                <th class="celda">{{number_format($total, 2)}}</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

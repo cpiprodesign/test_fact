@@ -85,27 +85,28 @@
                             <tr>
                                 <th>#</th>
                                 <th>Establecimiento</th>
-                                <th>Tipo Doc</th>
                                 <th>Número</th>
                                 <th>Fecha emisión</th>
                                 <th>Cliente</th>
                                 <th>RUC</th>
                                 <th>Estado</th>
                                 <th>Estado de Pago</th>
-                                {{-- <th>Total Gravado</th>
-                                <th>Total IGV</th> --}}
+                                <th>Total Gravado</th>
+                                <th>Total IGV</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php
                                 $i = 1;
+                                $total_taxed = 0;
+                                $total_igv = 0;
+                                $total = 0;
                             @endphp
                             @foreach($reports as $key => $value)
                                 <tr>
                                     <td class="celda">{{$i}}</td>
                                     <td class="celda">{{$value->establishment}}</td>
-                                    <td class="celda">{{$value->document_type_id}}</td>
                                     <td class="celda">{{$value->series}}-{{$value->number}}</td>
                                     <td class="celda">{{$value->date_of_issue}}</td>
                                     <td class="celda">{{$value->name}}</td>
@@ -118,15 +119,27 @@
                                             Pendiente
                                         @endif
                                     </td>
-                                    {{-- <td class="celda">{{$value->total_taxed}}</td>
-                                    <td class="celda">{{$value->total_igv}}</td> --}}
+                                    <td class="celda">{{$value->total_taxed}}</td>
+                                    <td class="celda">{{$value->total_igv}}</td>
                                     <td class="celda">{{$value->total}}</td>
                                 </tr>
                                 @php
                                     $i++;
+                                    $total_taxed = $value->total_taxed + $total_taxed;
+                                    $total_igv = $value->total_igv + $total_igv;
+                                    $total = $value->total + $total;
                                 @endphp
-                             @endforeach
+                            @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="7"></th>
+                                <th class="font-weight-bold">Totales</th>
+                                <th class="font-weight-bold">{{number_format($total_taxed, 2)}}</th>
+                                <th class="font-weight-bold">{{number_format($total_igv, 2)}}</th>
+                                <th class="font-weight-bold">{{number_format($total, 2)}}</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
