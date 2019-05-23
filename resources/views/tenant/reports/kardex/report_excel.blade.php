@@ -41,45 +41,53 @@
             </table>
         </div>
         <br>
-        @if(!empty($records))
-            <div class="">
-                <div class=" ">
-                    <table class="">
-                        <thead>
+        <div class="">
+            <div class=" ">
+                <table class="">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha y hora</th>
+                            <th>Tipo transacción</th>
+                            <th>Número</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>{{$item_inicial->created_at}}</td>
+                            <td>Entrada Inicial</td>
+                            <td>- - -</td>
+                            <td>{{number_format($item_inicial->stock_inicial, 2)}}</td>
+                            <td>0.00</td>
+                            <td>{{number_format($item_inicial->stock_inicial, 2)}}</td>
+                        </tr>
+                        @php
+                            $balance = $item_inicial->stock_inicial;
+                            $i = 2;
+                        @endphp
+                        @foreach($records as $key => $value)
                             <tr>
-                                <th>#</th>
-                                <th>Fecha y hora</th>
-                                <th>Tipo transacción</th>
-                                <th>Número</th>
-                                <th>Entrada</th>
-                                <th>Salida</th>
-                                <th>Saldo</th>
+                                <td>{{$i}}</td>
+                                <td>{{$value->created_at}}</td>
+                                <td>{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
+                                <td>{{$value->series}}-{{$value->number}}</td>
+                                <td>{{($value->type == 'purchase') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
+                                <td>{{($value->type == 'sale') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
+                                @php
+                                    if ($value->type == 'purchase') $balance += $value->quantity;
+                                    if ($value->type == 'sale') $balance -= $value->quantity;
+                                    $i++;
+                                @endphp
+                                <td>{{number_format($balance, 2)}}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($records as $key => $value)
-                                <tr>
-                                    <td>{{$value->id}}</td>
-                                    <td>{{$value->created_at}}</td>
-                                    <td>{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
-                                    <td>{{$value->series}}-{{$value->number}}</td>
-                                    <td>{{($value->type == 'purchase') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
-                                    <td>{{($value->type == 'sale') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
-                                    @php
-                                        if ($value->type == 'purchase') $balance += $value->quantity;
-                                        if ($value->type == 'sale') $balance -= $value->quantity;
-                                    @endphp
-                                    <td>{{number_format($balance, 2)}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-        @else
-            <div>
-                <p>No se encontraron registros.</p>
-            </div>
-        @endif
+        </div>
     </body>
 </html>

@@ -35,7 +35,7 @@
                             </div>
                         </form>
                     </div>
-                    @if(!empty($reports) && count($reports) > 0)
+                    
                     <div class="box">
                         <div class="box-body no-padding">
                             <div style="margin-bottom: 10px">
@@ -69,9 +69,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{$item_inicial->created_at}}</td>
+                                        <td>Entrada Inicial</td>
+                                        <td>- - -</td>
+                                        <td>{{number_format($item_inicial->stock_inicial, 2)}}</td>
+                                        <td>0.00</td>
+                                        <td>{{number_format($item_inicial->stock_inicial, 2)}}</td>
+                                    </tr>
+                                    @php
+                                        $balance = $item_inicial->stock_inicial;
+                                        $i = 2;
+                                    @endphp
                                     @foreach($reports as $key => $value)
                                     <tr>
-                                        <td>{{$value->id}}</td>
+                                        <td>{{$i}}</td>
                                         <td>{{$value->created_at}}</td>
                                         <td>{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
                                         <td>{{$value->series}}-{{$value->number}}</td>
@@ -80,6 +93,7 @@
                                         @php
                                             if ($value->type == 'purchase') $balance += $value->quantity;
                                             if ($value->type == 'sale') $balance -= $value->quantity;
+                                            $i++;
                                         @endphp
                                         <td>{{number_format($balance, 2)}}</td>
                                     </tr>
@@ -91,12 +105,7 @@
                                 {{-- {{$reports->links()}} --}}
                             </div>
                         </div>
-                    </div>
-                    @else
-                    <div class="box box-body no-padding">
-                        <strong>No se encontraron registros</strong>
-                    </div>
-                    @endif
+                    </div>                    
                 </div>
             </div>
         </div>
