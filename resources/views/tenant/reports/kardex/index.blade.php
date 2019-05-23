@@ -35,7 +35,7 @@
                             </div>
                         </form>
                     </div>
-                    @if(!empty($item_inicial) && count($item_inicial) > 0)
+                    @if(!empty($item_inicial))
                         <div class="box">
                             <div class="box-body no-padding">
                                 <div style="margin-bottom: 10px">
