@@ -70,12 +70,16 @@
                         <p><strong>Ruc: </strong>{{$company->number}}</p>
                     </td>
                     <td>
+                        <p><strong>Producto: </strong>{{$item->description}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <p><strong>Establecimiento: </strong>{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</p>
                     </td>
                 </tr>
             </table>
         </div>
-       
         <div class="">
             <div class=" ">
                 <table class="">

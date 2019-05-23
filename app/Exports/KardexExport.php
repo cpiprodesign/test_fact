@@ -23,6 +23,12 @@ class KardexExport implements  FromView, ShouldAutoSize
         
         return $this;
     }
+
+    public function item($item) {
+        $this->item = $item;
+        
+        return $this;
+    }
     
     public function records($records) {
         $this->records = $records;
@@ -46,6 +52,7 @@ class KardexExport implements  FromView, ShouldAutoSize
         return view('tenant.reports.kardex.report_excel', [
             'balance'=> $this->balance,
             'item_inicial'=> $this->item_inicial,
+            'item'=> $this->item,
             'records'=> $this->records,
             'company' => $this->company,
             'establishment'=>$this->establishment

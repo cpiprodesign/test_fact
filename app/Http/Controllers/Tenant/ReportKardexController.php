@@ -68,11 +68,13 @@ class ReportKardexController extends Controller
         $company = Company::first();
         $establishment_id = $request->establishment_id;
         $establishment = Establishment::where('id', $establishment_id)->first();
+
+        $item = Item::find($request->item_id);
         
         $reports = $this->records($request->establishment_id, $request->item_id);
         $item_inicial = $this->stock_inicial($request->establishment_id, $request->item_id);
         
-        $pdf = PDF::loadView('tenant.reports.kardex.report_pdf', compact("reports", "company", "establishment", "balance", "item_inicial"));
+        $pdf = PDF::loadView('tenant.reports.kardex.report_pdf', compact("reports", "company", "establishment", "balance", "item_inicial", "item"));
         $filename = 'Reporte_Kardex'.date('YmdHis');
         
         return $pdf->download($filename.'.pdf');
@@ -92,10 +94,13 @@ class ReportKardexController extends Controller
        
         $records = $this->records($request->establishment_id, $request->item_id);
         $item_inicial = $this->stock_inicial($request->establishment_id, $request->item_id);
+
+        $item = Item::find($request->item_id);
         
         return (new KardexExport)
             ->balance($balance)
             ->item_inicial($item_inicial)
+            ->item($item)
             ->records($records)
             ->company($company)
             ->establishment($establishment)

@@ -34,6 +34,12 @@
                     </td>
                     <td align="center">{{$company->number}}</td>
                     <td>
+                        <p><strong>Producto: </strong></p>
+                    </td>
+                    <td align="center">{{$item->description}}</td>
+                </tr>
+                <tr>
+                    <td>
                         <p><strong>Establecimiento: </strong></p>
                     </td>
                     <td align="center">{{$establishment->address}} - {{$establishment->department->description}} - {{$establishment->district->description}}</td>
