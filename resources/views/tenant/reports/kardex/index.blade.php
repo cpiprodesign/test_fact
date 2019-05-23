@@ -35,77 +35,78 @@
                             </div>
                         </form>
                     </div>
-                    
-                    <div class="box">
-                        <div class="box-body no-padding">
-                            <div style="margin-bottom: 10px">
-                                @if(isset($reports))
-                                    <form action="{{route('tenant.report.kardex.pdf')}}" class="d-inline" method="POST">
+                    @if(!empty($item_inicial) && count($item_inicial) > 0)
+                        <div class="box">
+                            <div class="box-body no-padding">
+                                <div style="margin-bottom: 10px">
+                                    @if(isset($reports))
+                                        <form action="{{route('tenant.report.kardex.pdf')}}" class="d-inline" method="POST">
+                                            {{csrf_field()}}
+                                            <input type="hidden" name="item_id" value="{{old('item_id', request()->item_id)}}">
+                                            <input type="hidden" value="{{$establishment_id}}" name="establishment_id">
+                                            <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
+                                            {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
+                                        </form>
+                                    <form action="{{route('tenant.report.kardex.report_excel')}}" class="d-inline" method="POST">
                                         {{csrf_field()}}
                                         <input type="hidden" name="item_id" value="{{old('item_id', request()->item_id)}}">
                                         <input type="hidden" value="{{$establishment_id}}" name="establishment_id">
-                                        <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
+                                        <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
                                         {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                     </form>
-                                <form action="{{route('tenant.report.kardex.report_excel')}}" class="d-inline" method="POST">
-                                    {{csrf_field()}}
-                                    <input type="hidden" name="item_id" value="{{old('item_id', request()->item_id)}}">
-                                    <input type="hidden" value="{{$establishment_id}}" name="establishment_id">
-                                    <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
-                                    {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
-                                </form>
-                                @endif
-                            </div>
-                            <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
-                                <thead class="">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Fecha y hora</th>
-                                        <th>Tipo transacción</th>
-                                        <th>Número</th>
-                                        <th>Entrada</th>
-                                        <th>Salida</th>
-                                        <th>Saldo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>{{$item_inicial->created_at}}</td>
-                                        <td>Entrada Inicial</td>
-                                        <td>- - -</td>
-                                        <td>{{number_format($item_inicial->stock_inicial, 2)}}</td>
-                                        <td>0.00</td>
-                                        <td>{{number_format($item_inicial->stock_inicial, 2)}}</td>
-                                    </tr>
-                                    @php
-                                        $balance = $item_inicial->stock_inicial;
-                                        $i = 2;
-                                    @endphp
-                                    @foreach($reports as $key => $value)
-                                    <tr>
-                                        <td>{{$i}}</td>
-                                        <td>{{$value->created_at}}</td>
-                                        <td>{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
-                                        <td>{{$value->series}}-{{$value->number}}</td>
-                                        <td>{{($value->type == 'purchase') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
-                                        <td>{{($value->type == 'sale') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
+                                    @endif
+                                </div>
+                                <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
+                                    <thead class="">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Fecha y hora</th>
+                                            <th>Tipo transacción</th>
+                                            <th>Número</th>
+                                            <th>Entrada</th>
+                                            <th>Salida</th>
+                                            <th>Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>                                    
+                                        <tr>
+                                            <td>1</td>
+                                            <td>{{$item_inicial->created_at}}</td>
+                                            <td>Entrada Inicial</td>
+                                            <td>- - -</td>
+                                            <td>{{number_format($item_inicial->stock_inicial, 2)}}</td>
+                                            <td>0.00</td>
+                                            <td>{{number_format($item_inicial->stock_inicial, 2)}}</td>
+                                        </tr>                                                                    
                                         @php
-                                            if ($value->type == 'purchase') $balance += $value->quantity;
-                                            if ($value->type == 'sale') $balance -= $value->quantity;
-                                            $i++;
+                                            $balance = $item_inicial->stock_inicial;
+                                            $i = 2;
                                         @endphp
-                                        <td>{{number_format($balance, 2)}}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <div class="pagination-wrapper">
-                                {{-- {{ $reports->appends(['search' => Session::get('form_document_list')])->render()  }} --}}
-                                {{-- {{$reports->links()}} --}}
+                                        @foreach($reports as $key => $value)
+                                        <tr>
+                                            <td>{{$i}}</td>
+                                            <td>{{$value->created_at}}</td>
+                                            <td>{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
+                                            <td>{{$value->series}}-{{$value->number}}</td>
+                                            <td>{{($value->type == 'purchase') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
+                                            <td>{{($value->type == 'sale') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
+                                            @php
+                                                if ($value->type == 'purchase') $balance += $value->quantity;
+                                                if ($value->type == 'sale') $balance -= $value->quantity;
+                                                $i++;
+                                            @endphp
+                                            <td>{{number_format($balance, 2)}}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                <div class="pagination-wrapper">
+                                    {{-- {{ $reports->appends(['search' => Session::get('form_document_list')])->render()  }} --}}
+                                    {{-- {{$reports->links()}} --}}
+                                </div>
                             </div>
                         </div>
-                    </div>                    
+                    @endif          
                 </div>
             </div>
         </div>
