@@ -75,11 +75,10 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     </li>
                                 </ul>
                             </li>
-                            <li class="#">
-                                <a class="nav-link" href="#">
-                                    Ventas sin facturar (Pronto)
+                            <li class="{{ ($path[0] === 'sale-notes')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.sale_notes.index')}}">
+                                    Nota de Venta
                                 </a>
-
                             </li>
                         </ul>
                     </li>

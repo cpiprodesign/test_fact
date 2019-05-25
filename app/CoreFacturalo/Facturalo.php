@@ -23,6 +23,7 @@ use App\Models\Tenant\Document;
 use App\Models\Tenant\Retention;
 use App\Models\Tenant\Quotation;
 use App\Models\Tenant\QuotationItem;
+use App\Models\Tenant\SaleNote;
 use App\Models\Tenant\Summary;
 use App\Models\Tenant\Voided;
 use Exception;
@@ -105,8 +106,6 @@ class Facturalo
                     $update = $document->establishment_item()->firstOrNew(['item_id' => $row['item_id']]);
                     $update->quantity -= $row['quantity'];
                     $update->save();
-
-
                 }
                 $document->invoice()->create($inputs['invoice']);
                 $this->document = Document::find($document->id);
@@ -138,6 +137,13 @@ class Facturalo
                     $document->items()->create($row);
                 }
                 $this->document = Quotation::find($document->id);
+                break;
+            case 'sale-note':
+                $sale_note = SaleNote::create($inputs);
+                foreach ($inputs['items'] as $row) {
+                    $sale_note->items()->create($row);                    
+                }
+                $this->sale_note = SaleNote::find($sale_note->id);
                 break;
             default:
                 $document = Dispatch::create($inputs);
@@ -326,7 +332,7 @@ class Facturalo
         $this->uploadFile($pdf->output('', 'S'), 'pdf');
     }
 
-    public function createPdfQuotation($document = null, $type = null, $format = null)
+    public function createPdf2($document = null, $type = null, $format = null)
     {
         $template = new Template();
         $pdf = new Mpdf();
@@ -338,7 +344,7 @@ class Facturalo
         $format_pdf = ($format != null) ? $format : $format_pdf;
         $this->type = ($type != null) ? $type : $this->type;        
 
-        $html = $template->pdf($this->type, $this->company, $this->document, $format_pdf);
+        $html = $template->pdf('simple', $this->company, $this->document, $format_pdf);
 
         $pdf->WriteHTML($html);
 

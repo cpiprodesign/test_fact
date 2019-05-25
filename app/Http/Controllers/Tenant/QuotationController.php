@@ -152,55 +152,32 @@ class QuotationController extends Controller
 
         $facturalo = new Facturalo();
         $facturalo->save($request->all());
-        $facturalo->createPdfQuotation();
+        $facturalo->createPdf2();
 
         return [
-            'success' => true            
+            'success' => true
         ];
     }
 
     public function update(QuotationRequest $request, $quotation_id)
     {
-        $inputs = $request->all();       
+        $inputs = $request->all();
 
         $array = [$inputs, $quotation_id];
 
         $fact = DB::connection('tenant')->transaction(function () use ($array){
 
             $inputs = $array[0];
-            $quotation_id = $array[1];           
+            $quotation_id = $array[1];
             
-            //eliminar
-            // Quotation::where('id', $quotation_id)->delete();
-            // QuotationItem::where('quotation_id', $quotation_id)->delete();
-
-            //crear
-            // $document = Quotation::create($inputs);
-            // foreach ($inputs['items'] as $row) {
-            //     $document->items()->create($row);
-            // }
-            // $this->document = Quotation::find($document->id);
-
-            // $facturalo = new Facturalo();
-            // $facturalo->createPdfQuotation($this->document, 'quotation', 'a4');
-
-            // return $facturalo;
-
-            //$inputs = $request->all();
-
             $facturalo = new Facturalo();
             $this->document = $facturalo->updateQuotation($inputs, $quotation_id);
-            // echo json_encode($facturalo); exit;
-            //$this->document = Quotation::find($id);
-            // $facturalo->createPdfQuotation();
-            $facturalo->createPdfQuotation($this->document, 'quotation', 'a4');
+            $facturalo->createPdf2($this->document, 'quotation', 'a4');
 
-            // return $facturalo;
-            return $this->document;            
+            return $this->document;
         });
 
         $document = $fact;
-        // $response = $fact->getResponse();
 
         return [
             'success' => true,

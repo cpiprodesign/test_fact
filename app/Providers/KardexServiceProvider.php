@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\DocumentItem;
 use App\Models\Tenant\Document;
+use App\Models\Tenant\SaleNoteItem;
+use App\Models\Tenant\SaleNote;
 use App\Models\Tenant\PurchaseItem; 
 use App\Models\Tenant\Kardex;
 use Illuminate\Support\ServiceProvider;
@@ -18,6 +20,7 @@ class KardexServiceProvider extends ServiceProvider
     {        
         $this->sale();
         $this->purchase();
+        $this->sale_note();
     }
  
     public function register()
@@ -38,6 +41,30 @@ class KardexServiceProvider extends ServiceProvider
                     $item->stock -= $kardex->quantity;
                     $item->save();
                 }
+                
+            }
+        });
+    }
+
+    private function sale_note()
+    {
+        SaleNoteItem::created(function ($sale_note_item) {
+            
+            $sale_note = SaleNote::whereIn('document_type_id',['100'])->find($sale_note_item->document_id);
+
+            if($sale_note){
+
+                $kardex = $this->saveKardex('sale', $sale_note_item->item_id, $sale_note_item->document_id, $sale_note_item->quantity);
+
+                $update = $sale_note->establishment_item()->firstOrNew(['item_id' => $sale_note_item->item_id]);
+                    $update->quantity -= $kardex->quantity;
+                    $update->save();
+                
+                // if($document->state_type_id != 11){
+                //     $item = Item::find($document_item->item_id);
+                //     $item->stock -= $kardex->quantity;
+                //     $item->save();
+                // }
                 
             }
         });
