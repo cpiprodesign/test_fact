@@ -75,6 +75,21 @@ class DownloadController extends Controller
         
         return response()->file($temp);
     }
+
+    public function toPrint2($model, $id, $format = null) {
+
+        $model = "App\\Models\\Tenant\\".ucfirst($model);
+        $document = $model::where('id', $id)->first();
+        
+            if (!$document) throw new Exception("El código {$id} es inválido, no se encontro documento relacionado");
+                
+            if ($format != null) $this->reloadPDF2($document, 'simple', $format);
+                
+            $temp = tempnam(sys_get_temp_dir(), 'pdf');
+            file_put_contents($temp, $this->getStorage($document->filename, 'pdf'));
+              
+            return response()->file($temp);
+        }
     
     /**
      * Reload PDF
@@ -87,7 +102,7 @@ class DownloadController extends Controller
     }
 
     private function reloadPDF2($document,$type, $format){
-        (new Facturalo)->createPdf($document, $type, $format);
+        (new Facturalo)->createPdf2($document, $type, $format);
 
     }
 }

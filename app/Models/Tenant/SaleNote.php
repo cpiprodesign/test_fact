@@ -80,6 +80,11 @@ class SaleNote extends ModelTenant
         $this->attributes['customer'] = (is_null($value))?null:json_encode($value);
     }
 
+    public function establishment_item()
+    {
+        return $this->hasMany(EstablishmentItem::class, 'establishment_id', 'establishment_id');
+    }
+
     public function getLegendsAttribute($value)
     {
         return (is_null($value))?null:(object) json_decode($value);

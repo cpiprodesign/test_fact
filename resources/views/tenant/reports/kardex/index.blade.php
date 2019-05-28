@@ -86,13 +86,13 @@
                                         <tr>
                                             <td>{{$i}}</td>
                                             <td>{{$value->created_at}}</td>
-                                            <td>{{($value->type == 'sale') ? 'Venta' : 'Compra'}}</td>
+                                            <td>{{$value->type2}}</td>
                                             <td>{{$value->series}}-{{$value->number}}</td>
                                             <td>{{($value->type == 'purchase') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
-                                            <td>{{($value->type == 'sale') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
+                                            <td>{{($value->type == 'sale' || $value->type == 'sale-note') ? number_format($value->quantity, 2) : number_format(0, 2)}}</td>
                                             @php
                                                 if ($value->type == 'purchase') $balance += $value->quantity;
-                                                if ($value->type == 'sale') $balance -= $value->quantity;
+                                                if ($value->type == 'sale' || $value->type == 'sale-note') $balance -= $value->quantity;
                                                 $i++;
                                             @endphp
                                             <td>{{number_format($balance, 2)}}</td>

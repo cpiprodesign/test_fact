@@ -16,6 +16,7 @@ if ($hostname) {
 
         Route::get('downloads/{model}/{type}/{external_id}/{format?}', 'Tenant\DownloadController@downloadExternal')->name('tenant.download.external_id');
         Route::get('print/{model}/{external_id}/{format?}', 'Tenant\DownloadController@toPrint');
+        Route::get('print2/{model}/{id}/{format?}', 'Tenant\DownloadController@toPrint2');
         /*cotizacion*/
         Route::get('download/{model}/{type}/{id}/{format?}', 'Tenant\DownloadController@downloadExternal2')->name('tenant.download.id');
         /*fin cotizacion*/
@@ -188,16 +189,17 @@ if ($hostname) {
 
             //NoteSales
             Route::get('sale-notes', 'Tenant\SaleNoteController@index')->name('tenant.sale_notes.index');
-            // Route::get('sale-notes/columns', 'Tenant\SaleNotesController@columns');
-            // Route::get('sale-notes/records', 'Tenant\SaleNotesController@records');
+            Route::get('sale-notes/columns', 'Tenant\SaleNoteController@columns');
+            Route::get('sale-notes/records', 'Tenant\SaleNoteController@records');
             Route::get('sale-notes/create', 'Tenant\SaleNoteController@create')->name('tenant.sale_notes.create');
-            // Route::get('sale-notes/edit/{quotation}', 'Tenant\SaleNotesController@edit')->name('tenant.quotations.edit');
+            // Route::get('sale-notes/edit/{quotation}', 'Tenant\SaleNoteController@edit')->name('tenant.quotations.edit');
             Route::get('sale-notes/tables', 'Tenant\SaleNoteController@tables');
-            // Route::get('sale-notes/record/{quotation}', 'Tenant\SaleNotesController@record');
+            Route::get('sale-notes/record/{id}', 'Tenant\SaleNoteController@record');
             Route::post('sale-notes', 'Tenant\SaleNoteController@store');
             // Route::post('sale-notes/update/{quotation}', 'Tenant\SaleNotesController@update');
             // Route::get('sale-notes/send/{quotation}', 'Tenant\SaleNotesController@send');
-            // Route::post('sale-notes/email', 'Tenant\SaleNotesController@email');
+            Route::post('sale-notes/email', 'Tenant\SaleNoteController@email');
+            Route::delete('sale-notes/{salenote}', 'Tenant\SaleNoteController@destroy');
             // Route::get('sale-notes/item/tables', 'Tenant\SaleNotesController@item_tables');
             // Route::get('sale-notes/table/{table}', 'Tenant\SaleNotesController@table');
 

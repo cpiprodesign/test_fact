@@ -109,15 +109,20 @@ class ReportKardexController extends Controller
 
     public function records($establishment_id, $item_id)
     {
-        $sql = "SELECT kar.id, kar.type, doc.series, doc.number, kar.quantity, kar.created_at
+        $sql = "SELECT kar.id, kar.type, 'Ventas' as `type2`, doc.series, doc.number, kar.quantity, kar.created_at
                 FROM kardex kar
                 INNER JOIN documents doc ON doc.id = kar.`document_id`
-                WHERE doc.establishment_id = $establishment_id AND kar.item_id = $item_id
+                WHERE doc.establishment_id = $establishment_id AND kar.item_id = $item_id AND kar.type = 'sale'
                 UNION ALL
-                SELECT kar.id, kar.type, pur.series, pur.number, kar.quantity, kar.created_at
+                SELECT kar.id, kar.type, 'Compras' as `type2`, pur.series, pur.number, kar.quantity, kar.created_at
                 FROM kardex kar
                 INNER JOIN purchases pur ON pur.id = kar.`purchase_id`
-                WHERE pur.establishment_id = $establishment_id AND kar.item_id = $item_id
+                WHERE pur.establishment_id = $establishment_id AND kar.item_id = $item_id AND kar.type = 'purchase'
+                UNION ALL
+                SELECT kar.id, kar.type, 'Nota de Venta' as `type2`, san.series, san.number, kar.quantity, kar.created_at
+                FROM kardex kar
+                INNER JOIN sale_notes san ON san.id = kar.`sale_note_id`
+                WHERE san.establishment_id = $establishment_id AND kar.item_id = $item_id AND kar.type = 'sale-note'
                 ORDER BY created_at";
 
         $items = DB::connection('tenant')->select($sql);
@@ -127,11 +132,13 @@ class ReportKardexController extends Controller
 
     public function stock_inicial($establishment_id, $item_id)
     {
-        $sql = "SELECT created_at, quantity - (entrada - salida) AS stock_inicial
+        $sql = "SELECT created_at, quantity - (entrada - salida - salida2) AS stock_inicial
 		        FROM 
                 (SELECT ite.created_at ,esi.quantity,
                 IFNULL((SELECT SUM(quantity) FROM kardex kar INNER JOIN documents doc ON doc.id = kar.`document_id`
                 WHERE doc.establishment_id = $establishment_id AND kar.item_id = $item_id), 0)  AS salida,
+                IFNULL((SELECT SUM(quantity) FROM kardex kar INNER JOIN sale_notes san ON san.id = kar.`sale_note_id`
+                WHERE san.establishment_id = $establishment_id AND kar.item_id = $item_id), 0)  AS salida2,
                 IFNULL((SELECT SUM(quantity) FROM kardex kar INNER JOIN purchases pur ON pur.id = kar.`purchase_id`
                 WHERE pur.establishment_id = $establishment_id AND kar.item_id = $item_id), 0) AS entrada
                 FROM establishment_items esi

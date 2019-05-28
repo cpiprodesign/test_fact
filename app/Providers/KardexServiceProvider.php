@@ -50,22 +50,15 @@ class KardexServiceProvider extends ServiceProvider
     {
         SaleNoteItem::created(function ($sale_note_item) {
             
-            $sale_note = SaleNote::whereIn('document_type_id',['100'])->find($sale_note_item->document_id);
+            $sale_note = SaleNote::whereIn('document_type_id',['100'])->find($sale_note_item->sale_note_id);
 
             if($sale_note){
 
-                $kardex = $this->saveKardex('sale', $sale_note_item->item_id, $sale_note_item->document_id, $sale_note_item->quantity);
+                $kardex = $this->saveKardex('sale-note', $sale_note_item->item_id, $sale_note_item->sale_note_id, $sale_note_item->quantity);
 
                 $update = $sale_note->establishment_item()->firstOrNew(['item_id' => $sale_note_item->item_id]);
                     $update->quantity -= $kardex->quantity;
                     $update->save();
-                
-                // if($document->state_type_id != 11){
-                //     $item = Item::find($document_item->item_id);
-                //     $item->stock -= $kardex->quantity;
-                //     $item->save();
-                // }
-                
             }
         });
     }

@@ -163,11 +163,7 @@
             @foreach($document->legends as $row)
                 <p>Son: <span class="font-bold">{{ $row->value }} {{ $document->currency_type->description }}</span></p>
             @endforeach
-            <br/>
-            <strong>Información adicional</strong>
-            @foreach($document->additional_information as $information)
-                <p>{{ $information }}</p>
-            @endforeach
+            <br/>            
         </td>
     </tr>
 </table>

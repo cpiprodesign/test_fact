@@ -16,6 +16,7 @@ trait KardexTrait
             'item_id' => $item_id,
             'document_id' => ($type == 'sale') ? $id : null,
             'purchase_id' => ($type == 'purchase') ? $id : null,
+            'sale_note_id' => ($type == 'sale-note') ? $id : null,
             'quantity' => $quantity,
         ]);
 

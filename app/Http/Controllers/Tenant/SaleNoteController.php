@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\DocumentEmailRequest;
 use App\Http\Requests\Tenant\SaleNoteRequest;
 use App\Http\Requests\Tenant\DocumentVoidedRequest;
-use App\Http\Resources\Tenant\QuotationCollection;
-use App\Http\Resources\Tenant\QuotationResource;
+use App\Http\Resources\Tenant\SaleNoteCollection;
+use App\Http\Resources\Tenant\SaleNoteResource;
 use App\Mail\Tenant\DocumentEmail;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\ChargeDiscountType;
@@ -19,10 +19,11 @@ use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
-use App\Models\Tenant\Quotation;
-use App\Models\Tenant\QuotationItem;
+use App\Models\Tenant\SaleNote;
+use App\Models\Tenant\SaleNoteItem;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
+use App\Models\Tenant\Kardex;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Series;
 use Exception;
@@ -136,21 +137,31 @@ class SaleNoteController extends Controller
 
     public function record($id)
     {
-        $record = new QuotationResource(Quotation::findOrFail($id));
+        $record = new SaleNoteResource(SaleNote::findOrFail($id));
 
         return $record;
     }
 
     public function store(SaleNoteRequest $request)
     {
-        $inputs = $request->all();
+        $fact = DB::connection('tenant')->transaction(function () use ($request) {
 
-        $facturalo = new Facturalo();
-        $facturalo->save($request->all());
-        $facturalo->createPdf2();
+            $inputs = $request->all();
+
+            $facturalo = new Facturalo();
+            $facturalo->save($request->all());
+            $facturalo->createPdf2();
+            
+            return $facturalo;
+        });
+
+        $document = $fact->getDocument();
 
         return [
-            'success' => true            
+            'success' => true,
+            'data' => [
+                'id' => $document->id,
+            ],
         ];
     }
 
@@ -185,13 +196,41 @@ class SaleNoteController extends Controller
     public function email(DocumentEmailRequest $request)
     {
         $company = Company::active();
-        $document = Document::find($request->input('id'));
+        $document = SaleNote::find($request->input('id'));
         $customer_email = $request->input('customer_email');
 
         Mail::to($customer_email)->send(new DocumentEmail($company, $document));
 
         return [
             'success' => true
+        ];
+    }
+
+    public function destroy($id)
+    {
+        $fact = DB::connection('tenant')->transaction(function () use ($id){
+
+            $sale_note = SaleNote::find($id);
+            $sale_note_item = SaleNoteItem::where('sale_note_id', $id)->get();
+
+            foreach($sale_note_item as $item)
+            {
+                $update = $sale_note->establishment_item()->firstOrNew(['item_id' => $item->item_id]);
+                $update->quantity += $item->quantity;
+                $update->save();
+            }
+
+            SaleNote::where('id', $id)->delete();
+            SaleNoteItem::where('sale_note_id', $id)->delete();
+            Kardex::where('type', 'sale-note')
+            ->where('sale_note_id',$id)->delete();
+
+            return true;
+        });
+
+        return [
+            'success' => true,
+            'message' => 'Nota de venta eliminada con éxito'
         ];
     }
 

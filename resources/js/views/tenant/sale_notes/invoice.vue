@@ -369,7 +369,9 @@
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                     if (response.data.success) {
-                       this.close()
+                        
+                       this.documentNewId = response.data.data.id;
+                       this.showDialogOptions = true;
                     }
                     else {
                         this.$message.error(response.data.message);

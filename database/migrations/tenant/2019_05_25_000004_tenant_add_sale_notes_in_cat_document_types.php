@@ -15,7 +15,7 @@ class TenantAddSaleNotesInCatDocumentTypes extends Migration
     public function up()
     {
         DB::table('cat_document_types')->insert([
-            ['id' => '100', 'active' => 1, 'short' => 'NV', 'description' => 'Nota de Venta']
+            ['id' => '100', 'active' => 1, 'short' => 'NV', 'description' => 'NOTA DE VENTA']
         ]);
     }
 

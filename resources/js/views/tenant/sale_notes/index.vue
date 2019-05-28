@@ -26,107 +26,43 @@
                         <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.customer_name }}<br/><small v-text="row.customer_number"></small></td>
                         <td>{{ row.number }}</td>
-                        <td>
-                            <span class="badge bg-secondary text-white" :class="{
-                            'bg-danger': (row.state_type_id === '11'),
-                            'bg-warning': (row.state_type_id === '13'),
-                            'bg-secondary': (row.state_type_id === '01'),
-                            'bg-info': (row.state_type_id === '03'),
-                            'bg-success': (row.state_type_id === '05'),
-                            'bg-secondary': (row.state_type_id === '07'),
-                            'bg-dark': (row.state_type_id === '09')
-                            }">{{ row.state_type_description }}</span>
-                        </td>
                         <td class="text-center">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
-                        <!--<td class="text-center">-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-danger"-->
-                                    <!--@click.prevent="clickDownload(row.download_xml_voided)"-->
-                                    <!--v-if="row.has_xml_voided">XML</button>-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-danger"-->
-                                    <!--@click.prevent="clickDownload(row.download_cdr_voided)"-->
-                                    <!--v-if="row.has_cdr_voided">CDR</button>-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-warning"-->
-                                    <!--@click.prevent="clickTicket(row.voided.id, row.group_id)"-->
-                                    <!--v-if="row.btn_ticket">Consultar</button>-->
-                        <!--</td>-->
-                        
                         <td class="text-right">
-                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                <div class="btn-group" role="group">
-                                    <button id="btnGroupDrop1" type="button" class="btn waves-effect waves-light btn-xs btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Opciones
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                        <a v-if="row.state_type_id==1" class="dropdown-item" :href="`/documents/create2/`+row.id">Crear venta</a>
-                                        <a v-if="row.state_type_id==1" class="dropdown-item" :href="`/quotations/edit/`+row.id">Editar</a>
-                                        <a class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
-                                    </div>
-                                </div>
-                            </div>                            
+                            <a :href="`/download/salenote/pdf/`+row.id" class="btn waves-effect waves-light btn-xs btn-info">Pdf</a>
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                         </td>
                     </tr>
                 </data-table>
             </div>
-
-            <quotations-voided :showDialog.sync="showDialogVoided"
-                            :recordId="recordId"></quotations-voided>
-
-            <quotation-options :showDialog.sync="showDialogOptions"
-                              :recordId="recordId"
-                              :showClose="true"></quotation-options>
         </div>
     </div>
 </template>
 
 <script>
 
-    import QuotationsVoided from './partials/voided.vue'
-    import QuotationOptions from './partials/options.vue'
     import DataTable from '../../../components/DataTable.vue'
+    import {deletable} from '../../../mixins/deletable'
 
     export default {
-        components: {QuotationsVoided, QuotationOptions, DataTable},
+        mixins: [deletable],
+        components: {DataTable},
         data() {
             return {
-                showDialogVoided: false,
+                //showDialogVoided: false,
                 resource: 'sale-notes',
                 recordId: null,
-                showDialogOptions: false
+                //showDialogOptions: false
             }
         },
         created() {
         },
         methods: {
-            clickVoided(recordId = null) {
-                this.recordId = recordId
-                this.showDialogVoided = true
-            },
-            clickDownload(download) {
-                window.open(download);
-            },
-            clickCreateSale(download) {
-                window.open(download, '_blank');
-            },
-            clickResend(quotation_id) {
-                this.$http.get(`/${this.resource}/send/${quotation_id}`)
-                    .then(response => {
-                        if (response.data.success) {
-                            this.$message.success(response.data.message)
-                            this.$eventHub.$emit('reloadData')
-                        } else {
-                            this.$message.error(response.data.message)
-                        }
-                    })
-                    .catch(error => {
-                        this.$message.error(error.response.data.message)
-                    })
-            },
-
-            clickOptions(recordId = null) {
-                this.recordId = recordId
-                this.showDialogOptions = true
-            },
+            clickDelete(id) {
+                this.destroy(`/${this.resource}/${id}`).then(() =>
+                    this.$eventHub.$emit('reloadData')
+                )
+            }
         }
     }
 </script>

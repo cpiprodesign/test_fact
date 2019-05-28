@@ -2,7 +2,7 @@
     <el-dialog :title="titleDialog" :visible="showDialog" @open="create" width="30%" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
         <div class="row mt-4">
             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold">
-                <p>Imprimir A4</p>
+                <p>Imprimir PDF</p>
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('a4')">
                     <i class="fa fa-file-alt"></i>
                 </button>
@@ -12,22 +12,23 @@
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('ticket')">
                     <i class="fa fa-receipt"></i>
                 </button>
-            </div>
+            </div>         
         </div>
-        <div class="row mt-4">
+        <!-- <div class="row mt-4">
             <div class="col-md-12">
                 <el-input v-model="form.customer_email">
                     <el-button slot="append" icon="el-icon-message" @click="clickSendEmail" :loading="loading">Enviar</el-button>
                 </el-input>
                 <small class="form-control-feedback" v-if="errors.customer_email" v-text="errors.customer_email[0]"></small>
             </div>
-        </div>       
+        </div>        -->
         <span slot="footer" class="dialog-footer">
             <template v-if="showClose">
                 <el-button @click="clickClose">Cerrar</el-button>
             </template>
             <template v-else>
-                <el-button class="list" @click="clickFinalize">Ir al listado</el-button>               
+                <el-button class="list" @click="clickFinalize">Ir al listado</el-button>
+                <el-button type="primary" @click="clickNewDocument">Nuevo Nota de Venta</el-button>               
             </template>
         </span>
     </el-dialog>
@@ -40,7 +41,7 @@
             return {
                 titleDialog: null,
                 loading: false,
-                resource: 'quotations',
+                resource: 'sale-notes',
                 errors: {},
                 form: {},
                 company: {}
@@ -61,7 +62,7 @@
                 this.form = {
                     customer_email: null,
                     download_pdf: null,
-                    external_id: null,
+                    id: null,
                     number: null,
                     id: null
                 };
@@ -72,14 +73,14 @@
             create() {
                 this.$http.get(`/${this.resource}/record/${this.recordId}`).then(response => {
                     this.form = response.data.data;
-                    this.titleDialog = 'Cotización: '+this.form.number;
+                    this.titleDialog = 'Nota de Venta: '+this.form.number;
                 });
             },
             clickPrint(format){
-                window.open(`/download/quotation/${this.form.external_id}/${format}`, '_blank');
+                window.open(`/print2/salenote/${this.form.id}/${format}`, '_blank');
             },
             clickDownload(format) {
-                window.open(`${this.form.download_pdf}/${format}`, '_blank');
+                window.open(`/download/salenote/pdf/${this.form.id}/`);
             },
             clickSendEmail() {
                 this.loading = true
@@ -112,8 +113,9 @@
                 this.clickClose()
             },
             clickClose() {
-                this.$emit('update:showDialog', false)
-                this.initForm()
+                location.href = `/${this.resource}/create`
+                // this.$emit('update:showDialog', false)
+                // this.initForm()
             },
         }
     }
