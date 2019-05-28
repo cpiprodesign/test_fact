@@ -77,7 +77,12 @@ class DownloadController extends Controller
     }
 
     public function toPrint2($model, $id, $format = null) {
-
+    
+        if($model == 'salenote')
+        {
+            $model = 'SaleNote';
+        }
+        
         $model = "App\\Models\\Tenant\\".ucfirst($model);
         $document = $model::where('id', $id)->first();
         
