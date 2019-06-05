@@ -19,6 +19,7 @@
         "mpdf/mpdf": "^7.1",
         "robrichards/xmlseclibs": "3.0.*",
         "thiagoalessio/tesseract_ocr": "^2.7",
+        "nwidart/laravel-modules": "^5.0",
         "wapnen/google-cloud-vision-php": "dev-master"
     },
     "require-dev": {
