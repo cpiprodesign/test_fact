@@ -65,6 +65,9 @@ Vue.component('tenant-sale-notes-index', require('./views/tenant/sale_notes/inde
 Vue.component('tenant-sale-notes-invoice', require('./views/tenant/sale_notes/invoice.vue'))
 Vue.component('tenant-sale-notes-edit', require('./views/tenant/sale_notes/edit.vue'))
 
+Vue.component('inventory-index', require('../../modules/Inventory/Resources/assets/js/inventory/index.vue'));
+Vue.component('warehouses-index', require('../../modules/Inventory/Resources/assets/js/warehouses/index.vue'));
+
 Vue.component('tenant-summaries-index', require('./views/tenant/summaries/index.vue'));
 Vue.component('tenant-voided-index', require('./views/tenant/voided/index.vue'));
 Vue.component('tenant-search-index', require('./views/tenant/search/index.vue'));
