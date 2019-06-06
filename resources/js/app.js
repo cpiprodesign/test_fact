@@ -98,6 +98,11 @@ Vue.component('tenant-item-category-index', require('./views/tenant/item_categor
 Vue.component('tenant-calendar', require('./views/tenant/components/calendar.vue'));
 Vue.component('tenant-calendar2', require('./views/tenant/components/calendar2.vue'));
 
+// Modules
+Vue.component('inventory-index', require('../../modules/Inventory/Resources/assets/js/inventory/index.vue'));
+Vue.component('warehouses-index', require('../../modules/Inventory/Resources/assets/js/warehouses/index.vue'));
+Vue.component('tenant-inventories-form', require('../../modules/Inventory/Resources/assets/js/config/form.vue'));
+
 // System
 Vue.component('system-clients-index', require('./views/system/clients/index.vue'));
 Vue.component('system-clients-form', require('./views/system/clients/form.vue'));

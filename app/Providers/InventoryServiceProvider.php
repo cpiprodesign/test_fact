@@ -23,10 +23,8 @@ class InventoryServiceProvider extends ServiceProvider
         //  $this->inventory();
     }
 
-
     private function inventory()
     {
-
         Inventory::created(function ($inventory) {
  
             switch ($inventory->type) {
@@ -61,11 +59,8 @@ class InventoryServiceProvider extends ServiceProvider
                     $inventory_kardex_remove = $this->saveInventoryKardex($inventory, $inventory->item_id, null, -$inventory->quantity,$inventory->warehouse_id);        
                     $this->updateStock($inventory->item_id,null, -$inventory_kardex_remove->quantity, true, $inventory->warehouse_id);
                 
-                    break;
-                 
+                    break;                 
             }
-                
-           
         });
     }
 
