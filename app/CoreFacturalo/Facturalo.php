@@ -101,11 +101,6 @@ class Facturalo
                 $document = Document::create($inputs);
                 foreach ($inputs['items'] as $row) {
                     $document->items()->create($row);
-
-                    //aqui actualiza la cantidad en base a facturas
-                    $update = $document->establishment_item()->firstOrNew(['item_id' => $row['item_id']]);
-                    $update->quantity -= $row['quantity'];
-                    $update->save();
                 }
                 $document->invoice()->create($inputs['invoice']);
                 $this->document = Document::find($document->id);

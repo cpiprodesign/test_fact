@@ -3,6 +3,7 @@
 namespace Modules\Inventory\Providers;
 
 use App\Models\Tenant\Item; 
+use App\Models\Tenant\ItemWarehouse; 
 use Illuminate\Support\ServiceProvider;
 use Modules\Inventory\Models\Inventory;
 use Modules\Inventory\Traits\InventoryTrait;
@@ -17,15 +18,15 @@ class InventoryChangeServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->createdItem();
+        $this->createdItemWarehouse();
         $this->inventory();
     }
 
-    private function createdItem()
+    private function createdItemWarehouse()
     {
-        Item::created(function ($item) {
-            $warehouse = $this->findWarehouse();
-            $this->createInitialInventory($item->id, $item->stock, $warehouse->id);
+        ItemWarehouse::created(function ($item_warehouse) {
+            // $warehouse = $this->findWarehouse();
+            $this->createInitialInventory($item_warehouse->item_id, $item_warehouse->stock, $item_warehouse->warehouse_id);
         });
     }
 
@@ -35,7 +36,7 @@ class InventoryChangeServiceProvider extends ServiceProvider
             switch ($inventory->type) {
                 case 1:
                     $this->createInventoryKardex($inventory, $inventory->item_id, $inventory->quantity, $inventory->warehouse_id);
-                    $this->updateStock($inventory->item_id, $inventory->quantity, $inventory->warehouse_id);
+                    //$this->updateStock($inventory->item_id, $inventory->quantity, $inventory->warehouse_id);
                     break;
                 case 2:
                     //Origin
