@@ -15,6 +15,16 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
         <div class="nano-content">
             <nav id="menu" class="nav-main" role="navigation">
                 <ul class="nav nav-main">
+                    @if(in_array('dashboard', $vc_modules))
+                        <li class="
+                            {{ ($path[0] === 'dashboard')?'nav-active':'' }}
+                            ">
+                            <a class="nav-link" href="{{route('tenant.dashboard')}}">
+                                <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                    @endif
                     @if(in_array('documents', $vc_modules))
                     <li class="
                         nav-parent
@@ -47,29 +57,16 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                 </a>
                             </li>
                             <li class="{{ ($path[0] === 'sale-notes')?'nav-active':'' }}">
-                                    <a class="nav-link" href="{{route('tenant.sale_notes.index')}}">
-                                        Nota de Venta
-                                    </a>
-                                </li>
-                            <li class="nav-parent
-                                {{ ($path[0] === 'summaries')?'nav-active nav-expanded':'' }}
-                                {{ ($path[0] === 'voided')?'nav-active nav-expanded':'' }}
-                                ">
-                                <a class="nav-link" href="#">
-                                    Resúmenes y Anulaciones
+                                <a class="nav-link" href="{{route('tenant.sale_notes.index')}}">
+                                    Nota de Venta
                                 </a>
-                                <ul class="nav nav-children">
-                                    <li class="{{ ($path[0] === 'summaries')?'nav-active':'' }}">
-                                        <a class="nav-link" href="{{route('tenant.summaries.index')}}">
-                                            Resúmenes
-                                        </a>
-                                    </li>
-                                    <li class="{{ ($path[0] === 'voided')?'nav-active':'' }}">
-                                        <a class="nav-link" href="{{route('tenant.voided.index')}}">
-                                            Anulaciones
-                                        </a>
-                                    </li>
-                                </ul>
+                            </li>
+                            <li class="
+                                {{ ($path[0] === 'summaries')?'nav-active':'' }}
+                                ">
+                                <a class="nav-link" href="{{route('tenant.summaries.index')}}">
+                                    <span>Resúmenes</span>
+                                </a>
                             </li>
                             <li class="{{ ($path[0] === 'quotations' && $path[1] != 'create')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.quotations.index')}}">
@@ -134,7 +131,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                         </ul>
                     </li>
                     @if(in_array('configuration', $vc_modules))
-                    <li class="nav-parent {{ in_array($path[0], ['users', 'establishments', 'persons'])?'nav-active nav-expanded':'' }}">
+                    <li class="nav-parent {{ in_array($path[0], ['users', 'persons'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-users" aria-hidden="true"></i>
                             <span>Contactos</span>
@@ -183,7 +180,6 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     Percepciones (Pronto)
                                 </a>
                             </li>
-
                         </ul>
                     </li>
                     @endif @if(in_array('reports', $vc_modules))
@@ -216,7 +212,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                         </ul>
                     </li>
                     @endif @if(in_array('configuration', $vc_modules))
-                    <li class="nav-parent {{ in_array($path[0], ['companies', 'catalogs', 'advanced', 'establishments'])?'nav-active nav-expanded':'' }}">
+                    <li class="nav-parent {{ in_array($path[0], ['companies', 'catalogs', 'advanced', 'establishments', 'inventories'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-cogs" aria-hidden="true"></i>
                             <span>Configuracion</span>
