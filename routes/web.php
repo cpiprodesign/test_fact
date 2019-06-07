@@ -110,6 +110,9 @@ if ($hostname) {
             Route::post('items/import', 'Tenant\ItemController@import');
             Route::get('items/stock_details/{item}', 'Tenant\ItemController@stock_details');
 
+            //Expenses
+            Route::get('expenses', 'Tenant\ExpenseController@index')->name('tenant.items.index');
+
             //Customers
 //            Route::get('customers', 'Tenant\CustomerController@index')->name('tenant.customers.index');
 //            Route::get('customers/columns', 'Tenant\CustomerController@columns');
