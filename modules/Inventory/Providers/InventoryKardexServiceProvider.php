@@ -4,6 +4,7 @@ namespace Modules\Inventory\Providers;
  
 use App\Models\Tenant\DocumentItem;
 use App\Models\Tenant\PurchaseItem;
+use App\Models\Tenant\Purchase;
 use App\Models\Tenant\SaleNoteItem;
 use Illuminate\Support\ServiceProvider;
 use Modules\Inventory\Traits\InventoryTrait;
@@ -24,7 +25,10 @@ class InventoryKardexServiceProvider extends ServiceProvider
     
     private function purchase() {
         PurchaseItem::created(function ($purchase_item) {
-            $warehouse = $this->findWarehouse();
+
+            $purchase = Purchase::find($purchase_item->purchase_id);
+            $warehouse = $this->findWarehouse($purchase->establishment_id);
+
             //$this->createInventory($purchase_item->item_id, $purchase_item->quantity, $warehouse->id);
             $this->createInventoryKardex($purchase_item->purchase, $purchase_item->item_id, $purchase_item->quantity, $warehouse->id);
             $this->updateStock($purchase_item->item_id, $purchase_item->quantity, $warehouse->id);

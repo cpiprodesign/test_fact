@@ -159,6 +159,8 @@ class ClientController extends Controller
         DB::connection('tenant')->table('warehouses')->insertGetId([
             'establishment_id' => $establishment_id,
             'description' => 'Almacén - '.'Oficina Principal',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         DB::connection('tenant')->table('series')->insert([
