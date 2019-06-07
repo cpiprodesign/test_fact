@@ -17,7 +17,7 @@
                     <tr v-for="(row, index) in stock_details">
                         <td>{{ index + 1 }}</td>
                         <td>{{ row.almacen }}</td>
-                        <td class="text-right">{{ row.stock }}</td>                       
+                        <td class="text-right">{{ formaterDecimal(row.stock) }}</td>                       
                     </tr>
                     </tbody>
                 </table>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-
+    import {formaterDecimal} from '../../../helpers/functions'
     export default {
         props: ['showStockDialog', 'recordId'],
         data() {
@@ -69,7 +69,10 @@
             close() {
                 this.$emit('update:showStockDialog', false)
                 this.resetForm()
-            }            
+            },
+            formaterDecimal(stock){
+                return formaterDecimal(stock);
+            }
         }
     }
 </script>

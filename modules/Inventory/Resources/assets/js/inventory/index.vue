@@ -27,7 +27,7 @@
                         <td>{{ index }}</td>
                         <td>{{ row.item_description }}</td>
                         <td>{{ row.warehouse_description }}</td>
-                        <td class="text-right">{{ row.stock }}</td>
+                        <td class="text-right">{{ formaterDecimal(row.stock) }}</td>
                         <td class="text-right">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickMove(row.id)">Trasladar</button>
@@ -53,6 +53,7 @@
     import InventoriesMove from './move.vue'
     import InventoriesRemove from './remove.vue'
     import DataTable from '../../../../../../resources/js/components/DataTable.vue'
+    import {formaterDecimal} from '../../../../../../resources/js/helpers/functions'
 
     export default {
         props: ['type'],
@@ -82,6 +83,9 @@
             clickRemove(recordId) {
                 this.recordId = recordId
                 this.showDialogRemove = true
+            },
+            formaterDecimal(stock){
+                return formaterDecimal(stock);
             }
         }
     }

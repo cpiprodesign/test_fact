@@ -1,5 +1,7 @@
 @extends('tenant.layouts.app')
-
+@php
+    use App\Helpers\Functions;
+@endphp
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -75,10 +77,9 @@
                                         <td>{{$loop->iteration}}</td>
                                         <td>{{$value->created_at}}</td>
                                         <td>
-
                                             @switch($value->inventory_kardexable_type)
                                                 @case($models[0])
-                                                    {{($value->quantity < 0) ? "Venta":"Anulación"}}
+                                                    {{(Functions::formaterDecimal($value->quantity) < 0) ? "Venta":"Anulación"}}
                                                     @break
                                                 @case($models[1])
                                                     {{"Compra"}}                                                    
@@ -92,8 +93,6 @@
                                                     {{$value->inventory_kardexable->description}}                                                    
                                                     @break  
                                             @endswitch
-
-                                            
                                         </td>
                                         <td>
                                             @switch($value->inventory_kardexable_type)
@@ -110,23 +109,21 @@
                                                     {{"-"}}                                                 
                                                     @break  
                                             @endswitch
- 
                                         </td>
                                         <td>
                                             @switch($value->inventory_kardexable_type) 
 
                                                 @case($models[0])
-                                                    {{ ($value->quantity > 0) ?  $value->quantity:"-"}}
+                                                    {{ (Functions::formaterDecimal($value->quantity) > 0) ?  Functions::formaterDecimal($value->quantity):"-"}}
                                                     @break
 
                                                 @case($models[1])
-                                                    {{  $value->quantity }}                                                    
+                                                    {{  Functions::formaterDecimal($value->quantity) }}                                                    
                                                     @break 
                                                     
                                                 @case($models[3])
-                                                    {{ ($value->inventory_kardexable->type == 1) ? $value->quantity : "-" }}                                                    
-                                                    @break  
-
+                                                    {{ ($value->inventory_kardexable->type == 1) ? Functions::formaterDecimal($value->quantity) : "-" }}                                                    
+                                                    @break 
                                                 @default
                                                     {{"-"}}                                                 
                                                     @break  
@@ -136,13 +133,13 @@
                                         
                                             @switch($value->inventory_kardexable_type) 
                                                 @case($models[0])
-                                                    {{ ($value->quantity < 0) ?  $value->quantity:"-" }}                                                    
+                                                    {{ (Functions::formaterDecimal($value->quantity) < 0) ?  Functions::formaterDecimal($value->quantity):"-" }}                                                    
                                                     @break 
                                                 @case($models[2])
-                                                    {{  $value->quantity }}                                                    
+                                                    {{  Functions::formaterDecimal($value->quantity) }}                                                    
                                                     @break      
                                                 @case($models[3])
-                                                    {{ ($value->inventory_kardexable->type == 2 || $value->inventory_kardexable->type == 3) ? $value->quantity : "-" }}                                                    
+                                                    {{ ($value->inventory_kardexable->type == 2 || $value->inventory_kardexable->type == 3) ? Functions::formaterDecimal($value->quantity) : "-" }}                                                    
                                                     @break  
                                                 @default
                                                     {{"-"}}                                                 
@@ -151,9 +148,9 @@
                                         
                                         </td>
                                         @php                  
-                                            $balance += $value->quantity;    
+                                            $balance += Functions::formaterDecimal($value->quantity);    
                                         @endphp
-                                        <td>{{number_format($balance, 4)}}</td>
+                                        <td>{{Functions::formaterDecimal($balance)}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

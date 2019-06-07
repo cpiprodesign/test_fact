@@ -1,5 +1,7 @@
 @extends('tenant.layouts.app')
-
+@php
+    use App\Helpers\Functions;
+@endphp
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -63,7 +65,7 @@
                                     <tr>
                                         <td class="celda">{{$loop->iteration}}</td>
                                         <td class="celda">{{$value->item->description}}</td>
-                                        <td class="celda">{{$value->stock}}</td>
+                                        <td class="celda">{{Functions::formaterDecimal($value->stock)}}</td>
                                         <td class="celda">{{$value->warehouse->description}}</td>
                                     </tr>
                                     @endforeach
