@@ -37,8 +37,11 @@ class ReportKardexController extends Controller
             ->where('item_type_id', '01')
             ->latest()
             ->get();
+        
+        $warehouses = Warehouse::all();
+        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first()->id;
             
-        return view('inventory::reports.kardex.index', compact('items'));
+        return view('inventory::reports.kardex.index', compact('items', 'warehouses', 'warehouse_id'));
     }
     
     /**
@@ -54,17 +57,18 @@ class ReportKardexController extends Controller
             ->where('item_type_id', '01')
             ->latest()
             ->get();
-        
-        $warehouse = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
+    
+        $warehouse_id = $request->selWarehouse;
+        $warehouses = Warehouse::all();
 
         $reports = InventoryKardex::with(['inventory_kardexable'])
-                                    ->where([['item_id', $request->item_id],['warehouse_id', $warehouse->id]])  
-                                    ->orderBy('id')     
+                                    ->where([['item_id', $request->item_id],['warehouse_id', $warehouse_id]])  
+                                    ->orderBy('id')
                                     ->get();
         
         $models = $this->models;
         
-        return view('inventory::reports.kardex.index', compact('items', 'reports', 'balance','models'));
+        return view('inventory::reports.kardex.index', compact('items', 'reports', 'balance','models', 'warehouses', 'warehouse_id'));
     }
     
     /**
@@ -76,12 +80,13 @@ class ReportKardexController extends Controller
 
         $balance = 0;
         $company = Company::first();
-        $establishment = Establishment::first();
         
-        $warehouse = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
-
+        $warehouse_id = $request->warehouse_id;
+        $warehouse = Warehouse::find($request->warehouse_id);
+        $establishment = Establishment::where('id', $warehouse->establishment_id)->first();
+        
         $reports = InventoryKardex::with(['inventory_kardexable'])
-                                    ->where([['item_id', $request->item_id],['warehouse_id', $warehouse->id]])  
+                                    ->where([['item_id', $request->item_id],['warehouse_id', $warehouse_id]])  
                                     ->orderBy('id')     
                                     ->get();
 
@@ -103,8 +108,9 @@ class ReportKardexController extends Controller
         $balance = 0;
         $company = Company::first();
         $establishment = Establishment::first();
-       
-        $warehouse = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
+        
+        $warehouse_id = $request->warehouse_id;
+        $warehouse = Establishment::where('id', $warehouse_id)->first();
 
         $records = InventoryKardex::with(['inventory_kardexable'])
                                     ->where([['item_id', $request->item_id],['warehouse_id', $warehouse->id]])  

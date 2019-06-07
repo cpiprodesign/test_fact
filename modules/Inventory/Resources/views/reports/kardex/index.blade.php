@@ -13,10 +13,20 @@
                     <div>
                         <form action="{{route('reports.kardex.search')}}" class="el-form demo-form-inline el-form--inline" method="POST">
                             {{csrf_field()}}
-                            <div class="box ">
-                                <div class="box-body no-padding">
-                                    {{Form::label('item_id', 'Producto')}}
-                                    {{Form::select('item_id', $items->pluck('description', 'id'), old('item_id', request()->item_id), ['class' => 'form-control col-md-6'])}}
+                            <div class="box">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="">Almacén</label>
+                                        <select name="selWarehouse" id="selWarehouse" class="form-control">
+                                            @foreach ($warehouses as $warehouse)
+                                                <option value="{{$warehouse->id}}" @if ($warehouse->id == $warehouse_id) selected @endif>{{$warehouse->description}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{Form::label('item_id', 'Producto')}}
+                                        {{Form::select('item_id', $items->pluck('description', 'id'), old('item_id', request()->item_id), ['class' => 'form-control col-md-6'])}}
+                                    </div>
                                 </div>
                                 <div class="el-form-item col-xs-12">
                                     <div class="el-form-item__content">
@@ -34,12 +44,14 @@
                                     <form action="{{route('reports.kardex.pdf')}}" class="d-inline" method="POST">
                                         {{csrf_field()}}
                                         <input type="hidden" name="item_id" value="{{old('item_id', request()->item_id)}}">
+                                        <input type="hidden" value="{{$warehouse_id}}" name="warehouse_id">
                                         <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
                                         {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                     </form>
                                 <form action="{{route('reports.kardex.report_excel')}}" class="d-inline" method="POST">
                                     {{csrf_field()}}
                                     <input type="hidden" name="item_id" value="{{old('item_id', request()->item_id)}}">
+                                    <input type="hidden" value="{{$warehouse_id}}" name="warehouse_id">
                                     <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
                                     {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                 </form>

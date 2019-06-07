@@ -107,7 +107,7 @@
                         <!--</td>-->
 
                         <td class="text-right">
-                            <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning m-1__2"
+                            <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-danger m-1__2"
                                v-if="row.btn_note">Nota de Crédito/Débito</a>
                             <a :href="`/dispatches/create2/${row.id}`" class="btn waves-effect waves-light btn-xs btn-default m-1__2"
                                v-if="row.btn_note">Guía de remisión</a>
