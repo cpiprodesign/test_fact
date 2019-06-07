@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Establishment;
+use App\Models\Tenant\Warehouse;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tenant\Module;
 
@@ -86,11 +87,11 @@ class HomeController extends Controller
                 ->where(DB::raw('DATE(created_at)'), date("Y-m-d"))
                 ->first();            
 
-            $sql = "SELECT ite.`description`, eit.quantity, ite.`stock_min`,
-                (SELECT description FROM establishments est WHERE est.id = eit.establishment_id LIMIT 1) AS establecimiento
+            $sql = "SELECT ite.`description`, itw.stock, ite.`stock_min`,
+                (SELECT description FROM warehouses war WHERE war.id = itw.warehouse_id LIMIT 1) AS warehouse
                 FROM items ite
-                INNER JOIN establishment_items eit ON eit.item_id = ite.id
-                WHERE eit.quantity < stock_min + 9";
+                INNER JOIN item_warehouse itw ON itw.item_id = ite.id
+                WHERE itw.stock < stock_min + 9";
 
             $items = DB::connection('tenant')->select($sql, array($establishment_id));
 
@@ -103,6 +104,9 @@ class HomeController extends Controller
         }
         else 
         {
+            $warehouse = Warehouse::where('establishment_id', $establishment_id)->first();
+            $warehouse_id = $warehouse->id;
+
             $total_invoices = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
@@ -123,13 +127,13 @@ class HomeController extends Controller
                 ->where('status_paid', 1)
                 ->where(DB::raw('DATE(created_at)'), date("Y-m-d"))
                 ->where('establishment_id', $establishment_id)
-                ->first();        
+                ->first();
 
-            $sql = "SELECT ite.`description`, eit.quantity, ite.`stock_min`,
-                (SELECT description FROM establishments est WHERE est.id = eit.establishment_id LIMIT 1) AS establecimiento
+            $sql = "SELECT ite.`description`, itw.stock, ite.`stock_min`,
+                (SELECT description FROM warehouses war WHERE war.id = itw.warehouse_id LIMIT 1) AS warehouse
                 FROM items ite
-                INNER JOIN establishment_items eit ON eit.item_id = ite.id
-                WHERE eit.establishment_id = ? AND eit.quantity < stock_min + 9";
+                INNER JOIN item_warehouse itw ON itw.item_id = ite.id
+                WHERE itw.warehouse_id = ? AND itw.stock < stock_min + 9";
 
             $items = DB::connection('tenant')->select($sql, array($establishment_id));
 

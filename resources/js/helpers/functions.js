@@ -168,4 +168,15 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
     return row
 }
 
-export {calculateRowItem}
+function formaterDecimal(stock){
+    
+    var split = stock.split(".", 2);
+
+    if(split[1] == '0000'){
+        stock = Math.trunc(stock)
+    }
+
+    return stock
+}
+
+export {calculateRowItem, formaterDecimal}

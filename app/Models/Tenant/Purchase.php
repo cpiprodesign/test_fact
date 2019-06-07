@@ -223,6 +223,9 @@ class Purchase extends ModelTenant
         $legend = collect($legends)->where('code', '1000')->first();
         return $legend->value;
     }
- 
- 
+
+    public function inventory_kardex()
+    {
+        return $this->morphMany(InventoryKardex::class, 'inventory_kardexable');
+    } 
 }

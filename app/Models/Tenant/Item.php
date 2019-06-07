@@ -9,7 +9,7 @@ use App\Models\Tenant\Catalogs\UnitType;
 
 class Item extends ModelTenant
 {
-    protected $with = ['item_type', 'unit_type', 'currency_type', 'trademark', 'itemCategory', 'establisment_item'];
+    protected $with = ['item_type', 'unit_type', 'currency_type', 'trademark', 'itemCategory', 'warehouses'];
     protected $fillable = [
         'description',
         'item_type_id',
@@ -82,14 +82,24 @@ class Item extends ModelTenant
         return $this->hasMany(Kardex::class);
     }
 
+    public function inventory_kardex()
+    {
+        return $this->hasMany(InventoryKardex::class);
+    }
+
     public function purchase_item()
     {
         return $this->hasMany(PurchaseItem::class);
     }
 
-    public function establisment_item()
+    // public function establisment_item()
+    // {
+    //     return $this->hasMany(EstablishmentItem::class);
+    // }
+
+    public function item_warehouse()
     {
-        return $this->hasMany(EstablishmentItem::class);
+        return $this->hasMany(ItemWarehouse::class);
     }
 
     public function sale_affectation_igv_type()
@@ -97,9 +107,18 @@ class Item extends ModelTenant
         return $this->belongsTo(AffectationIgvType::class, 'sale_affectation_igv_type_id');
     }
 
-
     public function purchase_affectation_igv_type()
     {
         return $this->belongsTo(AffectationIgvType::class, 'purchase_affectation_igv_type_id');
+    }
+
+    public function warehouses()
+    {
+        return $this->hasMany(ItemWarehouse::class)->with('warehouse');
+    }
+
+    public function item_unit_types()
+    {
+        return $this->hasMany(ItemUnitType::class);
     }
 }

@@ -65,6 +65,9 @@ Vue.component('tenant-sale-notes-index', require('./views/tenant/sale_notes/inde
 Vue.component('tenant-sale-notes-invoice', require('./views/tenant/sale_notes/invoice.vue'))
 Vue.component('tenant-sale-notes-edit', require('./views/tenant/sale_notes/edit.vue'))
 
+Vue.component('inventory-index', require('../../modules/Inventory/Resources/assets/js/inventory/index.vue'));
+Vue.component('warehouses-index', require('../../modules/Inventory/Resources/assets/js/warehouses/index.vue'));
+
 Vue.component('tenant-summaries-index', require('./views/tenant/summaries/index.vue'));
 Vue.component('tenant-voided-index', require('./views/tenant/voided/index.vue'));
 Vue.component('tenant-search-index', require('./views/tenant/search/index.vue'));
@@ -94,6 +97,11 @@ Vue.component('tenant-item-category-index', require('./views/tenant/item_categor
 
 Vue.component('tenant-calendar', require('./views/tenant/components/calendar.vue'));
 Vue.component('tenant-calendar2', require('./views/tenant/components/calendar2.vue'));
+
+// Modules
+Vue.component('inventory-index', require('../../modules/Inventory/Resources/assets/js/inventory/index.vue'));
+Vue.component('warehouses-index', require('../../modules/Inventory/Resources/assets/js/warehouses/index.vue'));
+Vue.component('tenant-inventories-form', require('../../modules/Inventory/Resources/assets/js/config/form.vue'));
 
 // System
 Vue.component('system-clients-index', require('./views/system/clients/index.vue'));

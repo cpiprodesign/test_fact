@@ -149,24 +149,24 @@
 
                 </div>
             </div>
-
-            <div class="row pt-3">
-                <div class="col-8">
-                    <h4>Sede</h4>
+            <div v-show="recordId==null">
+                <div class="row pt-3">
+                    <div class="col-8">
+                        <h4>Almacén</h4>
+                    </div>
+                    <div class="col-4">
+                        <h4>Stock Inicial</h4>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <h4>Stock Local </h4>
+                <div class="row pb-1" v-for="(row,index) in form.item_warehouse" :key="row.id">
+                    <div class="col-8">
+                        {{ row.description }}
+                        <!--                    <input typeof="hidden" v-bind:value="row.id" v-model="form.warehouses[index].warehouse_id">-->
+                    </div>
+                    <div class="col-4">
+                        <el-input v-model.sync="row.quantity"></el-input>
+                    </div>
                 </div>
-            </div>
-            <div class="row pb-1" v-for="(row,index) in form.establisment_item" :key="row.id">
-                <div class="col-8">
-                    {{ row.description }}
-                    <!--                    <input typeof="hidden" v-bind:value="row.id" v-model="form.establishments[index].establishment_id">-->
-                </div>
-                <div class="col-4">
-                    <el-input v-model.sync="row.quantity"></el-input>
-                </div>
-
             </div>
 
             <div class="form-actions text-right pt-2">
@@ -192,7 +192,7 @@
                 currency_types: [],
                 system_isc_types: [],
                 affectation_igv_types: [],
-                establishments: [],
+                warehouses: [],
 
                 trademarks: [],
                 item_category: []
@@ -212,7 +212,7 @@
                         this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0) ? this.affectation_igv_types[0].id : null
                         this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0) ? this.affectation_igv_types[0].id : null
 
-                        this.establishments = response.data.establishments;
+                        this.warehouses = response.data.warehouses;
                         this.trademarks = response.data.trademarks
                         this.item_category = response.data.item_category
                     }
@@ -244,7 +244,7 @@
                     sale_affectation_igv_type_id: null,
                     purchase_affectation_igv_type_id: null,
 
-                    establisment_item: [],
+                    item_warehouse: [],
 
                     stock: 0,
                     stock_min: 1,
@@ -264,48 +264,48 @@
                         .then(response => {
                                 this.form = response.data.data
 
-                                let temp_establisment_item = [];
+                                let temp_item_warehouse = [];
 
-                                for (let i = 0; i < this.establishments.length; i++) {
-                                    let filter = {"establishment_id": this.establishments[i].id, "item_id": this.recordId};
-                                    let item = _.find(this.form.establisment_item, filter);
+                                for (let i = 0; i < this.warehouses.length; i++) {
+                                    let filter = {"warehouse_id": this.warehouses[i].id, "item_id": this.recordId};
+                                    let item = _.find(this.form.item_warehouse, filter);
 
                                     if (typeof item === 'object') {
-                                        temp_establisment_item.push({
-                                            "establishment_id": this.establishments[i].id,
-                                            "description": this.establishments[i].description,
+                                        temp_item_warehouse.push({
+                                            "warehouse_id": this.warehouses[i].id,
+                                            "description": this.warehouses[i].description,
                                             "item_id": this.recordId,
-                                            "quantity": item.quantity
+                                            "quantity": item.stock
                                         })
                                     } else {
-                                        temp_establisment_item.push({
-                                            "establishment_id": this.establishments[i].id,
-                                            "description": this.establishments[i].description,
+                                        temp_item_warehouse.push({
+                                            "warehouse_id": this.warehouses[i].id,
+                                            "description": this.warehouses[i].description,
                                             "item_id": this.recordId,
                                             "quantity": 0
                                         })
                                     }
                                 }
-                                this.form.establisment_item = temp_establisment_item;
+                                this.form.item_warehouse = temp_item_warehouse;
                                 this.form.stock = 0;
-                                temp_establisment_item = [];
+                                temp_item_warehouse = [];
                             }
                         )
                 } else {
-                    let temp_establisment_item = [];
+                    let temp_item_warehouse = [];
 
-                    for (let i = 0; i < this.establishments.length; i++) {
+                    for (let i = 0; i < this.warehouses.length; i++) {
 
-                        temp_establisment_item.push({
-                            "establishment_id": this.establishments[i].id,
-                            "description": this.establishments[i].description,
+                        temp_item_warehouse.push({
+                            "warehouse_id": this.warehouses[i].id,
+                            "description": this.warehouses[i].description,
                             // "item_id": this.recordId,
                             "quantity": 0
                         })
                     }
-                    this.form.establisment_item = temp_establisment_item;
+                    this.form.item_warehouse = temp_item_warehouse;
                     this.form.stock = 0;
-                    temp_establisment_item = [];
+                    temp_item_warehouse = [];
                 }
             }
             ,

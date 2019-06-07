@@ -174,4 +174,9 @@ class SaleNote extends ModelTenant
 
         return $items;
     }
+
+    public function inventory_kardex()
+    {
+        return $this->morphMany(InventoryKardex::class, 'inventory_kardexable');
+    }
 }
