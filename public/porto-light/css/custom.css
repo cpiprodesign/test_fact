@@ -4,16 +4,16 @@ ul.nav-main > li.nav-active > a {
 }
 
 .bg-info {
-    background: #0088cc !important;
+    background: linear-gradient(164deg, rgba(9,27,196,1) 0%, rgba(0,114,255,1) 100%); 
 }
 
 .btn-custom {
-    background-color: #0088cc;
+    background: linear-gradient(164deg, rgba(9,27,196,1) 0%, rgba(0,114,255,1) 100%); 
     color: #fff;
 }
 
 .btn-custom:hover, .btn-custom.hover {
-    background-color: #0A7CB5;
+    background: linear-gradient(164deg, rgba(9,27,196,1) 0%, rgba(0,114,255,1) 100%); 
     border-color: #0477B0 #0477B0 #CCC;
     color: #FFF;
     transition: none;
@@ -36,7 +36,7 @@ ul.nav-main li .nav-children li.nav-active > a {
 }
 
 ul.nav-main li i {
-    font-size: 2rem;
+    font-size: 1rem;
 }
 
 .transition-box {

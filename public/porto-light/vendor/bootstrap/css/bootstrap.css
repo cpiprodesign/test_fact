@@ -3444,7 +3444,7 @@ input[type="button"].btn-block {
   white-space: nowrap;
   background-color: #e9ecef;
   border: 1px solid #ced4da;
-  border-radius: 0.25rem;
+  border-radius: 9rem;
 }
 
 .input-group-text input[type="radio"],
@@ -4336,7 +4336,7 @@ input[type="button"].btn-block {
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 0.25rem;
+  border-radius: 95px 5px 55px 5px !important;
 }
 
 .card > hr {
@@ -6036,7 +6036,7 @@ button.bg-success:focus {
 }
 
 .bg-info {
-  background-color: #17a2b8 !important;
+  background: linear-gradient(164deg, rgba(9,27,196,1) 0%, rgba(0,114,255,1) 100%);
 }
 
 a.bg-info:hover, a.bg-info:focus,
