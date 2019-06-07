@@ -257,6 +257,9 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     Establecimientos
                                 </a>
                             </li>
+                            <li class="{{($path[0] === 'inventories' && $path[1] === 'configuration') ? 'nav-active': ''}}">
+                                <a class="nav-link" href="{{route('tenant.inventories.configuration.index')}}">Inventarios</a>
+                            </li>
                             <li class="{{ ($path[0] === 'advanced')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.advanced.index')}}">
                                     Avanzado

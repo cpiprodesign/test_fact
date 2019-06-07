@@ -16,8 +16,8 @@
                     <tbody>
                     <tr v-for="(row, index) in stock_details">
                         <td>{{ index + 1 }}</td>
-                        <td>{{ row.establecimiento }}</td>
-                        <td class="text-right">{{ row.quantity }}</td>                       
+                        <td>{{ row.almacen }}</td>
+                        <td class="text-right">{{ row.stock }}</td>                       
                     </tr>
                     </tbody>
                 </table>

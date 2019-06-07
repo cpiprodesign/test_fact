@@ -17,15 +17,13 @@ class InventoryConfigurationController extends Controller
     {
         return view('inventory::config.index');
     }
-
-    
+        
     public function record() {
 
         $inventory_configuration = InventoryConfiguration::first();
         $record = new InventoryConfigurationResource($inventory_configuration);
-        
-        return $record;
 
+        return $record;
     }
 
     public function store(InventoryConfigurationRequest $request) {
