@@ -27,7 +27,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        return view('tenant.items.index');
+        return view('tenant.expenses.index');
     }
 
     public function columns()

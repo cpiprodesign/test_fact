@@ -111,7 +111,7 @@ if ($hostname) {
             Route::get('items/stock_details/{item}', 'Tenant\ItemController@stock_details');
 
             //Expenses
-            Route::get('expenses', 'Tenant\ExpenseController@index')->name('tenant.items.index');
+            Route::get('expenses', 'Tenant\ExpenseController@index')->name('tenant.expenses.index');
 
             //Customers
 //            Route::get('customers', 'Tenant\CustomerController@index')->name('tenant.customers.index');
