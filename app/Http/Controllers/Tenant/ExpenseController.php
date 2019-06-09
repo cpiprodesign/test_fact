@@ -2,22 +2,13 @@
 
 namespace App\Http\Controllers\Tenant;
 
-use App\Imports\ItemsImport;
-use App\Models\Tenant\Catalogs\AffectationIgvType;
-use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Catalogs\CurrencyType;
-use App\Models\Tenant\Catalogs\SystemIscType;
-use App\Models\Tenant\Catalogs\UnitType;
-use App\Models\Tenant\Item;
+use App\Models\Tenant\Expense;
 use App\Models\Tenant\Establishment;
-use App\Models\Tenant\Warehouse;
-use App\Models\Tenant\EstablishmentItem;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Tenant\ItemRequest;
-use App\Http\Resources\Tenant\ItemCollection;
-use App\Http\Resources\Tenant\ItemResource;
-use App\Models\Tenant\ItemCategory;
-use App\Models\Tenant\Trademarks;
+use App\Http\Requests\Tenant\ExpenseRequest;
+use App\Http\Resources\Tenant\ExpenseCollection;
+use App\Http\Resources\Tenant\ExpenseResource;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
@@ -39,10 +30,10 @@ class ExpenseController extends Controller
 
     public function records(Request $request)
     {
-        $records = Item::where($request->column, 'like', "%{$request->value}%")
-            ->orderBy('description');
+        $records = Expense::where($request->column, 'like', "%{$request->value}%")
+            ->orderBy('date_of_issue');
 
-        return new ItemCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
+        return new ExpenseCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function create()
@@ -52,56 +43,72 @@ class ExpenseController extends Controller
 
     public function tables()
     {
-        $unit_types = UnitType::whereActive()->orderByDescription()->get();
         $currency_types = CurrencyType::whereActive()->orderByDescription()->get();
-        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
-        $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $warehouses = Warehouse::all();
 
-        $trademarks = Trademarks::orderBy('name')->get();
-        $item_category = ItemCategory::WhereNull('parent_id')->orderBy('description')->get();
-
-        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'trademarks', 'item_category', 'warehouses');
+        return compact('currency_types');
     }
 
     public function record($id)
     {
-        $record = new ItemResource(Item::findOrFail($id));
+        $record = new ExpenseResource(Expense::findOrFail($id));
 
         return $record;
     }
 
-    public function store(ItemRequest $request)
+    public function store(ExpenseRequest $request)
     {
+        // dd($request->input());
         $id = $request->input('id');
-        $item = Item::firstOrNew(['id' => $id]);
-        $item->item_type_id = '01';
-        $item->fill($request->all());
-        $item->save();
+        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
 
-        // stock actual
-        foreach ($request->item_warehouse as $stock_by_location) {
-            $stock = $item->item_warehouse()->firstOrNew(['warehouse_id' => $stock_by_location['warehouse_id']]);
-            $stock->stock = $stock_by_location['quantity'];
-            $stock->save();
+        $expense = Expense::firstOrNew(['id' => $id]);
+
+        if($request->has_voucher)
+        {
+            $detail_voucher = [
+                'company_number' => $request->detail_voucher['company_number'],
+                'company_name' => $request->detail_voucher['company_name'],
+                'document_type' => $request->detail_voucher['document_type'],
+                'document_number' => $request->detail_voucher['document_number']
+            ];
+
+            $detail_voucher = json_encode($detail_voucher);
+            $expense->detail_voucher  = $detail_voucher;
+
+            //$detail_voucher = null;
         }
+
+        // $detail_voucher = [
+        //     'company_number' => $request->detail_voucher['company_number'],
+        //     'company_name' => $request->detail_voucher['company_name'],
+        //     'document_type' => $request->detail_voucher['document_type'],
+        //     'document_number' => $request->detail_voucher['document_number']
+        // ];
+
+        // $detail_voucher = json_encode($detail_voucher);
+        // $expense->detail_voucher  = $detail_voucher;
+        
+        
+        $expense->user_id = auth()->id();
+        $expense->establishment_id = $establishment->id;
+        $expense->fill($request->all());
+        $expense->save();
 
         return [
             'success' => true,
-            'message' => ($id) ? 'Producto editado con éxito' : 'Producto registrado con éxito',
-            'id' => $item->id
+            'message' => ($id) ? 'Gasto editado con éxito' : 'Gasto registrado con éxito',
+            'id' => $expense->id
         ];
     }
 
     public function destroy($id)
     {
-        $item = Item::findOrFail($id);
-        $item->delete();
+        $expense = Expense::findOrFail($id);
+        $expense->delete();
 
         return [
             'success' => true,
-            'message' => 'Producto eliminado con éxito'
+            'message' => 'Gasto eliminado con éxito'
         ];
     }
 }

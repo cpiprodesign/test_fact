@@ -6,7 +6,7 @@ use App\Models\Tenant\Catalogs\CurrencyType;
 
 class Expense extends ModelTenant
 {
-    protected $with = ['user', 'currency_type', 'establishment'];
+    protected $with = ['user', 'currency_type'];
     protected $fillable = [
         'user_id',
         'has_voucher',
@@ -15,8 +15,12 @@ class Expense extends ModelTenant
         'currency_type_id',
         'total',
         'detail',
-        'document_number',
+        'company_number',
         'detail_voucher',
+    ];
+
+    protected $casts = [
+        'detail_voucher' => 'array'
     ];
 
     public function user()
@@ -33,4 +37,11 @@ class Expense extends ModelTenant
     {
         return $this->belongsTo(Establishment::class, 'establishment');
     }
+
+    public function getDetailVoucher($value)
+    {
+        return (is_null($value)) ? null : (object)json_decode($value);
+    }
+
+
 }

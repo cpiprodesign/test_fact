@@ -20,17 +20,15 @@
                         <th>Descripción</th>
                         <th>Total</th>
                         <th>Fecha</th>
-                        <th>Código Usuario</th>
+                        <th>Usuario</th>
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
-                        <td>{{ row.internal_id }}</td>
-                        <td>{{ row.unit_type_id }}</td>
                         <td>{{ row.description }}</td>
-                        <td>{{ row.item_code }}</td>
-                        <td><button class="btn btn-custom btn-sm" @click.prevent="clickStock(row.id)"><i class="fa fa-search"></i> </button></td>
-                        <td class="text-right">{{ row.sale_unit_price }}</td>
+                        <td>{{ row.total }}</td>
+                        <td>{{ row.date_of_issue }}</td>
+                        <td>{{ row.usuario }}</td>
                         <td class="text-right">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
@@ -41,11 +39,6 @@
 
             <items-form :showDialog.sync="showDialog"
                         :recordId="recordId"></items-form>
-
-            <items-import :showDialog.sync="showImportDialog"></items-import>
-
-            <items-stock :showStockDialog.sync="showStockDialog"
-                        :recordId="recordId"></items-stock>
         </div>
     </div>
 </template>
@@ -60,10 +53,8 @@
         components: {ItemsForm, DataTable},
         data() {
             return {
-                showDialog: false,
-                showImportDialog: false,
-                showStockDialog: false,
-                resource: 'items',
+                showDialog: false,                
+                resource: 'expenses',
                 recordId: null,
             }
         },
@@ -73,13 +64,6 @@
             clickCreate(recordId = null) {
                 this.recordId = recordId
                 this.showDialog = true
-            },
-            clickStock(recordId = null) {
-                this.recordId = recordId
-                this.showStockDialog = true
-            },
-            clickImport() {
-                this.showImportDialog = true
             },
             clickDelete(id) {
                 this.destroy(`/${this.resource}/${id}`).then(() =>

@@ -112,6 +112,12 @@ if ($hostname) {
 
             //Expenses
             Route::get('expenses', 'Tenant\ExpenseController@index')->name('tenant.expenses.index');
+            Route::get('expenses/columns', 'Tenant\ExpenseController@columns');
+            Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
+            Route::get('expenses/record/{expense}', 'Tenant\ExpenseController@record');
+            Route::post('expenses', 'Tenant\ExpenseController@store');
+            Route::get('expenses/records', 'Tenant\ExpenseController@records');
+            Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy');
 
             //Customers
 //            Route::get('customers', 'Tenant\CustomerController@index')->name('tenant.customers.index');

@@ -23,8 +23,9 @@ class TenantExpensesTable extends Migration
             $table->string('currency_type_id', 4);
             $table->decimal('total', 12, 2)->default(0);
             $table->text('detail')->nullable();
-            $table->string('document_number', 15)->nullable();
+            $table->string('company_number', 15)->nullable();
             $table->json('detail_voucher')->nullable();
+            $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');            
             $table->foreign('establishment_id')->references('id')->on('establishments');
