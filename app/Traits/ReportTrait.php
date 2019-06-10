@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Tenant\Catalogs\DocumentType;
 use App\Models\Tenant\Person;
+use App\Models\Tenant\User;
 use App\Models\Tenant\Establishment;
 
 /**
@@ -19,6 +20,15 @@ trait ReportTrait
     public function getTypeDoc($documentType) {
         foreach (DocumentType::all() as $item) {
             if (mb_strtoupper($item->description) == $documentType) return $item->id;
+        }
+        
+        return null;
+    }
+
+    public function getUser($user) {
+        
+        foreach (User::all() as $item) {
+            if ($item->name == $user) return $item->id;
         }
         
         return null;
