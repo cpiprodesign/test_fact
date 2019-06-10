@@ -100,6 +100,7 @@ Vue.component('tenant-item-category-index', require('./views/tenant/item_categor
 
 Vue.component('tenant-calendar', require('./views/tenant/components/calendar.vue'));
 Vue.component('tenant-calendar2', require('./views/tenant/components/calendar2.vue'));
+Vue.component('tenant-calendar3', require('./views/tenant/components/calendar3.vue'));
 
 // Modules
 Vue.component('inventory-index', require('../../modules/Inventory/Resources/assets/js/inventory/index.vue'));
