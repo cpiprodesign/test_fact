@@ -122,7 +122,7 @@
                                                     @break 
                                                     
                                                 @case($models[3])
-                                                    {{ ($value->inventory_kardexable->type == 1) ? Functions::formaterDecimal($value->quantity) : "-" }}                                                    
+                                                    {{ ($value->inventory_kardexable->type == 1 || $value->inventory_kardexable->type == 4) ? Functions::formaterDecimal($value->quantity) : "-" }}                                                    
                                                     @break 
                                                 @default
                                                     {{"-"}}                                                 

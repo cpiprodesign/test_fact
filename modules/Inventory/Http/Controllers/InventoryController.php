@@ -151,6 +151,7 @@ class InventoryController extends Controller
             $warehouse_id = $request->input('warehouse_id');
             $quantity = $request->input('quantity');
             $quantity_remove = $request->input('quantity_remove');
+            $type_adjustment = $request->input('type_adjustment');
 
             //Transaction
             $item_warehouse = ItemWarehouse::where('item_id', $item_id)
@@ -163,19 +164,36 @@ class InventoryController extends Controller
                 ];
             }
 
-            if($quantity < $quantity_remove) {
+            if(is_null($type_adjustment))
+            {
                 return  [
                     'success' => false,
-                    'message' => 'La cantidad a retirar no puede ser mayor al que se tiene en el almacén.'
+                    'message' => 'Seleccione el tipo de ajuste.'
                 ];
+            }
+
+            if($type_adjustment == 3)
+            {
+                if($quantity < $quantity_remove) {
+                    return  [
+                        'success' => false,
+                        'message' => 'La cantidad a retirar no puede ser mayor al que se tiene en el almacén.'
+                    ];
+                }
+
+                $inventory_description = 'Retirar';
+            }
+            else
+            {
+                $inventory_description = 'Aumentar';
             }
 
             // $item_warehouse->stock = $quantity - $quantity_remove;
             // $item_warehouse->save();
 
             $inventory = new Inventory();
-            $inventory->type = 3;
-            $inventory->description = 'Retirar';
+            $inventory->type = $type_adjustment;
+            $inventory->description = $inventory_description;
             $inventory->item_id = $item_id;
             $inventory->warehouse_id = $warehouse_id;
             $inventory->quantity = $quantity_remove;

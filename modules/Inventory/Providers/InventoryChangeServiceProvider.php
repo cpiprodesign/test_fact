@@ -50,6 +50,11 @@ class InventoryChangeServiceProvider extends ServiceProvider
                     $this->createInventoryKardex($inventory, $inventory->item_id, -1 * $inventory->quantity, $inventory->warehouse_id);
                     $this->updateStock($inventory->item_id, -1 * $inventory->quantity, $inventory->warehouse_id);
                     break;
+                case 4:
+                    $this->createInventoryKardex($inventory, $inventory->item_id, $inventory->quantity, $inventory->warehouse_id);
+                    $this->updateStock($inventory->item_id, $inventory->quantity, $inventory->warehouse_id);
+                    break;
+                    
             }
         });
     }
