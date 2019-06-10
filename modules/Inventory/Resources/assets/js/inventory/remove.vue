@@ -21,9 +21,18 @@
                             <el-input v-model="form.quantity"></el-input>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Tipo de Ajuste</label>
+                            <el-select v-model="form.type_adjustment">
+                                <el-option :key="1" :value="3" :label="'Reducir'"></el-option>
+                                <el-option :key="2" :value="4" :label="'Aumentar'"></el-option>
+                            </el-select>
+                        </div>
+                    </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label">Cantidad a retirar</label>
+                            <label class="control-label">Cantidad a ajustar</label>
                             <el-input v-model="form.quantity_remove"></el-input>
                         </div>
                     </div>
@@ -71,11 +80,12 @@
                     warehouse_id: null,
                     warehouse_description: null,
                     quantity: null,
-                    quantity_remove: 0
+                    quantity_remove: 0,
+                    type_adjustment: 3
                 }
             },
             create() {
-                this.titleDialog = 'Retirar producto de almacén'
+                this.titleDialog = 'Ajustar producto de almacén'
                 this.$http.get(`/${this.resource}/record/${this.recordId}`)
                     .then(response => {
                         this.form = response.data.data

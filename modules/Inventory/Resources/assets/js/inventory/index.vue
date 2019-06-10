@@ -32,7 +32,7 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickMove(row.id)">Trasladar</button>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-warning"
-                                    @click.prevent="clickRemove(row.id)">Remover</button>
+                                    @click.prevent="clickRemove(row.id)">Ajustar</button>
                         </td>
                     </tr>
                 </data-table>
