@@ -5,6 +5,7 @@
 /storage/*.key
 /.idea
 /.vscode
+/vendor
 /.vagrant
 *.lock
 *lock.json
