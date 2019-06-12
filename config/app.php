@@ -167,6 +167,7 @@ return [
 
         App\Providers\KardexServiceProvider::class,
         App\Providers\AnulationServiceProvider::class,
+        App\Providers\InventoryServiceProvider::class,
         
     ],
 

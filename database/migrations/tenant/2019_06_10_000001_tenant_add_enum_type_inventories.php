@@ -1,22 +1,24 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
-class TenantAddSerieSaleNotesInSeries extends Migration
+class TenantAddEnumTypeInventories extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
+
     public function up()
     {
-        DB::table('series')->insert([
-            ['establishment_id' => 1, 'document_type_id' => '100', 'number' => 'NV01']
-        ]);
+        Schema::table('inventories', function (Blueprint $table) {
+
+            DB::statement("ALTER TABLE inventories MODIFY COLUMN type ENUM('1', '2', '3', '4')");            
+        });
     }
 
     /**
@@ -24,8 +26,9 @@ class TenantAddSerieSaleNotesInSeries extends Migration
      *
      * @return void
      */
+    
     public function down()
     {
-        Schema::dropIfExists('series');
+        Schema::dropIfExists('inventories');
     }
 }

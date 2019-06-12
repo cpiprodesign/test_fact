@@ -110,6 +110,15 @@ if ($hostname) {
             Route::post('items/import', 'Tenant\ItemController@import');
             Route::get('items/stock_details/{item}', 'Tenant\ItemController@stock_details');
 
+            //Expenses
+            Route::get('expenses', 'Tenant\ExpenseController@index')->name('tenant.expenses.index');
+            Route::get('expenses/columns', 'Tenant\ExpenseController@columns');
+            Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
+            Route::get('expenses/record/{expense}', 'Tenant\ExpenseController@record');
+            Route::post('expenses', 'Tenant\ExpenseController@store');
+            Route::get('expenses/records', 'Tenant\ExpenseController@records');
+            Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy');
+
             //Customers
 //            Route::get('customers', 'Tenant\CustomerController@index')->name('tenant.customers.index');
 //            Route::get('customers/columns', 'Tenant\CustomerController@columns');
@@ -258,10 +267,16 @@ if ($hostname) {
             Route::post('reports/inventories/pdf', 'Tenant\ReportInventoryController@pdf')->name('tenant.report.inventories.pdf');
             Route::post('reports/inventories/excel', 'Tenant\ReportInventoryController@excel')->name('tenant.report.inventories.report_excel');
 
-            Route::get('reports/kardex', 'Tenant\ReportKardexController@index')->name('tenant.reports.kardex.index');
-            Route::post('reports/kardex/search', 'Tenant\ReportKardexController@search')->name('tenant.reports.kardex.search');
-            Route::post('reports/kardex/pdf', 'Tenant\ReportKardexController@pdf')->name('tenant.report.kardex.pdf');
-            Route::post('reports/kardex/excel', 'Tenant\ReportKardexController@excel')->name('tenant.report.kardex.report_excel');
+            // Route::get('reports/kardex', 'Tenant\ReportKardexController@index')->name('tenant.reports.kardex.index');
+            // Route::post('reports/kardex/search', 'Tenant\ReportKardexController@search')->name('tenant.reports.kardex.search');
+            // Route::post('reports/kardex/pdf', 'Tenant\ReportKardexController@pdf')->name('tenant.report.kardex.pdf');
+            // Route::post('reports/kardex/excel', 'Tenant\ReportKardexController@excel')->name('tenant.report.kardex.report_excel');
+
+            //report expense
+            Route::get('reports/expenses', 'Tenant\ReportExpenseController@index')->name('tenant.reports.expenses.index');
+            Route::post('reports/expenses/search', 'Tenant\ReportExpenseController@search')->name('tenant.expenses.search');
+            Route::post('reports/expenses/pdf', 'Tenant\ReportExpenseController@pdf')->name('tenant.expenses.report_pdf');
+            Route::post('reports/expenses/excel', 'Tenant\ReportExpenseController@excel')->name('tenant.expenses.report_excel');
 
             Route::post('options/delete_documents', 'Tenant\OptionController@deleteDocuments');
 
@@ -314,7 +329,6 @@ if ($hostname) {
             Route::post('perceptions', 'Tenant\PerceptionController@store');
             Route::delete('perceptions/{perception}', 'Tenant\PerceptionController@destroy');
             Route::get('perceptions/item/tables', 'Tenant\PerceptionController@item_tables');
-
 
             //Tribute Concept Type
             Route::get('tribute_concept_types/records', 'Tenant\TributeConceptTypeController@records');

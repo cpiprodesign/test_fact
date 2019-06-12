@@ -156,6 +156,13 @@ class ClientController extends Controller
             'code' => '0000'
         ]);
 
+        DB::connection('tenant')->table('warehouses')->insertGetId([
+            'establishment_id' => $establishment_id,
+            'description' => 'Almacén - '.'Oficina Principal',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
         DB::connection('tenant')->table('series')->insert([
             ['establishment_id' => 1, 'document_type_id' => '01', 'number' => 'F001'],
             ['establishment_id' => 1, 'document_type_id' => '03', 'number' => 'B001'],
@@ -165,6 +172,7 @@ class ClientController extends Controller
             ['establishment_id' => 1, 'document_type_id' => '08', 'number' => 'BD01'],
             ['establishment_id' => 1, 'document_type_id' => '20', 'number' => 'R001'],
             ['establishment_id' => 1, 'document_type_id' => '09', 'number' => 'T001'],
+            ['establishment_id' => 1, 'document_type_id' => '100', 'number' => 'NV01'],
         ]);
 
         DB::connection('tenant')->table('users')->insert([
@@ -173,6 +181,10 @@ class ClientController extends Controller
             'password' => bcrypt($request->input('password')),
             'api_token' => $token,
             'establishment_id' => $establishment_id
+        ]);
+
+        DB::connection('tenant')->table('inventory_configurations')->insert([
+            ['stock_control' => 0],
         ]);
 
         return [

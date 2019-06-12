@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div class="row">    
-                            <div class="col-md-12">
+                            <div class="col-md-12" style="max-height: 300px; overflow-y: scroll">
                                 <h5 class="el-dialog__title">Productos por agotarse</h5>                                
                                 <table class="table table-sm">
                                     <thead class="table-active">
@@ -33,7 +33,7 @@
                                             <td>Producto</td>
                                             <td>Cantidad</td>
                                             <td>Stock Mínimo</td>
-                                            <td>Establecimiento</td>
+                                            <td>Almacén</td>
                                             <td>Estado</td>
                                             <td>Opción</td>
                                         </tr>
@@ -41,12 +41,12 @@
                                     <tbody v-for="(row,index) in items" :key="row.id">
                                         <tr>
                                             <td>{{ row.description }}</td>
-                                            <td>{{ row.quantity }}</td>
+                                            <td>{{ row.stock }}</td>
                                             <td>{{ row.stock_min }}</td>
-                                            <td>{{ row.establecimiento }}</td>
+                                            <td>{{ row.warehouse }}</td>
                                             <td>
-                                                <span class="badge bg-secondary text-white bg-danger" v-if="row.quantity < 1 ">Agotado</span>
-                                                <span class="badge bg-secondary text-white bg-warning" v-if="row.quantity > 0">Pocas unidades</span> 
+                                                <span class="badge bg-secondary text-white bg-danger" v-if="row.stock < 1 ">Agotado</span>
+                                                <span class="badge bg-secondary text-white bg-warning" v-if="row.stock > 0">Pocas unidades</span> 
                                             </td>
                                             <td>
                                                 <a :href="`purchases/create`" class="btn waves-effect waves-light btn-xs btn-info m-1__2">Abastacer</a>

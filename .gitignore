@@ -3,6 +3,7 @@
 /public/downloads
 /public/storage
 /storage/*.key
+/vendor
 /.idea
 /.vscode
 /vendor
@@ -11,6 +12,7 @@
 *lock.json
 *.orig
 **/*.orig
+/vendor
 Homestead.json
 Homestead.yaml
 npm-debug.log

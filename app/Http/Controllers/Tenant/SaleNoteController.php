@@ -36,7 +36,7 @@ class SaleNoteController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('input.request:salenote,web', ['only' => ['store', 'update']]);
+        $this->middleware('input.request:saleNote,web', ['only' => ['store', 'update']]);
     }
 
     public function index()

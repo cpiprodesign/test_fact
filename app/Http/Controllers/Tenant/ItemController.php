@@ -10,6 +10,7 @@ use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\UnitType;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\Establishment;
+use App\Models\Tenant\Warehouse;
 use App\Models\Tenant\EstablishmentItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\ItemRequest;
@@ -56,12 +57,12 @@ class ItemController extends Controller
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
         $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
         $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $establishments = Establishment::all();
+        $warehouses = Warehouse::all();
 
         $trademarks = Trademarks::orderBy('name')->get();
         $item_category = ItemCategory::WhereNull('parent_id')->orderBy('description')->get();
 
-        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'trademarks', 'item_category', 'establishments');
+        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'trademarks', 'item_category', 'warehouses');
     }
 
     public function record($id)
@@ -73,11 +74,11 @@ class ItemController extends Controller
 
     public function stock_details($id)
     {
-        $sql = "SELECT eit.quantity, ite.`stock_min`,
-                (SELECT description FROM establishments est WHERE est.id = eit.establishment_id LIMIT 1) AS establecimiento
+        $sql = "SELECT itw.stock, ite.`stock_min`,
+                (SELECT description FROM warehouses war WHERE war.id = itw.warehouse_id LIMIT 1) AS almacen
                 FROM items ite
-                INNER JOIN establishment_items eit ON eit.item_id = ite.id
-                WHERE eit.item_id = ?";
+                INNER JOIN item_warehouse itw ON itw.item_id = ite.id
+                WHERE itw.item_id = ?";
 
         $stock_details = DB::connection('tenant')->select($sql, array($id));
 
@@ -101,10 +102,10 @@ class ItemController extends Controller
         $item->fill($request->all());
         $item->save();
 
-        // aqui la cosa de actualizar el stock
-        foreach ($request->establisment_item as $stock_by_location) {
-            $stock = $item->establisment_item()->firstOrNew(['establishment_id' => $stock_by_location['establishment_id']]);
-            $stock->quantity =$stock_by_location['quantity'];
+        // stock actual
+        foreach ($request->item_warehouse as $stock_by_location) {
+            $stock = $item->item_warehouse()->firstOrNew(['warehouse_id' => $stock_by_location['warehouse_id']]);
+            $stock->stock = $stock_by_location['quantity'];
             $stock->save();
         }
 
