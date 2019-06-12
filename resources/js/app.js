@@ -50,8 +50,8 @@ Vue.component('tenant-customers-index', require('./views/tenant/customers/index.
 Vue.component('tenant-suppliers-index', require('./views/tenant/suppliers/index.vue'));
 Vue.component('tenant-users-form', require('./views/tenant/users/form.vue'));
 
-//gastos
 Vue.component('tenant-expenses-index', require('./views/tenant/expenses/index.vue'));
+Vue.component('tenant-accounts-index', require('./views/tenant/accounts/index.vue'));
 
 Vue.component('tenant-documents-index', require('./views/tenant/documents/index.vue'));
 Vue.component('tenant-documents-invoice', require('./views/tenant/documents/invoice.vue'));

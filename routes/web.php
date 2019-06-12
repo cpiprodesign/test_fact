@@ -119,6 +119,15 @@ if ($hostname) {
             Route::get('expenses/records', 'Tenant\ExpenseController@records');
             Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy');
 
+            //Accounts
+            Route::get('accounts', 'Tenant\AccountController@index')->name('tenant.accounts.index');
+            Route::get('accounts/columns', 'Tenant\AccountController@columns');
+            Route::get('accounts/tables', 'Tenant\AccountController@tables');
+            Route::get('accounts/record/{account}', 'Tenant\AccountController@record');
+            Route::post('accounts', 'Tenant\AccountController@store');
+            Route::get('accounts/records', 'Tenant\AccountController@records');
+            Route::delete('accounts/{account}', 'Tenant\AccountController@destroy');
+
             //Customers
 //            Route::get('customers', 'Tenant\CustomerController@index')->name('tenant.customers.index');
 //            Route::get('customers/columns', 'Tenant\CustomerController@columns');
