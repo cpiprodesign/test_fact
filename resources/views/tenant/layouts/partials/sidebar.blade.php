@@ -118,6 +118,16 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     Productos
                                 </a>
                             </li>
+                            <li>
+                                <a class="nav-link" href="#">
+                                    Lista de precios <span class="label label-info"> Pronto</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#">
+                                    Atributos/Variantes <span class="label label-info"> Pronto</span>
+                                </a>
+                            </li>
                             <li class="{{ ($path[0] === 'warehouses')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('warehouses.index')}}">Almacenes</a>
                             </li>
@@ -135,6 +145,18 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                 </a>
                             </li>
                         </ul>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-university" aria-hidden="true"></i>
+                            <span>Bancos </span><span class="label label-info"> Pronto</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-comment-dollar" aria-hidden="true"></i>
+                            <span>Contable </span><span class="label label-info"> Pronto</span>
+                        </a>
                     </li>
                     @if(in_array('configuration', $vc_modules))
                     <li class="nav-parent {{ in_array($path[0], ['users', 'persons'])?'nav-active nav-expanded':'' }}">
@@ -177,13 +199,13 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                 </a>
                             </li>
                             <li class="{{ ($path[0] === 'retentions')?'nav-active':'' }}">
-                                <a class="nav-link" href="{{route('tenant.retentions.index')}}">
-                                    Retenciones (Pronto)
+                                <a class="nav-link" href="#">
+                                    Retenciones <span class="label label-info"> Pronto</span>
                                 </a>
                             </li>
                             <li class="#">
                                 <a class="nav-link" href="#">
-                                    Percepciones (Pronto)
+                                    Percepciones <span class="label label-info"> Pronto</span>
                                 </a>
                             </li>
                         </ul>
