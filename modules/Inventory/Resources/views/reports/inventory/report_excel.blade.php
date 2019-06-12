@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\Functions;
+@endphp
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -49,21 +52,38 @@
                             <tr>
                                 <th>#</th>
                                 <th>Descripción</th>
-                                <th>Inventario actual</th>
-                                <th>Almacén</th>
+                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Costo Promedio</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $total = 0;
+                            @endphp
                             @foreach($records as $key => $value)
-                            <tr> 
-                                <td>{{$loop->iteration}}</td>
-                                <td>{{$value->item->description}}</td>
-                                <td>{{$value->stock}}</td>
-                                <td>{{$value->warehouse->description}}</td>
-
-                            </tr>
+                                @php
+                                    $subtotal = $value->stock * $value->purchase_unit_price;
+                                    $total = $total + $subtotal;
+                                @endphp
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$value->item}}</td>
+                                    <td>{{Functions::formaterDecimal($value->stock)}}</td>
+                                    <td>{{$value->unit}}</td>
+                                    <td>{{number_format($value->purchase_unit_price, 2)}}</td>
+                                    <td>{{number_format($subtotal, 2)}}</td>
+                                </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4"></th>
+                                <th><b>Total</b></th>
+                                <th><b>{{number_format($total, 2)}}</b></th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

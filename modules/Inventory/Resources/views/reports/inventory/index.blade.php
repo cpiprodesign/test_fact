@@ -32,7 +32,7 @@
                             </div>
                         </form>
                     </div>
-                    @if(!empty($reports) && $reports->count())
+                    @if(!empty($reports) && count($reports))
                     <div class="box">
                         <div class="box-body no-padding">
                             <div style="margin-bottom: 10px">
@@ -56,20 +56,38 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Descripción</th>
-                                        <th>Inventario actual</th>
-                                        <th>Almacén</th>
+                                        <th>Cantidad</th>
+                                        <th>Unidad</th>
+                                        <th>Costo Promedio</th>
+                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $total = 0;
+                                    @endphp
                                     @foreach($reports as $key => $value)
-                                    <tr>
-                                        <td class="celda">{{$loop->iteration}}</td>
-                                        <td class="celda">{{$value->item->description}}</td>
-                                        <td class="celda">{{Functions::formaterDecimal($value->stock)}}</td>
-                                        <td class="celda">{{$value->warehouse->description}}</td>
-                                    </tr>
+                                        @php
+                                            $subtotal = $value->stock * $value->purchase_unit_price;
+                                            $total = $total + $subtotal;
+                                        @endphp
+                                        <tr>
+                                            <td class="celda">{{$loop->iteration}}</td>
+                                            <td class="celda">{{$value->item}}</td>
+                                            <td class="celda">{{Functions::formaterDecimal($value->stock)}}</td>
+                                            <td class="celda">{{$value->unit}}</td>
+                                            <td class="celda">{{number_format($value->purchase_unit_price, 2)}}</td>
+                                            <td class="celda">{{number_format($subtotal, 2)}}</td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4"></th>
+                                        <th><b>Total</b></th>
+                                        <th><b>{{number_format($total, 2)}}</b></th>
+                                    </tr>
+                                </tfoot>
                             </table>
                             <div class="pagination-wrapper">
                                 {{-- {{ $reports->appends(['search' => Session::get('form_document_list')])->render()  }} --}}

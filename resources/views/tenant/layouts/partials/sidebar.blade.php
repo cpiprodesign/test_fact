@@ -131,7 +131,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </li>
                             <li class="{{(($path[0] === 'reports') && ($path[1] == 'inventory')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('reports.inventory.index')}}">
-                                    Reporte Inventario
+                                    Valor de Inventario
                                 </a>
                             </li>
                         </ul>
