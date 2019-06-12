@@ -119,6 +119,9 @@ if ($hostname) {
             Route::get('expenses/records', 'Tenant\ExpenseController@records');
             Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy');
 
+            //Payments
+            Route::get('payments/tables', 'Tenant\PaymentController@tables');
+            Route::post('payments/', 'Tenant\PaymentController@store');
             //Accounts
             Route::get('accounts', 'Tenant\AccountController@index')->name('tenant.accounts.index');
             Route::get('accounts/columns', 'Tenant\AccountController@columns');

@@ -20,6 +20,8 @@ class DocumentResource extends JsonResource
             'group_id' => $this->group_id,
             'number' => $this->number_full,
             'date_of_issue' => $this->date_of_issue->format('Y-m-d'),
+            'total' => $this->total,
+            'total_paid' => $this->total_paid,
             'customer_email' => $this->customer->email,
             'download_pdf' => $this->download_external_pdf,
         ];

@@ -27,19 +27,15 @@
                 <data-table :resource="resource">
                     <tr slot="heading">
                         <th>#</th>
-                        <th class="text-center">Fecha Emisión</th>
                         <th>Cliente</th>
+                        <th class="text-center">Creación</th>
                         <th>Número</th>
-                        <th>Estado</th>
-                        <th>Estado de Pago</th>
-                        <th class="text-center">Moneda</th>
-                        <th class="text-right" v-if="columns.total_exportation.visible">T.Exportación</th>
-                        <th class="text-right" v-if="columns.total_free.visible">T.Gratuita</th>
-                        <th class="text-right" v-if="columns.total_unaffected.visible">T.Inafecta</th>
-                        <th class="text-right" v-if="columns.total_exonerated.visible">T.Exonerado</th>
-                        <th class="text-right">T.Gravado</th>
-                        <th class="text-right">T.Igv</th>
+                        <th class="text-right">Moneda</th>
                         <th class="text-right">Total</th>
+                        <th class="text-right">Pagado</th>
+                        <th class="text-right">Por pagar</th>
+                        <th class="text-right">Estado SUNAT</th>
+                        <th class="text-right">Estado</th>
                         <th class="text-center">Descargas</th>
                         <!--<th class="text-center">Anulación</th>-->
                         <th class="text-right">Acciones</th>
@@ -56,12 +52,16 @@
                                                     'border-left border-warning': (row.state_type_id === '13')
                     }">
                         <td>{{ index }}</td>
-                        <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.customer_name }}<br/><small v-text="row.customer_number"></small></td>
+                        <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.number }}<br/>
                             <small v-text="row.document_type_description"></small><br/>
                             <small v-if="row.affected_document" v-text="row.affected_document"></small>
                         </td>
+                        <td class="text-right">{{ row.currency_type_id }}</td>
+                        <td class="text-right">{{ row.total }}</td>
+                        <td class="text-right">{{ row.total_paid }}</td>
+                        <td class="text-right">{{ row.total - row.total_paid }}</td>
                         <td><span class="badge bg-secondary text-white" :class="{
                             'bg-danger': (row.state_type_id === '11'),
                             'bg-warning': (row.state_type_id === '13'),
@@ -72,17 +72,9 @@
                             'bg-dark': (row.state_type_id === '09')
                         }">{{ row.state_type_description }}</span></td>
                         <td>
-                            <span class="badge bg-secondary text-white bg-success" v-if="row.status_paid == 1">Pagado</span>
-                            <span class="badge bg-secondary text-white bg-dark" v-if="row.status_paid == 0">Pendiente</span>                            
+                            <span class="badge bg-secondary text-white bg-success" v-if="row.total - row.total_paid == 0">Pagado</span>
+                            <span class="badge bg-secondary text-white bg-warning" v-if="row.total - row.total_paid > 0">Pendiente</span>                            
                         </td>
-                        <td class="text-center">{{ row.currency_type_id }}</td>
-                        <td class="text-right" v-if="columns.total_exportation.visible">{{ row.total_exportation }}</td>
-                        <td class="text-right" v-if="columns.total_free.visible">{{ row.total_free }}</td>
-                        <td class="text-right" v-if="columns.total_unaffected.visible">{{ row.total_unaffected }}</td>
-                        <td class="text-right" v-if="columns.total_exonerated.visible">{{ row.total_exonerated }}</td>
-                        <td class="text-right">{{ row.total_taxed }}</td>
-                        <td class="text-right">{{ row.total_igv }}</td>
-                        <td class="text-right">{{ row.total }}</td>
                         <td class="text-center">
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickDownload(row.download_xml)"
@@ -94,24 +86,12 @@
                                     @click.prevent="clickDownload(row.download_cdr)"
                                     v-if="row.has_cdr">CDR</button>
                         </td>
-                        <!--<td class="text-center">-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-danger"-->
-                                    <!--@click.prevent="clickDownload(row.download_xml_voided)"-->
-                                    <!--v-if="row.has_xml_voided">XML</button>-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-danger"-->
-                                    <!--@click.prevent="clickDownload(row.download_cdr_voided)"-->
-                                    <!--v-if="row.has_cdr_voided">CDR</button>-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-warning"-->
-                                    <!--@click.prevent="clickTicket(row.voided.id, row.group_id)"-->
-                                    <!--v-if="row.btn_ticket">Consultar</button>-->
-                        <!--</td>-->
-
                         <td class="text-right">
                             <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-danger m-1__2"
                                v-if="row.btn_note">Nota de Crédito/Débito</a>
                             <a :href="`/dispatches/create2/${row.id}`" class="btn waves-effect waves-light btn-xs btn-default m-1__2"
                                v-if="row.btn_note">Guía de remisión</a>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2" @click.prevent="clickPay(row.id)" v-if="row.status_paid == 0" dusk="pay-voided">Pagar</button>
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0">Agregar Pago</button>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickResend(row.id)"
                                     v-if="row.btn_resend">Reenviar</button>

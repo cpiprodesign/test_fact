@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Http\Controllers\Tenant;
+
+use App\Models\Tenant\Catalogs\CurrencyType;
+use App\Models\Tenant\Catalogs\PaymentMethod;
+use App\Models\Tenant\Account;
+use App\Models\Tenant\Document;
+use App\Models\Tenant\Payment;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Tenant\PaymentRequest;
+use App\Http\Resources\Tenant\AccountCollection;
+use App\Http\Resources\Tenant\AccountResource;
+use Exception;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Excel;
+use Illuminate\Support\Facades\DB;
+
+class PaymentController extends Controller
+{
+    public function index()
+    {
+        return view('tenant.accounts.index');
+    }
+
+    public function columns()
+    {
+        return [
+            'name' => 'Nombre'
+        ];
+    }
+
+    public function records(Request $request)
+    {
+        $records = Account::where($request->column, 'like', "%{$request->value}%")
+            ->orderBy('date_of_issue');
+
+        return new AccountCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
+    }
+
+    public function create()
+    {
+        return view('tenant.items.form');
+    }
+
+    public function tables()
+    {
+        $currency_types = CurrencyType::whereActive()->orderByDescription()->get();
+        $payment_methods = PaymentMethod::whereActive()->get();
+        $accounts = Account::all();
+
+        return compact('currency_types', 'accounts', 'payment_methods');
+    }
+
+    public function record($id)
+    {
+        $record = new AccountResource(Account::findOrFail($id));
+
+        return $record;
+    }
+
+    public function store(PaymentRequest $request)
+    {
+        //$document_id = $request->input('document_id');
+
+        $array = [$request];
+
+        if($request->input('total') > $request->input('total_debt')) {
+            return [
+                'success' => false,
+                'message' => 'El valor recibido no debe ser mayor a la deuda'
+            ];
+        }
+
+        $fact = DB::connection('tenant')->transaction(function () use ($request){
+
+            $payment = new Payment();
+            $payment->fill($request->all());
+            $payment->save();
+
+            $account = Account::find($request->input('account_id'));
+            $account->current_balance += $request->input('total');
+            $account->save();
+
+            $document = Document::find($request->input('document_id'));
+            $document->total_paid += $request->input('total');
+            $document->save();
+
+            return $payment;
+        });
+        
+        return [
+            'success' => true,
+            'message' => 'Pago registrado con éxito'
+        ];
+    }
+
+    public function destroy($id)
+    {
+        $expense = Account::findOrFail($id);
+        $expense->delete();
+
+        return [
+            'success' => true,
+            'message' => 'Gasto eliminado con éxito'
+        ];
+    }
+}
