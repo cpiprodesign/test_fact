@@ -22,6 +22,9 @@ class PaymentRequest extends FormRequest
             'currency_type_id' => [
                 'required',
             ],
+            'date_of_issue' => [
+                'required',
+            ],
             'account_id' => [
                 'required',
             ],

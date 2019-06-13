@@ -9,8 +9,8 @@ use App\Models\Tenant\Document;
 use App\Models\Tenant\Payment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\PaymentRequest;
-use App\Http\Resources\Tenant\AccountCollection;
-use App\Http\Resources\Tenant\AccountResource;
+use App\Http\Resources\Tenant\PaymentCollection;
+use App\Http\Resources\Tenant\PaymentResource;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
@@ -20,22 +20,22 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        return view('tenant.accounts.index');
+        return view('tenant.payments.index');
     }
 
     public function columns()
     {
         return [
-            'name' => 'Nombre'
+            'description' => 'Descripción'
         ];
     }
 
     public function records(Request $request)
     {
-        $records = Account::where($request->column, 'like', "%{$request->value}%")
+        $records = Payment::where($request->column, 'like', "%{$request->value}%")
             ->orderBy('date_of_issue');
 
-        return new AccountCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
+        return new PaymentCollection(Payment::paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function create()
@@ -74,7 +74,13 @@ class PaymentController extends Controller
 
         $fact = DB::connection('tenant')->transaction(function () use ($request){
 
+            $document = Document::find($request->input('document_id'));
+            $document->total_paid += $request->input('total');
+            $customer_id = $document->customer_id;
+            $document->save();
+
             $payment = new Payment();
+            $payment->customer_id = $customer_id;
             $payment->fill($request->all());
             $payment->save();
 
@@ -82,9 +88,7 @@ class PaymentController extends Controller
             $account->current_balance += $request->input('total');
             $account->save();
 
-            $document = Document::find($request->input('document_id'));
-            $document->total_paid += $request->input('total');
-            $document->save();
+            
 
             return $payment;
         });

@@ -3,14 +3,17 @@
 namespace App\Models\Tenant;
 
 use App\Models\Tenant\Catalogs\CurrencyType;
+use App\Models\Tenant\Catalogs\PaymentMethod;
 
 class Payment extends ModelTenant
 {
     protected $with = ['currency_type'];
+
     protected $fillable = [
         'document_id',
         'customer_id',
         'payment_method_id',
+        'date_of_issue',
         'currency_type_id',
         'account_id',
         'description',
@@ -19,7 +22,7 @@ class Payment extends ModelTenant
 
     public function document()
     {
-        return $this->belongsTo(Document::class);
+        return $this->belongsTo(Document::class, 'document_id');
     }
 
     public function currency_type()
@@ -29,11 +32,21 @@ class Payment extends ModelTenant
 
     public function customer()
     {
-        return $this->belongsTo(Person::class, 'establishment');
+        return $this->belongsTo(Person::class, 'customer_id');
     }
 
     public function payment_method()
     {
-        return $this->belongsTo(PaymentMethod::class, 'establishment');
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
+    }
+
+    public function soap_type()
+    {
+        return $this->belongsTo(SoapType::class);
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'account_id');
     }
 }

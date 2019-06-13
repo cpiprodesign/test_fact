@@ -62,6 +62,15 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group" :class="{'has-danger': errors.description}">
+                        <label class="control-label">Descripción</label>
+                        <el-input v-model="form.description"></el-input>
+                        <small class="form-control-feedback" v-if="errors.description" v-text="errors.description[0]"></small>
+                    </div>
+                </div>
+            </div>
             <div class="form-actions text-right mt-4">
                 <el-button @click.prevent="close()">Cancelar</el-button>
                 <el-button type="danger" native-type="submit" :loading="loading_submit">Pagar</el-button>
@@ -109,7 +118,7 @@
                 this.initForm()
             },
             create() {
-                this.$http.get(`/${this.resource}/record/${this.recordId}`)                    
+                this.$http.get(`/${this.resource}/record/${this.recordId}`)
                     .then(response => {
                         let document = response.data.data
                         this.form.document_id = document.id
@@ -124,11 +133,7 @@
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
-                            // if (this.external) {
-                            //     this.$eventHub.$emit('reloadDataItems', response.data.id)
-                            // } else {
-                                this.$eventHub.$emit('reloadData')
-                            // }
+                            this.$eventHub.$emit('reloadData')
                             this.close()
                         } else {
                             this.$message.error(response.data.message)

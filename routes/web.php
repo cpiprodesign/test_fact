@@ -120,8 +120,12 @@ if ($hostname) {
             Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy');
 
             //Payments
+            Route::get('payments', 'Tenant\PaymentController@index')->name('tenant.payments.index');
+            Route::get('payments/columns', 'Tenant\PaymentController@columns');
             Route::get('payments/tables', 'Tenant\PaymentController@tables');
+            Route::get('payments/records', 'Tenant\PaymentController@records');
             Route::post('payments/', 'Tenant\PaymentController@store');
+
             //Accounts
             Route::get('accounts', 'Tenant\AccountController@index')->name('tenant.accounts.index');
             Route::get('accounts/columns', 'Tenant\AccountController@columns');
