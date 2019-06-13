@@ -29,6 +29,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                     <li class="
                         nav-parent
                         {{ ($path[0] === 'documents')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'payments')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'pos')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'sale-notes')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'quotations')?'nav-active nav-expanded':'' }}
@@ -49,6 +50,11 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <li class="{{ ($path[0] === 'documents' && $path[1] != 'create')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.documents.index')}}">
                                     Listados
+                                </a>
+                            </li>
+                            <li class="{{ ($path[0] === 'payments')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.payments.index')}}">
+                                    Pagos Recibidos
                                 </a>
                             </li>
                             <li class="{{ ($path[0] === 'pos')?'nav-active':'' }}">
@@ -141,21 +147,29 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </li>
                             <li class="{{(($path[0] === 'reports') && ($path[1] == 'inventory')) ? 'nav-active' : ''}}">
                                 <a class="nav-link" href="{{route('reports.inventory.index')}}">
-                                    Reporte Inventario
+                                    Valor de Inventario
                                 </a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a class="nav-link" href="#">
+                            <i class="fas fa-comment-dollar" aria-hidden="true"></i>
+                            <span>Contable </span><span class="label label-info"> Pronto</span>
+                        </a>
+                    </li>
+                    <li class="
+                        {{ ($path[0] === 'accounts')?'nav-active':'' }}
+                        ">
+                        <a class="nav-link" href="{{route('tenant.accounts.index')}}">
                             <i class="fas fa-university" aria-hidden="true"></i>
-                            <span>Bancos </span><span class="label label-info"> Pronto</span>
+                            <span>Bancos</span>
                         </a>
                     </li>
                     <li>
                         <a class="nav-link" href="#">
-                            <i class="fas fa-comment-dollar" aria-hidden="true"></i>
-                            <span>Contable </span><span class="label label-info"> Pronto</span>
+                            <i class="fas fa-store" aria-hidden="true"></i>
+                            <span>Tienda Online </span><span class="label label-info"> Pronto</span>
                         </a>
                     </li>
                     @if(in_array('configuration', $vc_modules))

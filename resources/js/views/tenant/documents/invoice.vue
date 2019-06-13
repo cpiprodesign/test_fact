@@ -130,9 +130,36 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group" :class="{'has-danger': errors.additional_information}">
-                                    <label class="control-label">informacion_adicional</label>
+                                    <label class="control-label">Información Adicional</label>
                                     <el-input v-model="form.additional_information" type="textarea" autosize style="height: 50px !important"></el-input>
                                     <small class="form-control-feedback" v-if="errors.additional_information" v-text="errors.additional_information[0]"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1" v-show="form.status_paid == 1">
+                            <div class="col-lg-2">
+                                <div class="form-group" :class="{'has-danger': errors.payment_method_id}">
+                                    <label class="control-label">Método de Pago</label>
+                                    <el-select v-model="pay_data.payment_method_id">
+                                        <el-option v-for="option in payment_methods" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.payment_method_id" v-text="errors.payment_method_id[0]"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" :class="{'has-danger': errors.account_id}">
+                                    <label class="control-label">Cuenta Bancaria <span class="text-danger">*</span></label>
+                                    <el-select v-model="pay_data.account_id" filterable>
+                                        <el-option v-for="option in accounts" :key="option.id" :value="option.id" :label="option.name+' | '+option.account_type.description"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.account_id" v-text="errors.account_id[0]"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" :class="{'has-danger': errors.total}">
+                                    <label class="control-label">Valor recibido<span class="text-danger">*</span></label>
+                                    <el-input v-model="pay_data.total"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.total" v-text="errors.total[0]"></small>
                                 </div>
                             </div>
                         </div>
@@ -187,7 +214,6 @@
                                 <h3 class="text-right" v-if="form.total > 0"><b>TOTAL A PAGAR: </b>{{ currency_type.symbol }} {{ form.total }}</h3>
                             </div>
                         </div>
-
                     </div>
                     <div class="form-actions text-right mt-4">
                         <el-button @click.prevent="close()">Cancelar</el-button>
@@ -235,10 +261,13 @@
                 loading_form: false,
                 errors: {},
                 form: {},
+                pay_data: {},
                 document_types: [],
                 currency_types: [],
                 discount_types: [],
                 charges_types: [],
+                payment_methods: [],
+                accounts: [],
                 all_customers: [],
                 status_paid: [
                     {"id": "1", "nombre": "Pagado"}, 
@@ -271,6 +300,8 @@
                     this.charges_types = response.data.charges_types
                     this.company = response.data.company
                     this.document_type_03_filter = response.data.document_type_03_filter
+                    this.payment_methods = response.data.payment_methods
+                    this.accounts = response.data.accounts
 
                     this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
@@ -278,8 +309,6 @@
                     this.form.operation_type_id = (this.operation_types.length > 0)?this.operation_types[0].id:null
 
                     this.decimal = response.data.decimal;
-
-                    console.log("decimal "+this.decimal)
 
                     this.changeEstablishment()
                     this.changeDateOfIssue()
@@ -332,6 +361,11 @@
                     actions: {
                         format_pdf:'a4',
                     }
+                },
+                this.pay_data = {
+                    payment_method_id: 1,
+                    account_id: 1,
+                    total: 0
                 }
             },
             resetForm() {
@@ -446,13 +480,46 @@
              },
             submit() {
                 this.loading_submit = true
-                this.$http.post(`/${this.resource}`, this.form).then(response => {
-                    
+                this.$http.post(`/${this.resource}`, this.form).then(response => {                    
                     if (response.data.success) {
-                        this.resetForm();
 
                         this.documentNewId = response.data.data.id;
-                        this.showDialogOptions = true;
+
+                        if(this.form.status_paid == 1)
+                        {
+                            this.pay_data.document_id = this.documentNewId;
+                            this.pay_data.date_of_issue = this.form.date_of_issue;
+                            this.pay_data.customer_id = this.form.customer_id;
+                            this.pay_data.currency_type_id = this.form.currency_type_id;
+                            //this.pay_data.total = this.form.total;
+                            this.pay_data.total_debt = this.form.total;
+
+                            this.$http.post(`/payments`, this.pay_data)
+                            .then(response => {
+                                if (response.data.success) {
+                                    this.resetForm();
+                                    this.showDialogOptions = true;
+                                } else {
+                                    this.$message.error(response.data.message)
+                                }
+                            })
+                            .catch(error => {
+                                if (error.response.status === 422) {
+                                    this.errors = error.response.data
+                                } else {
+                                    console.log(error)
+                                }
+                            })
+                            .then(() => {
+                                this.loading_submit = false
+                            })
+                        }
+                        else
+                        {                            
+                            this.resetForm();
+                            this.showDialogOptions = true;
+                        }
+                        
                     }
                     else {
                         this.$message.error(response.data.message);
