@@ -19,8 +19,10 @@ use App\Models\Tenant\Catalogs\NoteCreditType;
 use App\Models\Tenant\Catalogs\NoteDebitType;
 use App\Models\Tenant\Catalogs\OperationType;
 use App\Models\Tenant\Catalogs\PriceType;
+use App\Models\Tenant\Catalogs\PaymentMethod;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\AttributeType;
+use App\Models\Tenant\Account;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Quotation;
@@ -100,13 +102,15 @@ class DocumentController extends Controller
         $operation_types = OperationType::whereActive()->get();
         $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
         $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        $payment_methods = PaymentMethod::whereActive()->get();
+        $accounts = Account::all();
         $company = Company::active();
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
         $decimal = Configuration::first()->decimal;
 
         return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_note',
             'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
-            'discount_types', 'charge_types', 'company', 'document_type_03_filter', 'decimal');
+            'discount_types', 'charge_types', 'payment_methods', 'accounts', 'company', 'document_type_03_filter', 'decimal');
     }
 
     public function tables2($quotation_id = false)
@@ -282,6 +286,7 @@ class DocumentController extends Controller
                     ->update(['state_type_id' => '05']);
 
             }
+
             return $facturalo;
         });
 

@@ -88,8 +88,6 @@ class PaymentController extends Controller
             $account->current_balance += $request->input('total');
             $account->save();
 
-            
-
             return $payment;
         });
         
