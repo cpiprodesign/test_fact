@@ -27,6 +27,7 @@ use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Quotation;
 use App\Models\Tenant\QuotationItem;
+use App\Models\Tenant\Payment;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
@@ -54,7 +55,9 @@ class DocumentController extends Controller
 
     public function view(Document $document)
     {
-        return view('tenant.documents.view', compact('document'));   
+        $payments = Payment::where('document_id', $document->id)->get();
+
+        return view('tenant.documents.view', compact('document', 'payments'));
     }
 
     public function columns()

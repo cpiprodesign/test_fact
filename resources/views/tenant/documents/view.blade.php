@@ -44,13 +44,47 @@
             </div> 
             <div class="row">
                 <div class="col-md-12">
-                        
                     <iframe src="{{route('tenant.print.external', ['document', $document->external_id, 'a4'] )}}" frameborder="0" width="100%" height="550" marginheight="0" marginwidth="0" id="pdf"></iframe>
                 </div>
             </div>
+            <div class="row p-3">
+                {{-- <div class="tab-content" id="myTabContent"> --}}
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>Pagos recibidos</h5>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Método de pago</th>
+                                                <th>Cuenta</th>
+                                                <th>Monto</th>
+                                                <th>Observaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($payments as $payment)
+                                                <tr>
+                                                    <th>{{$payment->date_of_issue}}</th>
+                                                    <th>{{$payment->payment_method->description}}</th>
+                                                    <th>{{$payment->account->name}}</th>
+                                                    <th>{{$payment->total}}</th>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{-- </div> --}}
+            </div>
         </div>
     </div>
-
 @endsection
 
 @push('scripts')
