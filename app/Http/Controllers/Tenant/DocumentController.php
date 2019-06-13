@@ -52,6 +52,11 @@ class DocumentController extends Controller
         return view('tenant.documents.index');
     }
 
+    public function view(Document $document)
+    {
+        return view('tenant.documents.view', compact('document'));   
+    }
+
     public function columns()
     {
         return [

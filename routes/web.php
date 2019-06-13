@@ -15,7 +15,7 @@ if ($hostname) {
         Route::post('search', 'Tenant\SearchController@store');
 
         Route::get('downloads/{model}/{type}/{external_id}/{format?}', 'Tenant\DownloadController@downloadExternal')->name('tenant.download.external_id');
-        Route::get('print/{model}/{external_id}/{format?}', 'Tenant\DownloadController@toPrint');
+        Route::get('print/{model}/{external_id}/{format?}', 'Tenant\DownloadController@toPrint')->name('tenant.print.external');
         Route::get('print2/{model}/{id}/{format?}', 'Tenant\DownloadController@toPrint2');
         /*cotizacion*/
         Route::get('download/{model}/{type}/{id}/{format?}', 'Tenant\DownloadController@downloadExternal2')->name('tenant.download.id');
@@ -125,6 +125,7 @@ if ($hostname) {
             Route::get('payments/tables', 'Tenant\PaymentController@tables');
             Route::get('payments/records', 'Tenant\PaymentController@records');
             Route::post('payments/', 'Tenant\PaymentController@store');
+            Route::delete('payments/{payment}', 'Tenant\PaymentController@destroy');
 
             //Accounts
             Route::get('accounts', 'Tenant\AccountController@index')->name('tenant.accounts.index');
@@ -179,6 +180,7 @@ if ($hostname) {
 
             //Documents
             Route::get('documents', 'Tenant\DocumentController@index')->name('tenant.documents.index');
+            Route::get('documents/view/{document}', 'Tenant\DocumentController@view')->name('tenant.documents.view');
             Route::get('documents/columns', 'Tenant\DocumentController@columns');
             Route::get('documents/records', 'Tenant\DocumentController@records');
             Route::get('documents/create', 'Tenant\DocumentController@create')->name('tenant.documents.create');

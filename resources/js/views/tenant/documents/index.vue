@@ -87,6 +87,7 @@
                                     v-if="row.has_cdr">CDR</button>
                         </td>
                         <td class="text-right">
+                            <a :href="`/${resource}/view/${row.id}`" class="btn waves-effect waves-light btn-xs btn-primary m-1__2">Visualizar</a>
                             <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-danger m-1__2"
                                v-if="row.btn_note">Nota de Crédito/Débito</a>
                             <a :href="`/dispatches/create2/${row.id}`" class="btn waves-effect waves-light btn-xs btn-default m-1__2"

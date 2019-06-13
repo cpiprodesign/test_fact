@@ -99,12 +99,25 @@ class PaymentController extends Controller
 
     public function destroy($id)
     {
-        $expense = Account::findOrFail($id);
-        $expense->delete();
+        $fact = DB::connection('tenant')->transaction(function () use ($id){
+            $payment = Payment::findOrFail($id);
+            $document_id = $payment->document_id;
+            $account_id = $payment->account_id;
+            $total = $payment->total;
+            $payment->delete();
+
+            $document = Document::find($document_id);
+            $document->total_paid -= $total;
+            $document->save();
+
+            $account = Account::find($account_id);
+            $account->current_balance -= $total;
+            $account->save();
+        });        
 
         return [
             'success' => true,
-            'message' => 'Gasto eliminado con éxito'
+            'message' => 'Pago eliminado con éxito'
         ];
     }
 }

@@ -72,6 +72,10 @@ a:active {
 	padding-top: 40px;
 }
 
+.card-without-radius{
+    border-radius: 0px !important
+}
+
 @media (max-width: 767px) {
 	.content-body:not(.card-margin) > .row + .row {
 		padding-top: 15px;
