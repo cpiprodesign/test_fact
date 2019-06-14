@@ -111,7 +111,7 @@
                 this.initForm()
             },
             create() {
-                this.titleDialog = (this.recordId) ? 'Editar Gasto' : 'Nuevo Gasto'
+                this.titleDialog = (this.recordId) ? 'Editar Banco' : 'Nuevo Banco'
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
