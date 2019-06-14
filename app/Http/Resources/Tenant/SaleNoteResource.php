@@ -17,9 +17,8 @@ class SaleNoteResource extends JsonResource
         return [
             'id' => $this->id,
             'number' => $this->number_full,
-            'date_of_issue' => $this->date_of_issue->format('Y-m-d'),
-            'customer_email' => $this->customer->email,
-            'download_pdf' => $this->download_external_pdf,
+            'total' => $this->total,
+            'total_paid' => $this->total_paid,
         ];
     }
 }

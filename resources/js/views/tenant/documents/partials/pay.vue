@@ -81,12 +81,12 @@
 
 <script>
     export default {
-        props: ['showDialog', 'recordId'],
+        props: ['showDialog', 'recordId', 'resource'],
         data() {
             return {
                 titleDialog: null,
                 loading_submit: false,
-                resource: 'documents',
+                //resource: 'documents',
                 errors: {},
                 form: {},
                 currency_types: [],
@@ -121,7 +121,13 @@
                 this.$http.get(`/${this.resource}/record/${this.recordId}`)
                     .then(response => {
                         let document = response.data.data
-                        this.form.document_id = document.id
+                        if(this.resource == 'documents'){
+                            this.form.document_id = document.id
+                        }
+                        else{
+                            this.form.sale_note_id = document.id
+                        }
+                        
                         this.form.total0 = document.total
                         this.form.total_debt = document.total - document.total_paid
                         this.titleDialog = 'Comprobante: '+document.number

@@ -7,6 +7,7 @@ use App\Models\Tenant\Catalogs\PaymentMethod;
 use App\Models\Tenant\Account;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Payment;
+use App\Models\Tenant\SaleNote;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\PaymentRequest;
 use App\Http\Resources\Tenant\PaymentCollection;
@@ -74,10 +75,21 @@ class PaymentController extends Controller
 
         $fact = DB::connection('tenant')->transaction(function () use ($request){
 
-            $document = Document::find($request->input('document_id'));
-            $document->total_paid += $request->input('total');
-            $customer_id = $document->customer_id;
-            $document->save();
+            if(is_null($request->input('document_id')))
+            {
+                $document = SaleNote::find($request->input('sale_note_id'));
+                $document->total_paid += $request->input('total');
+                $customer_id = $document->customer_id;
+                $document->save();
+            }
+            else
+            {
+                $document = Document::find($request->input('document_id'));
+                $document->total_paid += $request->input('total');
+                $customer_id = $document->customer_id;
+                $document->save();
+            }
+            
 
             $payment = new Payment();
             $payment->customer_id = $customer_id;

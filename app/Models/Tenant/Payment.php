@@ -11,6 +11,7 @@ class Payment extends ModelTenant
 
     protected $fillable = [
         'document_id',
+        'sale_note_id',
         'customer_id',
         'payment_method_id',
         'date_of_issue',
@@ -23,6 +24,11 @@ class Payment extends ModelTenant
     public function document()
     {
         return $this->belongsTo(Document::class, 'document_id');
+    }
+
+    public function sale_note()
+    {
+        return $this->belongsTo(SaleNote::class, 'sale_note_id');
     }
 
     public function currency_type()

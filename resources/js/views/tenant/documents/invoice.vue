@@ -515,11 +515,10 @@
                             })
                         }
                         else
-                        {                            
+                        {
                             this.resetForm();
                             this.showDialogOptions = true;
-                        }
-                        
+                        }                        
                     }
                     else {
                         this.$message.error(response.data.message);
@@ -538,7 +537,6 @@
             close() {
                 location.href = '/documents'
             },
-
             reloadDataCustomers(customer_id) {
                 this.$http.get(`/${this.resource}/table/customers`).then((response) => {
                     this.customers = response.data

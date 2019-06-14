@@ -23,6 +23,8 @@ use App\Models\Tenant\SaleNote;
 use App\Models\Tenant\SaleNoteItem;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
+use App\Models\Tenant\Catalogs\PaymentMethod;
+use App\Models\Tenant\Account;
 use App\Models\Tenant\Kardex;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Series;
@@ -78,8 +80,10 @@ class SaleNoteController extends Controller
         $document_types_invoice = DocumentType::whereIn('id', ['100'])->get();
         $currency_types = CurrencyType::whereActive()->get();
         $company = Company::active();
+        $payment_methods = PaymentMethod::whereActive()->get();
+        $accounts = Account::all();
 
-        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'currency_types', 'company', 'document_type_03_filter');
+        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'currency_types', 'company', 'document_type_03_filter', 'payment_methods', 'accounts');
     }
 
     public function item_tables()

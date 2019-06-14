@@ -75,6 +75,7 @@ class SaleNoteInput
             'total_taxes' => $inputs['total_taxes'],
             'total_value' => $inputs['total_value'],
             'total' => $inputs['total'],
+            'total_paid' => 0,
             'items' => self::items($inputs),
             //'charges' => self::charges($inputs),
             // 'discounts' => self::discounts($inputs),
