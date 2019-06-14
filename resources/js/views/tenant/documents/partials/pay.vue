@@ -125,7 +125,7 @@
                             this.form.document_id = document.id
                         }
                         else{
-                            this.form.sale_note_id = document.id
+                            this.form.sale_note_id = document.id                            
                         }
                         
                         this.form.total0 = document.total

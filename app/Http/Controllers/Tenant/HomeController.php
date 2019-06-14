@@ -95,10 +95,16 @@ class HomeController extends Controller
 
             $items = DB::connection('tenant')->select($sql, array($establishment_id));
 
-            $sql = "SELECT per.name, doc.total, doc.series, doc.number, doc.id, doc.document_type_id
-                    FROM documents doc
-                    INNER JOIN persons per ON per.id = doc.customer_id
-                    WHERE doc.status_paid = 0";
+            $sql = "SELECT per.name, doc.`date_of_issue`, doc.total, doc.series, doc.number, doc.id, doc.document_type_id, 'documents' AS resource
+                FROM documents doc
+                INNER JOIN persons per ON per.id = doc.customer_id
+                WHERE (total_paid < total)
+                UNION ALL
+                SELECT per.name, san.`date_of_issue`, san.total, san.series, san.number, san.id, san.document_type_id, 'sale-notes' AS resource
+                FROM sale_notes san
+                INNER JOIN persons per ON per.id = san.customer_id
+                WHERE (total_paid < total)
+                ORDER BY date_of_issue";
 
             $customers = DB::connection('tenant')->select($sql, array($establishment_id));
         }
@@ -110,14 +116,14 @@ class HomeController extends Controller
             $total_invoices = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', 1)
+                    ->where('total_paid', '=', 'total')
                     ->where('establishment_id', $establishment_id)
                     ->first();
     
             $total_charge = DB::connection('tenant')
                         ->table('documents')
                         ->select(DB::raw('SUM(total) as total'))
-                        ->where('status_paid', 0)
+                        ->where('total_paid', '<', 'total')
                         ->where('establishment_id', $establishment_id)
                         ->first(); 
             
@@ -137,10 +143,16 @@ class HomeController extends Controller
 
             $items = DB::connection('tenant')->select($sql, array($establishment_id));
 
-            $sql = "SELECT per.name, doc.total, doc.series, doc.number, doc.id, doc.document_type_id
+            $sql = "SELECT per.name, doc.`date_of_issue`, doc.total, doc.series, doc.number, doc.id, doc.document_type_id, 'documents' AS resource
                     FROM documents doc
                     INNER JOIN persons per ON per.id = doc.customer_id
-                    WHERE doc.status_paid = 0 AND doc.establishment_id = ?";
+                    WHERE (total_paid < total) AND doc.establishment_id = ?
+                    UNION ALL
+                    SELECT per.name, san.`date_of_issue`, san.total, san.series, san.number, san.id, san.document_type_id, 'sale-notes' AS resource
+                    FROM sale_notes san
+                    INNER JOIN persons per ON per.id = san.customer_id
+                    WHERE (total_paid < total) AND san.establishment_id = ?
+                    ORDER BY date_of_issue";
 
             $customers = DB::connection('tenant')->select($sql, array($establishment_id));
         }

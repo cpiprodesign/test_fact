@@ -38,7 +38,7 @@
                                             <td>Opción</td>
                                         </tr>
                                     </thead>
-                                    <tbody v-for="(row,index) in items" :key="row.id">
+                                    <tbody v-for="(row,index) in items">
                                         <tr>
                                             <td>{{ row.description }}</td>
                                             <td>{{ row.stock }}</td>
@@ -55,7 +55,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12" style="max-height: 300px; overflow-y: scroll">
                                 <h5 class="el-dialog__title">Cuentas por cobrar</h5>
                                 <table class="table table-sm">
                                     <thead class="table-active">
@@ -75,7 +75,7 @@
                                                 <small v-if="row.document_type_id == '03'">Boleta de Venta Electrónica</small>
                                             </td>
                                             <td>{{ row.total }}</td>
-                                            <td><button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2" @click.prevent="clickPay(row.id)">Pagar</button></td>
+                                            <td><button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2" @click.prevent="clickPay(row.id, row.resource)">Pagar</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -120,20 +120,21 @@
             </div>
         </div>
         <documents-pay :showDialog.sync="showDialogPay"
-                            :recordId="recordId"></documents-pay>
+                            :recordId="recordId" :resource="resource_pay"></documents-pay>
     </div>
 </template>
 
 <script>   
     import ChartLine from './charts/Line'
     import ChartPie from './charts/Pie'
-    import DocumentsPay from './partials/pay.vue'
+    import DocumentsPay from '../documents/partials/pay.vue'
 
     export default {
         components: {ChartLine, ChartPie, DocumentsPay},
         data() {
             return {
                 resource: 'dashboard',
+                resource_pay: 'documents',
                 loaded: false,
                 loaded_line: false,
                 loaded_pie: false,
@@ -153,34 +154,37 @@
         async mounted() {
             await this.load_grafic()
             await this.load_grafic_pie()
-        },
-        async created() {
-            this.loaded = false
-
+            await this.load()
             await this.$http.get(`/${this.resource}/establishments/`)
                 .then(response => {
                     this.establishments = response.data.establishments
             })
             
-           
-            await this.load()
+        },
+        created() {
+
+            this.loaded = false
+
+            this.$eventHub.$on('reloadData', () => {
+                this.load()
+                // location.href = '/dashboard'
+            });   
+
+              
+            
             this.loaded = true
+           
         },
         methods: {
             load() {
-                this.loaded = false
-                this.$http.get(`/${this.resource}/load/${this.establishment_id}`)
-                    .then(response => {
-
-                        this.items = response.data.items
-                        this.customers = response.data.customers
-
-                        this.total_invoices = response.data.total_invoices
-                        this.total_charge = response.data.total_charge
-                        this.total_sell = response.data.total_sell
-                        
-                    })
-                this.loaded = true
+                return this.$http.get(`/${this.resource}/load/${this.establishment_id}`)
+                        .then(response => {
+                            this.items = response.data.items
+                            this.customers = response.data.customers
+                            this.total_invoices = response.data.total_invoices
+                            this.total_charge = response.data.total_charge
+                            this.total_sell = response.data.total_sell
+                        });
             },
             load_grafic_pie(){
                 this.loaded_pie = false
@@ -241,8 +245,9 @@
                 this.load()
                 this.load_grafic_pie()                
             },
-            clickPay(recordId = null) {
+            clickPay(recordId = null, resource_pay = 'documents') {
                 this.recordId = recordId
+                this.resource_pay = resource_pay
                 this.showDialogPay = true
             }
         }
