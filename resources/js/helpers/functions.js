@@ -69,19 +69,6 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
 
     row.unit_price = _.round(price_igv, 2)
 
-    // if(!row.item.included_igv){
-    //     value_unit_value = (row.affectation_igv_type_id == '10') ? value_unit_value * 1.18 : value_unit_value
-    //     unit_price2 = _.round(parseFloat(value_unit_value),2)
-
-    // }else{
-    //     if (row.affectation_igv_type_id === '10') {
-    //         unit_price2 = row.unit_price / (1 + percentage_igv / 100)
-    //     }                 
-        //unit_price2 = _.round(parseFloat(value_unit_value),2)
-    //}
-
-    //row.unit_value = _.round(unit_value, 2)
-
     let total_value_partial = price * row.quantity
 
     /* Discounts */
