@@ -39,6 +39,7 @@ class ItemCollection extends ResourceCollection
                 'stock_min' => $row->stock_min,
                 'sale_unit_price' => "{$row->currency_type->symbol} {$sale_unit_price}",
                 'purchase_unit_price' => "{$row->currency_type->symbol} {$purchase_unit_price}",
+                'included_igv' => (bool) $row->included_igv,
                 'created_at' => $row->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $row->updated_at->format('Y-m-d H:i:s'),
             ];

@@ -259,6 +259,7 @@ class DocumentController extends Controller
                     'currency_type_symbol' => $row->currency_type->symbol,
                     'sale_unit_price' => $this->formatNumber($row->sale_unit_price),
                     'purchase_unit_price' => $this->formatNumber($row->purchase_unit_price),
+                    'included_igv' => $row->included_igv,
                     'unit_type_id' => $row->unit_type_id,
                     'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
                     'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id

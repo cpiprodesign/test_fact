@@ -14,39 +14,6 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
         unit_price = _.round(unit_price * exchange_rate_sale, 2)
     }
 
-
-    // $table->increments('id');
-    // $table->unsignedInteger('document_id');
-    // $table->unsignedInteger('item_id');
-    // $table->json('item');
-    // $table->integer('quantity');
-    // $table->decimal('unit_value', 12, 2);
-    //
-    // $table->char('affectation_igv_type_id', 2);
-    // $table->decimal('total_base_igv', 12, 2);
-    // $table->decimal('percentage_igv', 12, 2);
-    // $table->decimal('total_igv', 12, 2);
-    //
-    // $table->char('system_isc_type_id', 2)->nullable();
-    // $table->decimal('total_base_isc', 12, 2)->default(0);
-    // $table->decimal('percentage_isc', 12, 2)->default(0);
-    // $table->decimal('total_isc', 12, 2)->default(0);
-    //
-    // $table->decimal('total_base_other_taxes', 12, 2)->default(0);
-    // $table->decimal('percentage_other_taxes', 12, 2)->default(0);
-    // $table->decimal('total_other_taxes', 12, 2)->default(0);
-    // $table->decimal('total_taxes', 12, 2);
-    //
-    // $table->char('price_type_id', 2);
-    // $table->decimal('unit_price', 12, 2);
-    //
-    // $table->decimal('total_value', 12, 2);
-    // $table->decimal('total', 12, 2);
-    //
-    // $table->json('attributes')->nullable();
-    // $table->json('charges')->nullable();
-    // $table->json('discounts')->nullable();
-
     let row = {
         item_id: row_old.item.id,
         // item_description: row_old.item.description,
@@ -76,18 +43,46 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
         attributes: row_old.attributes,
         charges: row_old.charges,
         discounts: row_old.discounts,
+        included_igv: row_old.included_igv
     };
 
     let percentage_igv = 18
-    let unit_value = row.unit_price
+    //let value_unit_value = row.unit_price
+    //let unit_price2 = 0
+    
+    let value = row.unit_price
+    let price_igv = value
+    let price = value
 
-    if (row.affectation_igv_type_id === '10') {
-        unit_value = row.unit_price / (1 + percentage_igv / 100)
+    if(row.item.included_igv){
+        if (row.affectation_igv_type_id === '10'){
+            price = value/(1 + percentage_igv / 100)
+            price_igv = value;
+        }
+    }
+    else{
+        if (row.affectation_igv_type_id === '10'){
+            price_igv = value*(1 + percentage_igv / 100)
+            price = value;
+        }
     }
 
-    row.unit_value = _.round(unit_value, 2)
+    row.unit_price = _.round(price_igv, 2)
 
-    let total_value_partial = unit_value * row.quantity
+    // if(!row.item.included_igv){
+    //     value_unit_value = (row.affectation_igv_type_id == '10') ? value_unit_value * 1.18 : value_unit_value
+    //     unit_price2 = _.round(parseFloat(value_unit_value),2)
+
+    // }else{
+    //     if (row.affectation_igv_type_id === '10') {
+    //         unit_price2 = row.unit_price / (1 + percentage_igv / 100)
+    //     }                 
+        //unit_price2 = _.round(parseFloat(value_unit_value),2)
+    //}
+
+    //row.unit_value = _.round(unit_value, 2)
+
+    let total_value_partial = price * row.quantity
 
     /* Discounts */
     let discount_base = 0
@@ -156,7 +151,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
     row.total_igv =  _.round(total_igv, 2)
     row.total_taxes = _.round(total_taxes, 2)
     row.total = _.round(total, 2)
-
+    
     if (row.affectation_igv_type.free) {
         row.price_type_id = '02'
         row.unit_value = 0

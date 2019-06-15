@@ -186,7 +186,7 @@
                                                 <td style="width: 300px">{{ row.item.description }}<br/><small>{{ row.affectation_igv_type.description }}</small></td>
                                                 <td class="text-center">{{ row.item.unit_type_id }}</td>
                                                 <td class="text-right">{{ row.quantity }}</td>
-                                                <td class="text-right">{{ currency_type.symbol }} {{ formatPrice(row.unit_price, this.decimal) }}</td>
+                                                <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td>
                                                 <td class="text-right">{{ currency_type.symbol }} {{ row.total_value }}</td>
                                                 <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
                                                 <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
@@ -426,7 +426,8 @@
                 this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
                 let items = []
                 this.form.items.forEach((row) => {
-                    items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
+                    console.log('ccc:'+row.included_igv)
+                    items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale, row.included_igv))
                 });
                 this.form.items = items
                 this.calculateTotal()

@@ -20,6 +20,7 @@ class Item extends ModelTenant
         'currency_type_id',
         'sale_unit_price',
         'purchase_unit_price',
+        'included_igv',
         'has_isc',
         'system_isc_type_id',
         'percentage_isc',
