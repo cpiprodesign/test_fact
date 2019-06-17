@@ -35,7 +35,7 @@
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group" :class="{'has-danger': errors.unit_price}">
                             <label class="control-label">Precio Unitario</label>
-                            <el-input v-model="form.unit_price">
+                            <el-input v-model="form.unit_price" readonly="">
                                 <template slot="prepend" v-if="form.item.currency_type_symbol">{{ form.item.currency_type_symbol }}</template>
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.unit_price" v-text="errors.unit_price[0]"></small>
@@ -173,7 +173,7 @@
     import ElCheckbox from "../../../../../../node_modules/element-ui/packages/checkbox/src/checkbox";
 
     export default {
-        props: ['showDialog', 'operationTypeId', 'currencyTypeIdActive', 'exchangeRateSale'],
+        props: ['showDialog', 'operationTypeId', 'currencyTypeIdActive', 'exchangeRateSale', 'price_list_id'],
         components: {
             ElCheckbox,
             itemForm},
@@ -304,7 +304,19 @@
             },
             changeItem() {
                 this.form.item = _.find(this.items, {'id': this.form.item_id})
-                this.form.unit_price = this.form.item.sale_unit_price
+
+                if(this.price_list_id == 0){
+                    this.form.unit_price = this.form.item.sale_unit_price
+                } else{
+                        this.form.item.item_price_list.forEach((row2) => {
+                        if(row2.price_list_id == this.price_list_id){
+                            //unit_price = row2.value
+                            this.form.unit_price = row2.value
+                            return
+                        }
+                    });
+                }
+
                 this.form.affectation_igv_type_id = this.form.item.sale_affectation_igv_type_id
             },
             clickAddItem() {

@@ -136,6 +136,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mt-1">
+                            <div class="col-lg-3">
+                                <div class="form-group" :class="{'has-danger': errors.price_list_id}">
+                                    <label class="control-label">Lista de Precios</label>
+                                    <el-select v-model="form.price_list_id" @change="changePrice">
+                                        <el-option :key="0" :value="0" :label="'General'"></el-option>
+                                        <el-option v-for="option in price_list" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.price_list_id" v-text="errors.price_list_id[0]"></small>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row mt-1" v-show="form.status_paid == 1">
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.payment_method_id}">
@@ -227,6 +239,7 @@
                            :operation-type-id="form.operation_type_id"
                            :currency-type-id-active="form.currency_type_id"
                            :exchange-rate-sale="form.exchange_rate_sale"
+                           :price_list_id="form.price_list_id"
                            @add="addRow"></document-form-item>
 
         <person-form :showDialog.sync="showDialogNewPerson"
@@ -268,6 +281,7 @@
                 charges_types: [],
                 payment_methods: [],
                 accounts: [],
+                price_list: [],
                 all_customers: [],
                 status_paid: [
                     {"id": "1", "nombre": "Pagado"}, 
@@ -302,6 +316,7 @@
                     this.document_type_03_filter = response.data.document_type_03_filter
                     this.payment_methods = response.data.payment_methods
                     this.accounts = response.data.accounts
+                    this.price_list = response.data.price_list
 
                     this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
@@ -321,6 +336,37 @@
             })
         },
         methods: {
+            changePrice(){
+                let items = []
+                this.form.items.forEach((row) => {
+                    
+                    let unit_price = row.item.unit_price;
+
+                    if(this.form.price_list_id == 0){
+                        unit_price = row.item.sale_unit_price
+                    }
+
+                    row.item.item_price_list.forEach((row2) => {
+                        if(row2.price_list_id == this.form.price_list_id){
+                            unit_price = row2.value
+                            return
+                        }
+                    });
+
+                    row.item.unit_price = unit_price;
+                    items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
+                });
+                this.form.items = items
+                this.calculateTotal()
+
+
+                // let items = []
+                // this.form.items.forEach((row) => {                    
+                //     items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
+                // });
+                // this.form.items = items
+                // this.calculateTotal()
+            },
             initForm() {
                 this.errors = {}
                 this.form = {
@@ -360,7 +406,8 @@
                     guides: [],
                     actions: {
                         format_pdf:'a4',
-                    }
+                    },
+                    price_list_id: 0
                 },
                 this.pay_data = {
                     payment_method_id: 1,
@@ -426,7 +473,7 @@
                 this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
                 let items = []
                 this.form.items.forEach((row) => {                    
-                    items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale, row.included_igv))
+                    items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale))
                 });
                 this.form.items = items
                 this.calculateTotal()

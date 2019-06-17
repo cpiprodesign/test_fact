@@ -1,7 +1,7 @@
 function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
 
-    // console.log(currency_type_id_new, exchange_rate_sale)
-
+    console.log("row_old", row_old);
+    
     let currency_type_id_old = row_old.item.currency_type_id
     let unit_price = parseFloat(row_old.item.unit_price)
     if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id_new)
@@ -43,7 +43,8 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
         attributes: row_old.attributes,
         charges: row_old.charges,
         discounts: row_old.discounts,
-        included_igv: row_old.included_igv
+        // included_igv: row_old.included_igv,
+        // item_price_list: row_old.item_price_list
     };
 
     let percentage_igv = 18
@@ -138,7 +139,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
     row.total_igv =  _.round(total_igv, 2)
     row.total_taxes = _.round(total_taxes, 2)
     row.total = _.round(total, 2)
-    
+
     if (row.affectation_igv_type.free) {
         row.price_type_id = '02'
         row.unit_value = 0
