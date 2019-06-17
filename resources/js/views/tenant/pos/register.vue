@@ -669,7 +669,11 @@
                 var lista = this.items
                     .filter(function (item) {
 
-                        // item_code_gs1
+                         if(item.internal_id == null)
+                        {
+                            item.internal_id = "---"
+                        }
+
                         return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1; //|| item.item_code_gs1.toLowerCase().indexOf(data.toLowerCase()) > -1;
 
                     })

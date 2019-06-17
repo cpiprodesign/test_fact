@@ -33,6 +33,7 @@ class ItemResource extends JsonResource
             'currency_type_id' => $this->currency_type_id,
             'sale_unit_price' => $this->formatNumber($this->sale_unit_price),
             'purchase_unit_price' => $this->formatNumber($this->purchase_unit_price),
+            'included_igv' => (bool) $this->included_igv,
             'unit_type_id' => $this->unit_type_id,
             'has_isc' => (bool) $this->has_isc,
             'system_isc_type_id' => $this->system_isc_type_id,
@@ -46,6 +47,7 @@ class ItemResource extends JsonResource
             'trademark_id' => $this->trademark_id,
             'item_category_id' => $this->item_category_id,
             'item_warehouse' => $this->item_warehouse,
+            'item_price_list' => $this->item_price_list,
         ];
     }
 }

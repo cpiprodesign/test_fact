@@ -110,7 +110,7 @@
                               :recordId="recordId"
                               :showClose="true"></document-options>
             <documents-pay :showDialog.sync="showDialogPay"
-                            :recordId="recordId"></documents-pay>
+                            :recordId="recordId" :resource="resource"></documents-pay>
         </div>
     </div>
 </template>

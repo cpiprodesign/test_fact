@@ -18,6 +18,7 @@ use App\Http\Resources\Tenant\ItemCollection;
 use App\Http\Resources\Tenant\ItemResource;
 use App\Models\Tenant\ItemCategory;
 use App\Models\Tenant\Trademarks;
+use App\Models\Tenant\PriceList;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
@@ -57,12 +58,12 @@ class ItemController extends Controller
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
         $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
         $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $warehouses = Warehouse::all();
-
+        $warehouses = Warehouse::all();        
         $trademarks = Trademarks::orderBy('name')->get();
+        $price_list = PriceList::all();
         $item_category = ItemCategory::WhereNull('parent_id')->orderBy('description')->get();
 
-        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'trademarks', 'item_category', 'warehouses');
+        return compact('unit_types', 'currency_types', 'attribute_types', 'system_isc_types', 'affectation_igv_types', 'trademarks', 'price_list', 'item_category', 'warehouses');
     }
 
     public function record($id)
@@ -85,34 +86,48 @@ class ItemController extends Controller
         return compact('stock_details');
     }
 
-//    No Funcional
-//    public function stocks($id)
-//    {
-//
-//        $stocks = EstablishmentItem::where('item_id', $id)->get();
-//
-//        return $stocks;
-//    }
-
     public function store(ItemRequest $request)
     {
-        $id = $request->input('id');
-        $item = Item::firstOrNew(['id' => $id]);
-        $item->item_type_id = '01';
-        $item->fill($request->all());
-        $item->save();
+        $register = DB::connection('tenant')->transaction(function () use ($request)
+        {
+            $id = $request->input('id');
+            $item = Item::firstOrNew(['id' => $id]);
+            $item->item_type_id = '01';
+            $item->fill($request->all());
+            $item->save();
 
-        // stock actual
-        foreach ($request->item_warehouse as $stock_by_location) {
-            $stock = $item->item_warehouse()->firstOrNew(['warehouse_id' => $stock_by_location['warehouse_id']]);
-            $stock->stock = $stock_by_location['quantity'];
-            $stock->save();
-        }
+            // stock actual
+            if($id == null)
+            {
+                foreach ($request->item_warehouse as $stock_by_location)
+                {
+                    if($stock_by_location['quantity'] != 0)
+                    {
+                        $stock = $item->item_warehouse()->firstOrNew(['warehouse_id' => $stock_by_location['warehouse_id']]);
+                        $stock->stock = $stock_by_location['quantity'];
+                        $stock->save();
+                    }
+                }
+            }
+            
+            //price list
+            foreach ($request->item_price_list as $row)
+            {
+                if($row['value'] != 0)
+                {
+                    $value = $item->item_price_list()->firstOrNew(['price_list_id' => $row['price_list_id']]);
+                    $value->value = $row['value'];
+                    $value->save();
+                }
+            }
+
+            return $item;
+        });
 
         return [
             'success' => true,
-            'message' => ($id) ? 'Producto editado con éxito' : 'Producto registrado con éxito',
-            'id' => $item->id
+            'message' => ($register->id) ? 'Producto editado con éxito' : 'Producto registrado con éxito',
+            'id' => $register->id
         ];
     }
 

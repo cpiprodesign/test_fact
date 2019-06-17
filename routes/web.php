@@ -110,6 +110,15 @@ if ($hostname) {
             Route::post('items/import', 'Tenant\ItemController@import');
             Route::get('items/stock_details/{item}', 'Tenant\ItemController@stock_details');
 
+            //Price List
+            Route::get('price-list', 'Tenant\PriceListController@index')->name('tenant.price_list.index');
+            Route::get('price-list/columns', 'Tenant\PriceListController@columns');
+            // Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
+            Route::get('price-list/record/{price_list}', 'Tenant\PriceListController@record');
+            Route::post('price-list', 'Tenant\PriceListController@store');
+            Route::get('price-list/records', 'Tenant\PriceListController@records');
+            Route::delete('price-list/{price_list}', 'Tenant\PriceListController@destroy');
+
             //Expenses
             Route::get('expenses', 'Tenant\ExpenseController@index')->name('tenant.expenses.index');
             Route::get('expenses/columns', 'Tenant\ExpenseController@columns');

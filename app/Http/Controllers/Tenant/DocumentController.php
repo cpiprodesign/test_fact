@@ -23,6 +23,7 @@ use App\Models\Tenant\Catalogs\PaymentMethod;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Account;
+use App\Models\Tenant\PriceList;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Quotation;
@@ -112,13 +113,14 @@ class DocumentController extends Controller
         $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $payment_methods = PaymentMethod::whereActive()->get();
         $accounts = Account::all();
+        $price_list = PriceList::all();
         $company = Company::active();
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
         $decimal = Configuration::first()->decimal;
 
         return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_note',
             'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
-            'discount_types', 'charge_types', 'payment_methods', 'accounts', 'company', 'document_type_03_filter', 'decimal');
+            'discount_types', 'charge_types', 'payment_methods', 'accounts', 'company', 'document_type_03_filter', 'decimal', 'price_list');
     }
 
     public function tables2($quotation_id = false)
@@ -259,9 +261,11 @@ class DocumentController extends Controller
                     'currency_type_symbol' => $row->currency_type->symbol,
                     'sale_unit_price' => $this->formatNumber($row->sale_unit_price),
                     'purchase_unit_price' => $this->formatNumber($row->purchase_unit_price),
+                    'included_igv' => $row->included_igv,
                     'unit_type_id' => $row->unit_type_id,
                     'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
+                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                    'item_price_list' => $row->item_price_list
                 ];
             });
             return $items;

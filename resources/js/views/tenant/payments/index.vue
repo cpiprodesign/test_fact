@@ -28,7 +28,7 @@
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
                         <td>{{ row.customer }}</td>
-                        <td>{{ row.serie }} - {{ row.number }}</td>
+                        <td>{{ row.number }}</td>
                         <td>{{ row.date_of_issue }}</td>
                         <td>{{ row.account }}</td>
                         <td>{{ row.payment_method }}</td>
