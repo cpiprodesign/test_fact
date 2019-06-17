@@ -68,7 +68,7 @@
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.sale_unit_price}">
                             <label class="control-label">Precio Unitario (Venta)</label>
-                            <el-input v-model="form.sale_unit_price" dusk="sale_unit_price"></el-input>
+                            <el-input v-model="form.sale_unit_price" dusk="sale_unit_price" @change="changePrice()"></el-input>
                             <small class="form-control-feedback" v-if="errors.sale_unit_price"
                                    v-text="errors.sale_unit_price[0]"></small>
                         </div>
@@ -127,7 +127,6 @@
                                    v-text="errors.purchase_affectation_igv_type_id[0]"></small>
                         </div>
                     </div>
-
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.item_category_id}">
                             <label class="control-label">Categoria</label>
@@ -146,7 +145,63 @@
                                    v-text="errors.purchase_affectation_igv_type_id[0]"></small>
                         </div>
                     </div>
-
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>
+                            Listado de precios <a data-toggle="collapse" href="#price_list" class="control-label font-weight-bold text-info"> [ + ]</a>
+                        </h4>
+                    </div>
+                    <div class="col-md-12 collapse" id="price_list">
+                        <div class="row">
+                            <div class="col-8">
+                                <h4>Nombre</h4>
+                            </div>
+                            <div class="col-4">
+                                <h4>Valor</h4>
+                            </div>
+                        </div>
+                        <div class="row pb-1" v-for="(row,index) in form.item_price_list" :key="row.id">
+                            <div class="col-8">
+                                {{ row.name }} <span v-if="row.type==1">(porcentaje {{ row.percentage }}%)</span>
+                            </div>
+                            <div class="col-4">
+                                <el-input v-model.sync="row.value" v-if="row.type==1" readonly=""></el-input>
+                                <el-input v-model.sync="row.value" v-if="row.type==2"></el-input>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-12" v-if="form.item_price_list.length > 0">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Lista de Precios</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(row, index) in form.item_price_list">
+                                        <td>
+                                            <el-select v-model="row.price_list_id">
+                                                <el-option v-for="option in price_list" :key="option.id" :value="option.id" :label="option.name"></el-option>
+                                            </el-select>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="row.value" v-if="row.type==1" readonly=""></el-input>
+                                            <el-input v-model="row.value" v-if="row.type==2"></el-input>
+                                        </td>
+                                        <td class="series-table-actions text-right">
+                                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancel(index)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> -->
                 </div>
             </div>
             <div v-show="recordId==null">
@@ -161,7 +216,6 @@
                 <div class="row pb-1" v-for="(row,index) in form.item_warehouse" :key="row.id">
                     <div class="col-8">
                         {{ row.description }}
-                        <!--                    <input typeof="hidden" v-bind:value="row.id" v-model="form.warehouses[index].warehouse_id">-->
                     </div>
                     <div class="col-4">
                         <el-input v-model.sync="row.quantity"></el-input>
@@ -193,7 +247,7 @@
                 system_isc_types: [],
                 affectation_igv_types: [],
                 warehouses: [],
-
+                list_price: [],
                 trademarks: [],
                 item_category: []
             }
@@ -214,21 +268,39 @@
 
                         this.warehouses = response.data.warehouses;
                         this.trademarks = response.data.trademarks
+                        this.price_list = response.data.price_list
                         this.item_category = response.data.item_category
                     }
                 )
         },
         methods: {
+            clickAddRow() {
+                this.form.item_price_list.push({
+                    price_list_id: null,
+                    value: null
+                })
+            },
+            clickCancel(index) {
+                this.form.item_price_list.splice(index, 1)
+            },
+            changePrice()
+            {
+                for (let i = 0; i < this.price_list.length; i++) {
+
+                    if(this.price_list[i].type == 1)
+                    {
+                        this.form.item_price_list[i].value = this.form.sale_unit_price*(1-this.form.item_price_list[i].percentage/100)
+                    }
+                }
+            },
             initForm() {
                 this.loading_submit = false,
-                    this.errors = {}
+                this.errors = {}
                 this.form = {
                     id: null,
                     item_type_id: '01',
-
                     trademark_id: null,
                     item_category_id: null,
-
                     internal_id: null,
                     item_code: null,
                     item_code_gs1: null,
@@ -246,52 +318,65 @@
                     purchase_affectation_igv_type_id: null,
                     item_warehouse: [],
                     stock: 0,
-                    stock_min: 1,
+                    stock_min: 1,                    
+                    item_price_list:[]
                 }
-            }
-            ,
+            },
             resetForm() {
                 this.initForm()
                 this.form.sale_affectation_igv_type_id = (this.affectation_igv_types.length > 0) ? this.affectation_igv_types[0].id : null
                 this.form.purchase_affectation_igv_type_id = (this.affectation_igv_types.length > 0) ? this.affectation_igv_types[0].id : null
-            }
-            ,
+            },
             create() {
                 this.titleDialog = (this.recordId) ? 'Editar Producto' : 'Nuevo Producto'
+
+                //item_warehouse
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
-                                this.form = response.data.data
+                            this.form = response.data.data
 
-                                let temp_item_warehouse = [];
+                            //item_price_list
+                            let temp_item_price_list = [];
 
-                                for (let i = 0; i < this.warehouses.length; i++) {
-                                    let filter = {"warehouse_id": this.warehouses[i].id, "item_id": this.recordId};
-                                    let item = _.find(this.form.item_warehouse, filter);
+                            for (let i = 0; i < this.price_list.length; i++) {
+                                let filter = {"price_list_id": this.price_list[i].id, "item_id": this.recordId};
+                                let item = _.find(this.form.item_price_list, filter); 
+                                let value = 0                               
 
-                                    if (typeof item === 'object') {
-                                        temp_item_warehouse.push({
-                                            "warehouse_id": this.warehouses[i].id,
-                                            "description": this.warehouses[i].description,
-                                            "item_id": this.recordId,
-                                            "quantity": item.stock
-                                        })
-                                    } else {
-                                        temp_item_warehouse.push({
-                                            "warehouse_id": this.warehouses[i].id,
-                                            "description": this.warehouses[i].description,
-                                            "item_id": this.recordId,
-                                            "quantity": 0
-                                        })
-                                    }
+                                if(item != undefined)
+                                {
+                                    value = item.value
                                 }
-                                this.form.item_warehouse = temp_item_warehouse;
-                                this.form.stock = 0;
-                                temp_item_warehouse = [];
+
+                                if (typeof item === 'object') {
+                                    temp_item_price_list.push({
+                                        "price_list_id": this.price_list[i].id,
+                                        "name": this.price_list[i].name,
+                                        "type": this.price_list[i].type,
+                                        "percentage": this.price_list[i].value,
+                                        "value": value
+                                    })
+                                } else {
+                                    temp_item_price_list.push({
+                                        "price_list_id": this.price_list[i].id,
+                                        "name": this.price_list[i].name,
+                                        "type": this.price_list[i].type,
+                                        "percentage": this.price_list[i].value,
+                                        "value": value
+                                    })
+                                }
                             }
-                        )
+                            this.form.item_price_list = temp_item_price_list;
+
+                            this.form.stock = 0;
+                            //temp_item_warehouse = [];
+                        })
                 } else {
                     let temp_item_warehouse = [];
+                    let temp_item_price_list = [];
+
+                    //item_warehouse
 
                     for (let i = 0; i < this.warehouses.length; i++) {
 
@@ -302,12 +387,27 @@
                             "quantity": 0
                         })
                     }
+                   
+                    //item_price_list
+                    for (let i = 0; i < this.price_list.length; i++) {
+
+                        temp_item_price_list.push({
+                            "price_list_id": this.price_list[i].id,
+                            "name": this.price_list[i].name,
+                            "type": this.price_list[i].type,
+                            "percentage": this.price_list[i].value,
+                            "value": 0
+                        })
+                    }
+
                     this.form.item_warehouse = temp_item_warehouse;
+                    this.form.item_price_list = temp_item_price_list;
                     this.form.stock = 0;
-                    temp_item_warehouse = [];
+
+                    //temp_item_warehouse = [];
+                    //temp_item_price_list = [];
                 }
-            }
-            ,
+            },
             submit() {
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form)
@@ -334,23 +434,10 @@
                     .then(() => {
                         this.loading_submit = false
                     })
-            }
-            ,
+            },
             close() {
                 this.$emit('update:showDialog', false)
                 this.resetForm()
-            }
-            ,
-            changeHasIsc() {
-                this.form.system_isc_type_id = null
-                this.form.percentage_isc = 0
-                this.form.suggested_price = 0
-            }
-            ,
-            changeSystemIscType() {
-                if (this.form.system_isc_type_id !== '03') {
-                    this.form.suggested_price = 0
-                }
             }
         }
     }

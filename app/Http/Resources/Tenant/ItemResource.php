@@ -47,6 +47,7 @@ class ItemResource extends JsonResource
             'trademark_id' => $this->trademark_id,
             'item_category_id' => $this->item_category_id,
             'item_warehouse' => $this->item_warehouse,
+            'item_price_list' => $this->item_price_list,
         ];
     }
 }

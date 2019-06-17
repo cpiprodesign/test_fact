@@ -22,10 +22,6 @@ class TenantPriceListTable extends Migration
             $table->decimal('value', 10, 2)->nullable();
             $table->timestamps();
         });
-
-        DB::table('price_list')->insert([
-            ['name' => 'General', 'type' => 2, 'principal' => true, 'active' => true, 'created_at' => date("Y-m-d H:i:s"), 'updated_at' => date("Y-m-d H:i:s")],
-        ]);
     }
 
     /**
