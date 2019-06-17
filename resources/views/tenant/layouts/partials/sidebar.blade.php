@@ -124,17 +124,14 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     Productos
                                 </a>
                             </li>
-                            <li>
-                                <a class="nav-link" href="#">
-                                    Lista de precios <span class="label label-info"> Pronto</span>
+                            <li class="{{ ($path[0] === 'price-list')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.price_list.index')}}">
+                                    Lista de Precios
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link" href="#">
                                     Atributos/Variantes <span class="label label-info"> Pronto</span>
-                            <li class="{{ ($path[0] === 'price-list')?'nav-active':'' }}">
-                                <a class="nav-link" href="{{route('tenant.price_list.index')}}">
-                                    Lista de Precios
                                 </a>
                             </li>
                             <li class="{{ ($path[0] === 'warehouses')?'nav-active':'' }}">
