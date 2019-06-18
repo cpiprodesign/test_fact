@@ -35,7 +35,7 @@
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group" :class="{'has-danger': errors.unit_price}">
                             <label class="control-label">Precio Unitario</label>
-                            <el-input v-model="form.unit_price" readonly="">
+                            <el-input v-model="form.unit_price">
                                 <template slot="prepend" v-if="form.item.currency_type_symbol">{{ form.item.currency_type_symbol }}</template>
                             </el-input>
                             <small class="form-control-feedback" v-if="errors.unit_price" v-text="errors.unit_price[0]"></small>
@@ -47,9 +47,7 @@
                                 <header class="card-header hoverable bg-light border-top rounded-0 py-1" data-card-toggle style="cursor: pointer;" id="card-click">
                                     <div class="card-actions" style="margin-top: -12px;">
                                         <a href="#" class="card-action card-action-toggle text-info" data-card-toggle=""></a>
-
                                     </div>
-
                                     <p class="pl-1">Información adicional atributos UBL 2.1</p>
                                 </header>
                                 <div class="card-body px-0" style="display: none;">
