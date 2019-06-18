@@ -34,6 +34,9 @@ use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Series;
+use \App\Models\Tenant\Pos;
+use \App\Models\Tenant\PosSale;
+use \App\Models\Tenant\PosSalesDetails;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -51,7 +54,7 @@ class DocumentController extends Controller
 
     public function index()
     {
-        return view('tenant.documents.index', 'pos');
+        return view('tenant.documents.index');
     }
 
     public function view(Document $document)
@@ -79,28 +82,20 @@ class DocumentController extends Controller
 
     public function create()
     {
-        $user = auth()->user();
-        $pos = \App\Models\Tenant\Pos::active();
+        //$user = auth()->user();
+        //$pos = \App\Models\Tenant\Pos::active();
         
-        return view('tenant.documents.form', compact('user', 'pos'));
+        return view('tenant.documents.form');
     }
 
     public function create2($quotation_id)
     {
-        return view('tenant.documents.form2', compact('quotation_id'));
+        $user = auth()->user();
+        $pos = \App\Models\Tenant\Pos::active();
+        return view('tenant.documents.form2', compact('quotation_id', 'user', 'pos'));
     }
 
-    // public function cambiar_estado_pago($document_id)
-    // {
-    //     $flight = Document::find($document_id);
-    //     $flight->status_paid = 1;
-    //     $flight->save();
-
-    //     return [
-    //         'estado' => true
-    //     ];
-    // }
-
+    
     public function tables()
     {
         $customers = $this->table('customers');
@@ -286,35 +281,71 @@ class DocumentController extends Controller
 
     public function store(DocumentRequest $request)
     {
-        $fact = DB::connection('tenant')->transaction(function () use ($request) {
-            $facturalo = new Facturalo();
-            $facturalo->save($request->all());
-            $facturalo->createXmlUnsigned();
-            $facturalo->signXmlUnsigned();
-            $facturalo->updateHash();
-            $facturalo->updateQr();
-            $facturalo->createPdf();
+        $pos = Pos::active();
+
+        if($pos == null)
+        {
+            return [
+                'success' => false,
+                'message' => "!Necesita aperturar una caja!"
+            ];
+        }
+        else
+        {
+            $fact = DB::connection('tenant')->transaction(function () use ($request) {
+                $facturalo = new Facturalo();
+                $facturalo->save($request->all());
+                $facturalo->createXmlUnsigned();
+                $facturalo->signXmlUnsigned();
+                $facturalo->updateHash();
+                $facturalo->updateQr();
+                $facturalo->createPdf();
+    
+    
+                if ($request->input('quotation_id')) {
+                    Quotation::where('id', $request->input('quotation_id'))
+                        ->update(['state_type_id' => '05']);
+    
+                }
+
+                $document = $facturalo->getDocument();
+
+                $pos_sale = new PosSale();
+                $pos_sale->document_id = $document->id;
+                $pos_sale->pos_id = $pos;
+                $pos_sale->total = $document->total;
+                $pos_sale->payed = $document->total_paid;
+                $pos_sale->delta = $document->total - $document->total_paid;
+                $pos_sale->save();
+
+                $pos_sale_details = new PosSalesDetails();
+                $pos_sale_details->pos_sale_id = $pos_sale->id;
+                
 
 
-            if ($request->input('quotation_id')) {
-                Quotation::where('id', $request->input('quotation_id'))
-                    ->update(['state_type_id' => '05']);
-
-            }
-
-            return $facturalo;
-        });
-
-        $fact->senderXmlSignedBill();
-        $document = $fact->getDocument();
-        $response = $fact->getResponse();
-
-        return [
-            'success' => true,
-            'data' => [
-                'id' => $document->id,
-            ],
-        ];
+                $pos_sale = $pos->sales()->create([
+                    'document_id' => $document_id,
+                    'total' => $request->balance['total'],
+                    'payed' => $request->balance['pagando'],
+                    'delta' => $request->balance['delta'],
+                ]);
+                $pos_sale->save();
+    
+                return $facturalo;
+            });
+    
+            $fact->senderXmlSignedBill();
+            $document = $fact->getDocument();
+            $response = $fact->getResponse();
+    
+            return [
+                'success' => true,
+                'data' => [
+                    'id' => $document->id,
+                ],
+            ];
+        }
+        
     }
 
     public function email(DocumentEmailRequest $request)

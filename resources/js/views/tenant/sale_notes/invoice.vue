@@ -419,43 +419,45 @@
              },
             submit() {
                 this.loading_submit = true
-                this.$http.post(`/${this.resource}`, this.form).then(response => {
+                this.$http.post(`/${this.resource}`, this.form)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.documentNewId = response.data.data.id;
+                            if(this.form.status_paid == 1){
+                                this.pay_data.sale_note_id = this.documentNewId;
+                                this.pay_data.date_of_issue = this.form.date_of_issue;
+                                this.pay_data.customer_id = this.form.customer_id;
+                                this.pay_data.currency_type_id = this.form.currency_type_id;
+                                this.pay_data.total_debt = this.form.total;
 
-                    this.documentNewId = response.data.data.id;
-
-                    if(this.form.status_paid == 1)
-                    {
-                        this.pay_data.sale_note_id = this.documentNewId;
-                        this.pay_data.date_of_issue = this.form.date_of_issue;
-                        this.pay_data.customer_id = this.form.customer_id;
-                        this.pay_data.currency_type_id = this.form.currency_type_id;
-                        this.pay_data.total_debt = this.form.total;
-
-                        this.$http.post(`/payments`, this.pay_data)
-                        .then(response => {
-                            if (response.data.success) {
+                                this.$http.post(`/payments`, this.pay_data)
+                                .then(response => {
+                                    if (response.data.success) {
+                                        this.resetForm();
+                                        this.showDialogOptions = true;
+                                    } else {
+                                        this.$message.error(response.data.message)
+                                    }
+                                })
+                                .catch(error => {
+                                    if (error.response.status === 422) {
+                                        this.errors = error.response.data
+                                    } else {
+                                        console.log(error)
+                                    }
+                                })
+                                .then(() => {
+                                    this.loading_submit = false
+                                })
+                            } else{
                                 this.resetForm();
                                 this.showDialogOptions = true;
-                            } else {
-                                this.$message.error(response.data.message)
-                            }
-                        })
-                        .catch(error => {
-                            if (error.response.status === 422) {
-                                this.errors = error.response.data
-                            } else {
-                                console.log(error)
-                            }
-                        })
-                        .then(() => {
-                            this.loading_submit = false
-                        })
-                    }
-                    else
-                    {
-                        this.resetForm();
-                        this.showDialogOptions = true;
-                    }  
+                            }  
+                        }else {
+                            this.$message.error(response.data.message);
+                        }
+
+                        
                     // if (response.data.success) {
                         
                     //    this.documentNewId = response.data.data.id;

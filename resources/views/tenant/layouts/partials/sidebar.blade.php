@@ -112,7 +112,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                         </ul>
                     </li>
                     @endif
-                    <li class="nav-parent {{ (in_array($path[0], ['inventory', 'warehouses', 'items']) ||
+                    <li class="nav-parent {{ (in_array($path[0], ['inventory', 'warehouses', 'items', 'price-list']) ||
                                                 ($path[0] === 'reports' && in_array($path[1], ['kardex', 'inventory'])))?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-boxes" aria-hidden="true"></i>

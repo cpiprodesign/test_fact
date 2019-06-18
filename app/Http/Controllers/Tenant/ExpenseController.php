@@ -57,48 +57,46 @@ class ExpenseController extends Controller
 
     public function store(ExpenseRequest $request)
     {
-        // dd($request->input());
-        $id = $request->input('id');
-        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
+        $pos = \App\Models\Tenant\Pos::active();
 
-        $expense = Expense::firstOrNew(['id' => $id]);
-
-        if($request->has_voucher)
+        if($pos == null)
         {
-            $detail_voucher = [
-                'company_number' => $request->detail_voucher['company_number'],
-                'company_name' => $request->detail_voucher['company_name'],
-                'document_type' => $request->detail_voucher['document_type'],
-                'document_number' => $request->detail_voucher['document_number']
+            return [
+                'success' => false,
+                'message' => "!Necesita aperturar una caja!"
             ];
-
-            $detail_voucher = json_encode($detail_voucher);
-            $expense->detail_voucher  = $detail_voucher;
-
-            //$detail_voucher = null;
         }
+        else
+        {
+            $id = $request->input('id');
+            $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
 
-        // $detail_voucher = [
-        //     'company_number' => $request->detail_voucher['company_number'],
-        //     'company_name' => $request->detail_voucher['company_name'],
-        //     'document_type' => $request->detail_voucher['document_type'],
-        //     'document_number' => $request->detail_voucher['document_number']
-        // ];
+            $expense = Expense::firstOrNew(['id' => $id]);
 
-        // $detail_voucher = json_encode($detail_voucher);
-        // $expense->detail_voucher  = $detail_voucher;
-        
-        
-        $expense->user_id = auth()->id();
-        $expense->establishment_id = $establishment->id;
-        $expense->fill($request->all());
-        $expense->save();
+            if($request->has_voucher)
+            {
+                $detail_voucher = [
+                    'company_number' => $request->detail_voucher['company_number'],
+                    'company_name' => $request->detail_voucher['company_name'],
+                    'document_type' => $request->detail_voucher['document_type'],
+                    'document_number' => $request->detail_voucher['document_number']
+                ];
 
-        return [
-            'success' => true,
-            'message' => ($id) ? 'Gasto editado con éxito' : 'Gasto registrado con éxito',
-            'id' => $expense->id
-        ];
+                $detail_voucher = json_encode($detail_voucher);
+                $expense->detail_voucher  = $detail_voucher;
+            }
+            
+            $expense->user_id = auth()->id();
+            $expense->establishment_id = $establishment->id;
+            $expense->fill($request->all());
+            $expense->save();
+
+            return [
+                'success' => true,
+                'message' => ($id) ? 'Gasto editado con éxito' : 'Gasto registrado con éxito',
+                'id' => $expense->id
+            ];
+        }
     }
 
     public function destroy($id)

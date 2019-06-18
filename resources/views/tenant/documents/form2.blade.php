@@ -19,9 +19,8 @@
     </style>
 @endpush
 
-@section('content')
+@section('content')    
     <tenant-documents-invoice2 :quotation_id="{{ json_encode($quotation_id) }}"></tenant-documents-invoice2>
-
 @endsection
 
 @push('scripts')

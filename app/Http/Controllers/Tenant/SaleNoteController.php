@@ -148,25 +148,37 @@ class SaleNoteController extends Controller
 
     public function store(SaleNoteRequest $request)
     {
-        $fact = DB::connection('tenant')->transaction(function () use ($request) {
+        $pos = \App\Models\Tenant\Pos::active();
 
-            $inputs = $request->all();
+        if($pos == null)
+        {
+            return [
+                'success' => false,
+                'message' => "!Necesita aperturar una caja!"
+            ];
+        }
+        else
+        {
+            $fact = DB::connection('tenant')->transaction(function () use ($request) {
 
-            $facturalo = new Facturalo();
-            $facturalo->save($request->all());
-            $facturalo->createPdf2();
-            
-            return $facturalo;
-        });
-
-        $document = $fact->getDocument();
-
-        return [
-            'success' => true,
-            'data' => [
-                'id' => $document->id,
-            ],
-        ];
+                $inputs = $request->all();
+    
+                $facturalo = new Facturalo();
+                $facturalo->save($request->all());
+                $facturalo->createPdf2();
+                
+                return $facturalo;
+            });
+    
+            $document = $fact->getDocument();
+    
+            return [
+                'success' => true,
+                'data' => [
+                    'id' => $document->id,
+                ],
+            ];
+        }
     }
 
     public function update(QuotationRequest $request, $quotation_id)

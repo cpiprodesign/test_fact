@@ -14,9 +14,9 @@
     <div class="header-right">
         <span class="separator"></span>
         <div id="userbox" class="userbox">
-            <a class="btn btn-sm btn-primary mt-2 mr-2 text-white">
+            {{-- <a class="btn btn-sm btn-primary mt-2 mr-2 text-white">
                 <i class="fas fa-desktop mr-1"></i> Aperturar Caja
-            </a>
+            </a> --}}
             <a href="#" data-toggle="dropdown">
                 <figure class="profile-picture">
                     {{-- <img src="{{asset('img/%21logged-user.jpg')}}" alt="Profile" class="rounded-circle" data-lock-picture="img/%21logged-user.jpg" /> --}}
