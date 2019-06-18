@@ -152,6 +152,14 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </li>
                         </ul>
                     </li>
+                    <li class="
+                        {{ ($path[0] === 'box')?'nav-active':'' }}
+                        ">
+                        <a class="nav-link" href="{{route('tenant.box.index')}}">
+                            <i class="fas fa-cash-register" aria-hidden="true"></i>
+                            <span>Control de Caja</span>
+                        </a>
+                    </li>
                     <li>
                         <a class="nav-link" href="#">
                             <i class="fas fa-comment-dollar" aria-hidden="true"></i>

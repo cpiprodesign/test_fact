@@ -208,6 +208,9 @@ if ($hostname) {
             Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
             Route::get('documents/cambiar_estado_pago/{document}', 'Tenant\DocumentController@cambiar_estado_pago');
 
+            //Caja
+            Route::get('box', 'Tenant\PosController@index')->name('tenant.box.index');
+
             //Quotations
             Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index');
             Route::get('quotations/columns', 'Tenant\QuotationController@columns');

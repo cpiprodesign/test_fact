@@ -4,9 +4,7 @@
             <button class="btn btn-sm btn-primary pull-right mt-2 mr-2 "
                     v-if="!posActive"
                     @click.prevent="showNewRegisterDialog = !showNewRegisterDialog">
-                <i class="fas fa-desktop mr-3"></i>
-                Nuevo Punto de Venta
-
+                <i class="fas fa-desktop mr-1"></i> Aperturar Caja
             </button>
             <a v-else href="./pos/register" target="_blank"
                class="btn btn-sm btn-success pull-right mt-2 mr-2 "

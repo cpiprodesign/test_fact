@@ -51,7 +51,7 @@ class DocumentController extends Controller
 
     public function index()
     {
-        return view('tenant.documents.index');
+        return view('tenant.documents.index', 'pos');
     }
 
     public function view(Document $document)
@@ -79,7 +79,10 @@ class DocumentController extends Controller
 
     public function create()
     {
-        return view('tenant.documents.form');
+        $user = auth()->user();
+        $pos = \App\Models\Tenant\Pos::active();
+        
+        return view('tenant.documents.form', compact('user', 'pos'));
     }
 
     public function create2($quotation_id)
