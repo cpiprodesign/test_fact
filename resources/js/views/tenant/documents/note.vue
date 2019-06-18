@@ -167,6 +167,7 @@
                             :operation-type-id="form.operation_type_id"
                             :currency-type-id-active="form.currency_type_id"
                             :exchange-rate-sale="form.exchange_rate_sale"
+                            :price_list_id="0"
                             @add="addRow"></document-form-item>
 
         <document-options :showDialog.sync="showDialogOptions"

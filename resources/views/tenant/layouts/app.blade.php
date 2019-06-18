@@ -16,7 +16,7 @@
     {{--<link rel="dns-prefetch" href="https://fonts.gstatic.com">--}}
     {{--<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">--}}
 
-    <link href="{{ asset('css/app.css?v=20190617_02') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css?v=20190618') }}" rel="stylesheet">
 
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
@@ -139,7 +139,7 @@
 
     @stack('scripts')
 
-    <script src="{{ asset('js/app.js?v=20190617_02') }}"></script>
+    <script src="{{ asset('js/app.js?v=20190618') }}"></script>
     <!-- Theme Base, Components and Settings -->
     <script src="{{asset('porto-light/js/theme.js')}}"></script>
     <script src="//code.tidio.co/8txsjuzw2uthkcsbyrwynuffhsdzpbwi.js"></script>
