@@ -11,7 +11,8 @@ use App\Http\Resources\Tenant\ExpenseCollection;
 use App\Http\Resources\Tenant\ExpenseResource;
 use Exception;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Excel;
+use App\Models\Tenant\Pos;
+use App\Models\Tenant\PosSales;
 use Illuminate\Support\Facades\DB;
 
 class ExpenseController extends Controller
@@ -57,7 +58,7 @@ class ExpenseController extends Controller
 
     public function store(ExpenseRequest $request)
     {
-        $pos = \App\Models\Tenant\Pos::active();
+        $pos = Pos::active();
 
         if($pos == null)
         {
@@ -68,32 +69,52 @@ class ExpenseController extends Controller
         }
         else
         {
-            $id = $request->input('id');
-            $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
+            $array = [$request, $pos];
+            $expense = DB::connection('tenant')->transaction(function () use ($array){
 
-            $expense = Expense::firstOrNew(['id' => $id]);
-
-            if($request->has_voucher)
-            {
-                $detail_voucher = [
-                    'company_number' => $request->detail_voucher['company_number'],
-                    'company_name' => $request->detail_voucher['company_name'],
-                    'document_type' => $request->detail_voucher['document_type'],
-                    'document_number' => $request->detail_voucher['document_number']
-                ];
-
-                $detail_voucher = json_encode($detail_voucher);
-                $expense->detail_voucher  = $detail_voucher;
-            }
+                $request = $array[0];
+                $pos_id = $array[1];
             
-            $expense->user_id = auth()->id();
-            $expense->establishment_id = $establishment->id;
-            $expense->fill($request->all());
-            $expense->save();
+                $expense_id = $request->input('id');
+                $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
+
+                $expense = Expense::firstOrNew(['id' => $expense_id]);
+
+                if($request->has_voucher)
+                {
+                    $detail_voucher = [
+                        'company_number' => $request->detail_voucher['company_number'],
+                        'company_name' => $request->detail_voucher['company_name'],
+                        'document_type' => $request->detail_voucher['document_type'],
+                        'document_number' => $request->detail_voucher['document_number']
+                    ];
+
+                    $detail_voucher = json_encode($detail_voucher);
+                    $expense->detail_voucher  = $detail_voucher;
+                }
+                
+                $expense->user_id = auth()->id();
+                $expense->establishment_id = $establishment->id;
+                $expense->fill($request->all());
+                $expense->save();
+
+                $pos_sales = new PosSales();
+                $pos_sales->table_name = 'expenses';
+                $pos_sales->document_id = $expense->id;
+                $pos_sales->pos_id = $pos_id;
+                $pos_sales->save();
+
+                $pos = Pos::find($pos_id);
+                $pos->id = $pos_id;
+                $pos->close_amount -= $request->input('total');
+                $pos->save();
+
+                return $expense;
+            });
 
             return [
                 'success' => true,
-                'message' => ($id) ? 'Gasto editado con éxito' : 'Gasto registrado con éxito',
+                'message' => ($request->input('id')) ? 'Gasto editado con éxito' : 'Gasto registrado con éxito',
                 'id' => $expense->id
             ];
         }

@@ -18,7 +18,6 @@ use App\Models\Tenant\Catalogs\PriceType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Company;
-use App\Models\Tenant\Configuration;
 use App\Models\Tenant\SaleNote;
 use App\Models\Tenant\SaleNoteItem;
 use App\Models\Tenant\Establishment;
@@ -159,13 +158,27 @@ class SaleNoteController extends Controller
         }
         else
         {
-            $fact = DB::connection('tenant')->transaction(function () use ($request) {
+            $array = [$request, $pos];
+
+            $fact = DB::connection('tenant')->transaction(function () use ($array) {
+                
+                $request = $array[0];
+                $pos = $array[1];
 
                 $inputs = $request->all();
     
                 $facturalo = new Facturalo();
                 $facturalo->save($request->all());
                 $facturalo->createPdf2();
+
+                $document = $facturalo->getDocument();
+
+                $pos_sales = new \App\Models\Tenant\PosSales();
+                $pos_sales->table_name = 'sale_notes';
+                $pos_sales->document_id = $document->id;
+                $pos_sales->pos_id = $pos;
+                
+                $pos_sales->save();
                 
                 return $facturalo;
             });

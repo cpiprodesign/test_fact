@@ -34,9 +34,8 @@ use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Series;
-use \App\Models\Tenant\Pos;
-use \App\Models\Tenant\PosSale;
-use \App\Models\Tenant\PosSalesDetails;
+use App\Models\Tenant\Pos;
+use App\Models\Tenant\PosSales;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -292,7 +291,12 @@ class DocumentController extends Controller
         }
         else
         {
-            $fact = DB::connection('tenant')->transaction(function () use ($request) {
+            $array = [$request, $pos];
+            $fact = DB::connection('tenant')->transaction(function () use ($array) {
+
+                $request = $array[0];
+                $pos = $array[1];
+
                 $facturalo = new Facturalo();
                 $facturalo->save($request->all());
                 $facturalo->createXmlUnsigned();
@@ -301,36 +305,20 @@ class DocumentController extends Controller
                 $facturalo->updateQr();
                 $facturalo->createPdf();
     
-    
                 if ($request->input('quotation_id')) {
                     Quotation::where('id', $request->input('quotation_id'))
                         ->update(['state_type_id' => '05']);
-    
                 }
 
                 $document = $facturalo->getDocument();
 
-                $pos_sale = new PosSale();
-                $pos_sale->document_id = $document->id;
-                $pos_sale->pos_id = $pos;
-                $pos_sale->total = $document->total;
-                $pos_sale->payed = $document->total_paid;
-                $pos_sale->delta = $document->total - $document->total_paid;
-                $pos_sale->save();
-
-                $pos_sale_details = new PosSalesDetails();
-                $pos_sale_details->pos_sale_id = $pos_sale->id;
+                $pos_sales = new PosSales();
+                $pos_sales->table_name = 'documents';
+                $pos_sales->document_id = $document->id;
+                $pos_sales->pos_id = $pos;
                 
+                $pos_sales->save();
 
-
-                $pos_sale = $pos->sales()->create([
-                    'document_id' => $document_id,
-                    'total' => $request->balance['total'],
-                    'payed' => $request->balance['pagando'],
-                    'delta' => $request->balance['delta'],
-                ]);
-                $pos_sale->save();
-    
                 return $facturalo;
             });
     

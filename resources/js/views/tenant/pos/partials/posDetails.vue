@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :title="titleDialog" :visible="showDialog" @close="close" top="4vh" width="90vw">
+    <el-dialog :title="titleDialog" :visible="showDialog" @close="close" top="4vh">
         <div class="form-body">
             <div class="row">
                 <div class="col-6">
@@ -12,19 +12,19 @@
                 <div class="col-2">
                     <p>
                         <b>Apertura:</b><br>
-                        <span class="text-success">S/. {{registers.open_amount}}</span><br>
+                        <span class="text-success">S/. {{registers.box.open_amount}}</span><br>
                     </p>
                 </div>
                 <div class="col-2">
                     <p>
                         <b>Ingresos:</b><br>
-                        <span class="text-success">S/. {{registers.close_amount}}</span><br>
+                        <span class="text-success">S/. {{registers.box.close_amount}}</span><br>
                     </p>
                 </div>
                 <div class="col-2">
                     <p>
                         <b>Saldo:</b><br>
-                        <span class="text-success">S/. {{registers.open_amount+registers.close_amount}}</span><br>
+                        <span class="text-success">S/. {{registers.box.open_amount+registers.box.close_amount}}</span><br>
                     </p>
                 </div>
             </div>
@@ -35,56 +35,24 @@
                         <table class="table  table-condensed table-striped table-hover table-bordered">
                             <thead>
                             <tr>
-                                <th>Documento</th>
-                                <th>Saldo</th>
-                                <th>Pagado</th>
-                                <th>Devolución</th>
-                                <th>Items</th>
+                                <th>Tipo de Operación</th>
+                                <th>Total</th>
                                 <th>Detalles de Pago</th>
-                                <th>Acciones</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="(sale,index) in registers.sales">
-                                <td class="text-center"> {{ sale.document.series}} - {{ sale.document.number}}</td>
-                                <td class="text-right"> {{ sale.document.currency_type.symbol }} {{ sale.total}}</td>
-                                <td class="text-right"> {{ sale.document.currency_type.symbol }} {{ sale.payed}}</td>
-                                <td class="text-right"> {{ sale.document.currency_type.symbol }} {{ sale.delta}}</td>
-                                <td>
-                                    <ul class="list-unstyled">
-                                        <li v-for="item in sale.document.items" class="list-item">
-                                            <b>{{ `${item.item.internal_id} - ${item.item.description}` }}</b>
-                                            x {{ item.quantity}}
-                                        </li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul class="list-unstyled">
-                                        <li v-for="operation in  sale.details" class="list-item">
-                                            {{operation.type}}:
-                                            {{ sale.document.currency_type.symbol }} {{operation.amount}}
-                                            {{operation.reference? ` - (Ref: ${operation.reference})`: '' }}
-                                        </li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <a class="btn waves-effect waves-light btn-xs text-white btn-primary"
-                                       :href="`http://erp1.multifacturalo.local/print/document/${sale.document.external_id}/a4`"
-                                       target="_blank"
-                                    >
-                                        <i class="fas fa-file-alt"></i> A4
-                                    </a>
-                                    <a class="btn waves-effect waves-light btn-xs text-white btn-primary"
-                                       :href="`http://erp1.multifacturalo.local/print/document/${sale.document.external_id}/ticket`"
-                                       target="_blank"
-                                    >
-                                        <i class="fas fa-receipt"></i> Ticket
-                                    </a>
-                                </td>
-                            </tr>
+                                <tr v-for="(row, index) in registers.detail_box">
+                                    <td> {{row.operation_type}}</td>
+                                    <td> {{ row.symbol }} {{ row.total}}</td>
+                                    <td v-if="row.operation_type == 'Gasto'">
+                                        {{ row.detail}}
+                                    </td>
+                                    <td v-else>
+                                        Documento N° {{ row.series}} - {{ row.number}}
+                                    </td>                                 
+                                </tr>                                
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
@@ -106,7 +74,7 @@
         // mixins: [formDocumentItem],
         data() {
             return {
-                titleDialog: 'Detalles de operaciones en Caja',
+                titleDialog: 'Detalles de Operaciones en Caja',
                 resource: 'pos',
             }
         },
