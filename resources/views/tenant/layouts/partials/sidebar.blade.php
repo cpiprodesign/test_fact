@@ -58,7 +58,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                 </a>
                             </li>
                             <li class="{{ ($path[0] === 'pos')?'nav-active':'' }}">
-                                <a class="nav-link" href="{{route('tenant.pos.index')}}">
+                                <a class="nav-link" target="_blank" href="{{route('tenant.pos.register')}}">
                                     Punto de Venta
                                 </a>
                             </li>

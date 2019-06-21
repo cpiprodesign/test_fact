@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="application/pdf; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Punto de Venta de {{ $pos->user->name }} el {{ $pos->created_at->format('Y-m-d H:i') }}</title>
+    <title>Punto de Venta de {{ $pos['user']->name }} el {{ $pos['box']->created_at->format('Y-m-d H:i') }}</title>
     <style>
         html {
             font-family: sans-serif;
@@ -83,35 +83,34 @@
             </td>
             <td>
                 <strong>Establecimiento: </strong>
-                {{$pos->establishment->description}} /
-                @if ($pos->establishment->address!=='-')
-                    {{$pos->establishment->address}} -
+                {{$pos['box']->establishment->description}} /
+                @if ($pos['box']->establishment->address!=='-')
+                    {{$pos['box']->establishment->address}} -
                 @endif
-                {{$pos->establishment->department->description}} -
-                {{$pos->establishment->district->description}}
+                {{$pos['box']->establishment->department->description}} -
+                {{$pos['box']->establishment->district->description}}
             </td>
         </tr>
         <tr>
             <td>
                 <strong>Aperturado Por:</strong>
-                {{ $pos->user->name }}
-                <small> {{ $pos->user->email }}</small>
+                {{ $pos['user']->name }}
+                <small> {{ $pos['user']->email }}</small>
                 <br>
-                <strong>Fecha Apertura:</strong> {{ $pos->created_at->format('Y-m-d H:i') }}
-                @if (!is_null($pos->deleted_at))
+                <strong>Fecha Apertura:</strong> {{ $pos['box']->created_at->format('Y-m-d H:i') }}
+                @if (!is_null($pos['box']->deleted_at))
                     <br>
-                    <strong>Fecha Cierre:</strong> {{ $pos->deleted_at->format('Y-m-d H:i') }}
+                    <strong>Fecha Cierre:</strong> {{ $pos['box']->deleted_at->format('Y-m-d H:i') }}
                 @endif
-
             </td>
             <td>
                 <u><strong>Montos de Operacion:</strong></u>
                 <br>
-                <strong>Apertura:</strong> S/. {{ number_format($pos->open_amount,2) }} /
+                <strong>Apertura:</strong> S/. {{ number_format($pos['box']->open_amount,2) }} /
 
-                <strong>Ingresos:</strong> S/. {{ number_format($pos->close_amount,2) }} /
+                <strong>Ingresos:</strong> S/. {{ number_format($pos['box']->close_amount,2) }} /
 
-                <strong>Saldo:</strong> S/. {{ number_format($pos->open_amount + $pos->close_amount,2) }}
+                <strong>Saldo:</strong> S/. {{ number_format($pos['box']->open_amount + $pos['box']->close_amount,2) }}
             </td>
         </tr>
     </table>
@@ -119,80 +118,35 @@
 {{--@php--}}
 {{--    var_dump($pos->sales[0]->toArray());--}}
 {{--@endphp--}}
-@if(count($pos->sales))
+@if(count($pos['box']->sales))
     <div class="">
-        <div class=" ">
+        <div class="">
             <table class="">
                 <thead>
-                <tr>
-
-                    <th>Fecha y hora</th>
-                    <th>Documento</th>
-                    <th>Saldo</th>
-                    <th>Pagado</th>
-                    <th>Devolución</th>
-                    <th>Items</th>
-                    <th>Detalles de Pago</th>
-{{--                    <th>Codigo</th>--}}
-                </tr>
+                    <tr>
+                        <th>Tipo de Operación</th>
+                        <th>Total</th>
+                        <th>Detalles de Pago</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach($pos->sales as $key => $sale)
-                    <tr>
-
-                        <td class="celda">
-                            {{ $sale->created_at->format('Y-m-d H:i') }}
-                        </td>
-                        <td class="celda">
-                            {{$sale->document->series}} -
-                            {{$sale->document->number}}
-                        </td>
-                        <td class="celda">
-                            {{ $sale->document->currency_type->symbol }}
-                            {{ number_format($sale->total,2) }}
-                        </td>
-                        <td class="celda">
-                            {{ $sale->document->currency_type->symbol }}
-                            {{ number_format($sale->payed,2) }}
-                        </td>
-                        <td class="celda">
-                            {{ $sale->document->currency_type->symbol }}
-                            {{ number_format(abs($sale->delta),2) }}
-                        </td>
-                        <td class="celda">
-                            @foreach($sale->document->items as $item)
-                                <div>
-
-                                    <strong>
-                                        {{ $item->item->internal_id }} -
-                                        {{ $item->item->description }}
-                                    </strong>
-
-                                    x {{ number_format($item->quantity,2) }}
-                                </div>
-                            @endforeach
-                        </td>
-                        <td class="celda">
-                            @foreach($sale->details as $details)
-                                <div>
-
-                                    <strong>
-                                        {{ $details->type }} :
-                                    </strong>
-
-                                    {{ number_format($details->amount,2) }}
-                                    @if(!is_null($details->reference))
-                                        <small>( Ref: {{$details->reference}} )</small>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </td>
-{{--                        <td class="celda">--}}
-{{--                            <img src="data:image/png;base64,{{$sale->document->qr}} " class="qr">--}}
-{{--                        </td>--}}
-                    </tr>
-
-                @endforeach
+                    @foreach($pos['detail_box'] as $row)
+                        <tr>
+                            <td class="celda">
+                                {{$row->operation_type}}
+                            </td>
+                            <td class="celda">
+                                {{ $row->symbol }} {{ $row->total}}
+                            </td>
+                            <td class="celda">
+                                @if($row->operation_type == 'Gasto')
+                                    {{ $row->detail}}
+                                @else
+                                    Documento N° {{ $row->series}} - {{ $row->number}}
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

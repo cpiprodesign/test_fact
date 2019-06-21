@@ -185,7 +185,7 @@ if ($hostname) {
             Route::get('pos/tables', 'Tenant\PosController@tables');
             Route::post('pos/{id}/operations', 'Tenant\PosController@operations');
             Route::get('pos/register', 'Tenant\PosController@register')->name('tenant.pos.register');
-            Route::get('pos/report/pdf/{id}', 'Tenant\PosController@pdf')->name('tenant.pos.register');
+            Route::get('pos/report/pdf/{id}', 'Tenant\PosController@pdf');
 
             //Documents
             Route::get('documents', 'Tenant\DocumentController@index')->name('tenant.documents.index');

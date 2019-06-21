@@ -2,9 +2,11 @@
 
 @section('content')
 
-
-
-    <tenant-pos-register></tenant-pos-register>
+    @if(is_null($pos))
+        @include('tenant.partials.validated_box')
+    @else
+        <tenant-pos-register></tenant-pos-register>
+    @endif
 
 @endsection
 

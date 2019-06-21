@@ -14,12 +14,10 @@ use Illuminate\Support\Facades\DB;
 
 class PosController extends Controller
 {
-    //
     public function index()
     {
         return view('tenant.pos.index');
     }
-
 
     public function tables()
     {
@@ -28,7 +26,6 @@ class PosController extends Controller
 
         return compact('user', 'pos');
     }
-
 
     public function columns()
     {
@@ -48,22 +45,19 @@ class PosController extends Controller
             $q->where($request->column[1], 'like', "%{$request->value}%");
         }]);
 
-
         return new PosCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function register()
     {
-        if (is_null(Pos::active()))
-            return redirect('/pos');
-
-        return view('tenant.pos.register');
+        $pos = Pos::active();
+        
+        return view('tenant.pos.register', compact('pos'));
     }
 
     public function store(Request $request)
     {
         return Pos::create($request->toArray());
-
     }
 
     public function destroy()
@@ -106,7 +100,7 @@ class PosController extends Controller
             'user' => $user
         ];
 
-        return json_encode($array);
+        return $array;
     }
 
     public function operations($document_id, Request $request)
@@ -139,9 +133,8 @@ class PosController extends Controller
         $company = Company::first();
         $pos = $this->details($pos_id);
 
-//        return view('tenant.reports.pos.report_pdf', compact(    "company", 'pos'));
         $pdf = PDF::loadView('tenant.reports.pos.report_pdf', compact("company", 'pos'));
-        $filename = 'Reporte_Pos'.$pos->created_at->format('_Ymd_Hm');
+        $filename = 'Reporte_Pos'.$pos['box']->created_at->format('_Ymd_Hm');
 
         return $pdf->download($filename.'.pdf');
     }
