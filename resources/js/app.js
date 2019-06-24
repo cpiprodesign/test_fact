@@ -47,7 +47,8 @@ Vue.component('tenant-bank_accounts-index', require('./views/tenant/bank_account
 Vue.component('tenant-items-index', require('./views/tenant/items/index.vue'));
 
 Vue.component('tenant-persons-index', require('./views/tenant/persons/index.vue'));
-Vue.component('tenant-persons-view', require('./views/tenant/persons/view.vue'));
+Vue.component('tenant-persons-view-sells', require('./views/tenant/persons/view-sells.vue'));
+Vue.component('tenant-persons-view-payments', require('./views/tenant/persons/view-payments.vue'));
 
 
 Vue.component('tenant-customers-index', require('./views/tenant/customers/index.vue'));

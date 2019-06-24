@@ -91,11 +91,10 @@
                 </ul>
                 <div class="tab-content">
                     <div id="popular" class="tab-pane active">
-                        <tenant-persons-view :id="{{ json_encode($person->id) }}"></tenant-persons-view>
+                        <tenant-persons-view-sells :id="{{ json_encode($person->id) }}"></tenant-persons-view-sells>
                     </div>
                     <div id="recent" class="tab-pane">
-                        <p>Recent</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitat.</p>
+                        <tenant-persons-view-payments :id="{{ json_encode($person->id) }}"></tenant-persons-view-payments>
                     </div>
                 </div>
             </div>

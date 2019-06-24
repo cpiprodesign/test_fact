@@ -170,6 +170,11 @@ if ($hostname) {
             Route::get('persons/{type}/view/{person}', 'Tenant\PersonController@view')->name('tenant.persons.view');
             Route::get('persons/{type}/records', 'Tenant\PersonController@records');
             Route::get('persons/record/{person}', 'Tenant\PersonController@record');
+            Route::get('persons/{type}/view/{person}/sells/columns', 'Tenant\PersonController@sell_columns');
+            Route::get('persons/{type}/view/{person}/sells', 'Tenant\PersonController@sells');
+            Route::get('persons/{type}/view/{person}/payments/columns', 'Tenant\PersonController@payments_columns');
+            Route::get('persons/{type}/view/{person}/payments', 'Tenant\PersonController@payments');
+
             Route::post('persons', 'Tenant\PersonController@store');
             Route::delete('persons/{person}', 'Tenant\PersonController@destroy');
             Route::post('persons/import', 'Tenant\PersonController@import');
@@ -304,7 +309,7 @@ if ($hostname) {
             Route::get('reports-customers/records', 'Tenant\ReportCustomerController@records');
             Route::get('reports-customers/{person}/sells/columns', 'Tenant\ReportCustomerController@sell_columns');
             Route::get('reports-customers/{person}/sells', 'Tenant\ReportCustomerController@sells');
-
+            
             Route::get('documents/view/{document}', 'Tenant\DocumentController@view')->name('tenant.documents.view');
 
             //report expense

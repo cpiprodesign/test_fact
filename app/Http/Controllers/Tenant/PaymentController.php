@@ -36,7 +36,7 @@ class PaymentController extends Controller
         $records = Payment::where($request->column, 'like', "%{$request->value}%")
             ->orderBy('date_of_issue');
 
-        return new PaymentCollection(Payment::paginate(env('ITEMS_PER_PAGE', 10)));
+        return new PaymentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function create()

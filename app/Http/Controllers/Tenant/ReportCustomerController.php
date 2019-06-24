@@ -8,11 +8,9 @@ use App\Models\Tenant\Person;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\ExpenseRequest;
 use App\Http\Resources\Tenant\ReportCustomerCollection;
-use App\Http\Resources\Tenant\DocumentCollection;
 use App\Http\Resources\Tenant\ExpenseResource;
 use Exception;
 use Illuminate\Http\Request;
-use App\Models\Tenant\Document;
 use Illuminate\Support\Facades\DB;
 
 class ReportCustomerController extends Controller
@@ -36,27 +34,13 @@ class ReportCustomerController extends Controller
         return view('tenant.reports.customers.detail', compact('person', 'totals'));
     }
 
-    public function sells(Person $person, Request $request)
-    {
-        $records = Document::where($request->column, 'like', "%{$request->value}%")
-            ->where('customer_id', $person->id);
-
-        return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
-    }
+    
 
     public function columns()
     {
         return [
             'name' => 'Nombre',
             'number' => 'Número'
-        ];
-    }
-
-    public function sell_columns()
-    {
-        return [
-            'number' => 'Número',
-            'date_of_issue' => 'Fecha de emisión'
         ];
     }
 

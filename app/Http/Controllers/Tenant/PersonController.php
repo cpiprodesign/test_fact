@@ -5,6 +5,10 @@ use App\Http\Requests\Tenant\PersonRequest;
 use App\Http\Resources\Tenant\PersonCollection;
 use App\Http\Resources\Tenant\PersonResource;
 use App\Imports\PersonsImport;
+use App\Models\Tenant\Document;
+use App\Http\Resources\Tenant\DocumentCollection;
+use App\Models\Tenant\Payment;
+use App\Http\Resources\Tenant\PaymentCollection;
 use App\Models\Tenant\Catalogs\Country;
 use App\Models\Tenant\Catalogs\Department;
 use App\Models\Tenant\Catalogs\District;
@@ -44,6 +48,36 @@ class PersonController extends Controller
             'name' => 'Nombre',
             'number' => 'Número'
         ];
+    }
+
+    public function sell_columns()
+    {
+        return [
+            'number' => 'Número',
+            'date_of_issue' => 'Fecha de emisión'
+        ];
+    }
+
+    public function payments_columns()
+    {
+        return [
+            'description' => 'Descripción'
+        ];
+    }
+
+    public function sells($type, Person $person, Request $request)
+    {
+        $records = Document::where($request->column, 'like', "%{$request->value}%")
+            ->where('customer_id', $person->id);
+
+        return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
+    }
+
+    public function payments($type, Person $person, Request $request)
+    {
+        $records = Payment::where($request->column, 'like', "%{$request->value}%")->where('customer_id', $person->id);
+
+        return new PaymentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function records($type, Request $request)
