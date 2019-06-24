@@ -15,12 +15,27 @@ use App\Models\Tenant\Person;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
+use Illuminate\Support\Facades\DB;
 
 class PersonController extends Controller
 {
     public function index($type)
     {
         return view('tenant.persons.index', compact('type'));
+    }
+
+    public function view($type, Person $person)
+    {
+        $totals = DB::connection('tenant')->table('persons as per')
+            ->select(DB::raw('(SELECT SUM(total) FROM documents AS doc WHERE doc.customer_id = per.id) AS total'),
+                DB::raw('(SELECT SUM(total) FROM sale_notes AS san WHERE san.customer_id = per.id) AS total2'),
+                DB::raw('(SELECT SUM(total_paid) FROM documents AS doc WHERE doc.customer_id = per.id) AS total_paid'),
+                DB::raw('(SELECT SUM(total_paid) FROM sale_notes AS doc WHERE doc.customer_id = per.id) AS total_paid2'))
+            ->where('per.type', 'customers')
+            ->where('per.id', $person->id)
+            ->first();
+
+        return view('tenant.persons.view', compact('person', 'totals'));
     }
 
     public function columns()
