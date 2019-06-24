@@ -43,7 +43,7 @@
                         <td>{{ row.status }}</td>
                         <td>{{ row.created_at }}</td>
                         <td>{{ row.deleted_at }}</td>
-                        <td>S/. {{ row.close_amount }}</td>
+                        <td>S/. {{ row.balance }}</td>
                         <td class="text-right">
                             <a class="btn waves-effect waves-light btn-xs btn-danger" :href="`pos/report/pdf/${row.id}`"
                                title="Descargar Reporte"
