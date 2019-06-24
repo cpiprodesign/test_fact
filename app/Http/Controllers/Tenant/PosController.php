@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Resources\Tenant\PosCollection;
 use App\Models\Tenant\Company;
+use App\Models\Tenant\Document;
+use App\Models\Tenant\Payment;
+use App\Models\Tenant\Account;
 use App\Models\Tenant\Pos;
 use App\Models\Tenant\User;
+use App\Models\Tenant\Catalogs\PaymentMethod;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use phpDocumentor\Reflection\Types\Integer;
@@ -118,15 +122,33 @@ class PosController extends Controller
             'payed' => $request->balance['pagando'],
             'delta' => $request->balance['delta'],
         ]);
+
         $pos_sale->save();
 
+        $document = Document::find($document_id);
+        $document->total_paid += $request->balance['total'];
+        $customer_id = $document->customer_id;
+        $document->save();
+
         foreach ($request->sale as $detail) {
-            $pos_sale->details()->create([
-                'type' => $detail['tipo'],
-                'amount' => $detail['monto'],
-                'reference' => isset($detail['ref']) ? $detail['ref'] : null,
-            ])->save();
+
+            $payment_method = PaymentMethod::where('description', $detail['tipo'])->first();
+
+            $payment = new Payment();
+            $payment->document_id = $document_id;
+            $payment->customer_id = $customer_id;
+            $payment->payment_method_id = $payment_method->id;
+            $payment->date_of_issue = date("Y-m-d");
+            $payment->currency_type_id = 'PEN';
+            $payment->account_id = 1;
+            $payment->total = $request->balance['total'];
+            $payment->pos_id = $pos_id;
+            $payment->save();
         }
+
+        $account = Account::find(1);
+        $account->current_balance += $request->balance['total'];
+        $account->save();
     }
 
     public function pdf($pos_id) {

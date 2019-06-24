@@ -16,7 +16,7 @@
                 <i class="fas fa-cash-register"></i>
             </a></h2>
             <ol class="breadcrumbs">
-                <li class="active"><span>Puntos de Venta</span></li>
+                <li class="active"><span>Control de Cajas</span></li>
             </ol>
         </div>
 
@@ -142,7 +142,7 @@
                         type: 'success',
                         message: 'Se realizo el cierre correctamente'
                     });
-                    document.location.href = `./${this.resource}`;
+                    document.location.href = `./box`;
 
                 }).catch(() => {
                     this.$message({
