@@ -141,6 +141,7 @@ class PosController extends Controller
             $payment->date_of_issue = date("Y-m-d");
             $payment->currency_type_id = 'PEN';
             $payment->account_id = 1;
+            $payment->description = '';
             $payment->total = $request->balance['total'];
             $payment->pos_id = $pos_id;
             $payment->save();

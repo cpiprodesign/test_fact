@@ -102,9 +102,17 @@ class PaymentController extends Controller
                     $document->save();
                 }
 
+                
+
                 $payment = new Payment();
                 $payment->customer_id = $customer_id;
                 $payment->pos_id = $pos_id;
+
+                if(is_null($request->input('description')))
+                {
+                    $payment->description = '';
+                }
+
                 $payment->fill($request->all());
                 $payment->save();
 
