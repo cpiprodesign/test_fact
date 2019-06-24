@@ -4,6 +4,7 @@
     $total = (is_null($totals->total)) ? 0:$totals->total;
     $total2 = (is_null($totals->total2)) ? 0:$totals->total2;
     $total_paid = (is_null($totals->total_paid)) ? 0:$totals->total_paid;
+    $total_paid2 = (is_null($totals->total_paid2)) ? 0:$totals->total_paid2;
 @endphp
 @section('content')
     <div class="page-header pr-0">
@@ -47,7 +48,7 @@
                             <div class="summary">
                                 <h4 class="title">Total Pagado</h4>
                                 <div class="info">
-                                    <strong class="amount">S/. {{ $total_paid }}</strong>
+                                    <strong class="amount">S/. {{ $total_paid + $total_paid2}}</strong>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +69,7 @@
                             <div class="summary">
                                 <h4 class="title">Total por Pagar</h4>
                                 <div class="info">
-                                    <strong class="amount">S/. {{ $total + $total2 - $total_paid }}</strong>
+                                    <strong class="amount">S/. {{ $total + $total2 - ($total_paid + $total_paid2)}}</strong>
                                 </div>
                             </div>
                         </div>

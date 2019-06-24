@@ -26,7 +26,7 @@ class ReportCustomerCollection extends ResourceCollection
                 'number' => $row->number,
                 'name' => $row->name,
                 'total' =>  $total + $total2,
-                'total_paid' =>  $total_paid + $total_paid,
+                'total_paid' =>  $total_paid + $total_paid2,
                 'balance' => ($total + $total2) - ($total_paid + $total_paid2),
                 'quantity' => $row->quantity + $row->quantity2
             ];
