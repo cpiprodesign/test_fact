@@ -7,9 +7,11 @@ use App\CoreFacturalo\Helpers\Storage\StorageDocument;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\DocumentEmailRequest;
 use App\Http\Requests\Tenant\DocumentRequest;
+use App\Http\Requests\Tenant\DocumentConfigurationRequest;
 use App\Http\Requests\Tenant\DocumentVoidedRequest;
 use App\Http\Resources\Tenant\DocumentCollection;
 use App\Http\Resources\Tenant\DocumentResource;
+use App\Http\Resources\Tenant\DocumentConfigurationResource;
 use App\Mail\Tenant\DocumentEmail;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\ChargeDiscountType;
@@ -30,6 +32,7 @@ use App\Models\Tenant\Quotation;
 use App\Models\Tenant\QuotationItem;
 use App\Models\Tenant\Payment;
 use App\Models\Tenant\Document;
+use App\Models\Tenant\DocumentConfiguration;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\Person;
@@ -63,6 +66,11 @@ class DocumentController extends Controller
         return view('tenant.documents.view', compact('document', 'payments'));
     }
 
+    public function configuration()
+    {
+        return view('tenant.documents.configuration');
+    }
+    
     public function columns()
     {
         return [
@@ -278,6 +286,14 @@ class DocumentController extends Controller
         return $record;
     }
 
+    public function configuration_record() 
+    {
+        $document_configuration = DocumentConfiguration::first();
+        $record = new DocumentConfigurationResource($document_configuration);
+
+        return $record;
+    }
+
     public function store(DocumentRequest $request)
     {
         $pos = Pos::active();
@@ -334,6 +350,20 @@ class DocumentController extends Controller
             ];
         }
         
+    }
+
+    public function configuration_store(DocumentConfigurationRequest $request)
+    {
+        $id = $request->input('id');
+        $document_configuration = DocumentConfiguration::firstOrNew(['id' => $id]);
+        $document_configuration->fill($request->all());
+        $document_configuration->save();
+        
+        return [
+            'success' => true,
+            'message' => 'Configuración actualizada'
+        ];
+
     }
 
     public function email(DocumentEmailRequest $request)

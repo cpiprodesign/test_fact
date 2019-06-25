@@ -213,6 +213,9 @@ if ($hostname) {
             Route::get('documents/item/tables2/{document}', 'Tenant\DocumentController@item_tables2');
             Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
             Route::get('documents/cambiar_estado_pago/{document}', 'Tenant\DocumentController@cambiar_estado_pago');
+            Route::get('configuration/documents', 'Tenant\DocumentController@configuration')->name('tenant.documents.configuarion');
+            Route::get('configuration/documents/record', 'Tenant\DocumentController@configuration_record');
+            Route::post('configuration/documents', 'Tenant\DocumentController@configuration_store');
 
             //Caja
             Route::get('box', 'Tenant\PosController@index')->name('tenant.box.index');

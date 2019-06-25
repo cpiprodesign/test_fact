@@ -4,6 +4,7 @@
     $invoice = $document->invoice;
     $path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
     $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
+    $document_configuration = \App\Models\Tenant\DocumentConfiguration::first();
 @endphp
 <html>
 <head>
@@ -69,6 +70,12 @@
         <tr>
             <td class="align-top"><p class="desc">Dirección:</p></td>
             <td><p class="desc">{{ $customer->address }}</p></td>
+        </tr>
+    @endif
+    @if ($document_configuration->seller)
+        <tr>
+            <td class="align-top">Vendedor:</td>
+            <td colspan="2">{{ $document->user->name }}</td>
         </tr>
     @endif
     @if ($document->purchase_order)
