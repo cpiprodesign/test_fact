@@ -26,17 +26,17 @@
             <div class="card-body ">
                 <data-table :resource="resource">
                     <tr slot="heading">
-                        <th>#</th>
+                        <th class="text-center">#</th>
                         <th>Cliente</th>
+                        <th>N° Documento</th>
                         <th class="text-center">Creación</th>
                         <th>Número</th>
-                        <th class="text-right">Moneda</th>
+                        <th class="text-center">Moneda</th>
                         <th class="text-right">Total</th>
                         <th class="text-right">Pagado</th>
                         <th class="text-right">Por pagar</th>
                         <th class="text-right">Estado SUNAT</th>
-                        <th class="text-right">Estado</th>
-                        <th class="text-center">Descargas</th>
+                        <th class="text-center">Estado</th>
                         <!--<th class="text-center">Anulación</th>-->
                         <th class="text-right">Acciones</th>
                     <tr>
@@ -51,24 +51,22 @@
                                                     'border-left border-danger': (row.state_type_id === '11'),
                                                     'border-left border-warning': (row.state_type_id === '13')
                     }">
-                        <td>{{ index }}</td>
-                        <td>{{ row.customer_name }}<br/><small v-text="row.customer_number"></small></td>
+                        <td class="text-center">{{ index }}</td>
+                        <td>{{ row.customer_name }}</td>
+                        <td>{{row.customer_number}}</td>
                         <td class="text-center">{{ row.date_of_issue }}</td>
-                        <td>{{ row.number }}<br/>
-                            <small v-text="row.document_type_description"></small><br/>
-                            <small v-if="row.affected_document" v-text="row.affected_document"></small>
-                        </td>
-                        <td class="text-right">{{ row.currency_type_id }}</td>
+                        <td>{{ row.number }}</td>
+                        <td class="text-center">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-right">
                             <span v-if="row.document_type_id == '01' || row.document_type_id == '03'">{{ row.total_paid }}</span>
-                            <span v-else>- - -</span>
+                            <span v-else>- - - - -</span>
                         </td>
                         <td class="text-right">
                             <span v-if="row.document_type_id == '01' || row.document_type_id == '03'">{{ row.total - row.total_paid }}</span>
-                            <span v-else>- - -</span>
+                            <span v-else>- - - - - - -</span>
                         </td>
-                        <td><span class="badge bg-secondary text-white" :class="{
+                        <td class="text-right"><span class="badge bg-secondary text-white" :class="{
                             'bg-danger': (row.state_type_id === '11'),
                             'bg-warning': (row.state_type_id === '13'),
                             'bg-secondary': (row.state_type_id === '01'),
@@ -77,34 +75,44 @@
                             'bg-secondary': (row.state_type_id === '07'),
                             'bg-dark': (row.state_type_id === '09')
                         }">{{ row.state_type_description }}</span></td>
-                        <td v-if="row.document_type_id == '01' || row.document_type_id == '03'">
+                        <td class="text-right" v-if="row.document_type_id == '01' || row.document_type_id == '03'">
                             <span class="badge bg-secondary text-white bg-success" v-if="row.total - row.total_paid == 0">Pagado</span>
                             <span class="badge bg-secondary text-white bg-warning" v-if="row.total - row.total_paid > 0">Pendiente</span>
                         </td>
-                        <td v-else>- - -</td>
-                        <td class="text-center">
-                            <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickDownload(row.download_xml)"
-                                    v-if="row.has_xml">XML</button>
-                            <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickDownload(row.download_pdf)"
-                                    v-if="row.has_pdf">PDF</button>
-                            <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickDownload(row.download_cdr)"
-                                    v-if="row.has_cdr">CDR</button>
-                        </td>
+                        <td class="text-right" v-else>- - - - -</td>
                         <td class="text-right">
-                            <a :href="`/${resource}/view/${row.id}`" class="btn waves-effect waves-light btn-xs btn-primary m-1__2">Visualizar</a>
-                            <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-danger m-1__2"
-                               v-if="row.btn_note">Nota de Crédito/Débito</a>
-                            <a :href="`/dispatches/create2/${row.id}`" class="btn waves-effect waves-light btn-xs btn-default m-1__2"
-                               v-if="row.btn_note">Guía de remisión</a>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-warning m-1__2" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0">Agregar Pago</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickResend(row.id)"
-                                    v-if="row.btn_resend">Enviar a SUNAT</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
-                                    @click.prevent="clickOptions(row.id)">Opciones</button>
+                            <el-tooltip class="item" effect="dark" content="Enviar a Sunat" placement="top-end">
+                                <button type="button" class="btn btn-xs" @click.prevent="clickResend(row.id)" v-if="row.btn_resend"><i class="fa fa-file-export i-icon text-danger"></i></button>
+                                <button type="button" class="btn btn-xs" v-else=""><i class="fa fa-file-export i-icon text-disabled"></i></button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="Visualizar" placement="top-end">
+                                <a :href="`/${resource}/view/${row.id}`" class="btn btn-xs"><i class="fa fa-eye i-icon text-info"></i></a>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="Nota de Crédito/Debito" placement="top-end">
+                                <a :href="`/${resource}/note/${row.id}`" class="btn btn-xs" v-if="row.btn_note"><i class="fa fa-file-signature i-icon text-danger"></i></a>
+                                <a class="btn btn-xs" v-else=""><i class="fa fa-file-signature i-icon text-disabled"></i></a>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="Guía de Remisión" placement="top-end">
+                                <a :href="`/dispatches/create2/${row.id}`" class="btn btn-xs" v-if="row.btn_note"><i class="fa fa-clipboard-check i-icon text-success"></i></a>
+                                <a class="btn btn-xs" v-else=""><i class="fa fa-clipboard-check i-icon text-disabled"></i></a>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="Agregar pago" placement="top-end">
+                                <button type="button" class="btn btn-xs" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0"><i class="fa fa-money-bill-wave i-icon text-warning"></i></button>
+                                <button type="button" class="btn btn-xs" v-else="" disabled><i class="fa fa-money-bill-wave i-icon text-disabled"></i></button>
+                            </el-tooltip>
+                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" type="button" class="btn waves-effect waves-light btn-xs btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Descargar
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        <button type="button" @click.prevent="clickDownload(row.download_xml)" v-if="row.has_xml" class="dropdown-item">XML</button>
+                                        <a @click.prevent="clickDownload(row.download_pdf)" v-if="row.has_pdf" class="dropdown-item">PDF</a>
+                                        <a @click.prevent="clickDownload(row.download_cdr)" v-if="row.has_cdr" class="dropdown-item">CDR</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2" @click.prevent="clickOptions(row.id)">Opciones</button>
                         </td>
                     </tr>
                 </data-table>

@@ -41,7 +41,7 @@
 
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-sm">
                         <thead>
                         <slot name="heading"></slot>
                         </thead>
