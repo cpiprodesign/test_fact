@@ -87,6 +87,23 @@ class DocumentController extends Controller
         return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
+    // public function totals()
+    // {
+    //     $records = Document::where($request->column, 'like', "%{$request->value}%")
+    //         ->latest();
+
+    //     $totals = DB::connection('tenant')->table('documents as doc')
+    //     ->select(DB::raw('(SELECT SUM(total) FROM documents AS doc WHERE doc.customer_id = per.id) AS total'),
+    //         DB::raw('(SELECT SUM(total) FROM sale_notes AS san WHERE san.customer_id = per.id) AS total2'),
+    //         DB::raw('(SELECT SUM(total_paid) FROM documents AS doc WHERE doc.customer_id = per.id) AS total_paid'),
+    //         DB::raw('(SELECT SUM(total_paid) FROM sale_notes AS doc WHERE doc.customer_id = per.id) AS total_paid2'))
+    //     ->where('doc.currency_type_id', 'PEN')
+    //     ->whereIn('id', ['01', '03'])
+    //     ->first();
+
+    //     return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
+    // }
+
     public function create()
     {
         //$user = auth()->user();
