@@ -60,8 +60,14 @@
                         </td>
                         <td class="text-right">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
-                        <td class="text-right">{{ row.total_paid }}</td>
-                        <td class="text-right">{{ row.total - row.total_paid }}</td>
+                        <td class="text-right">
+                            <span v-if="row.document_type_id == '01' || row.document_type_id == '03'">{{ row.total_paid }}</span>
+                            <span v-else>- - -</span>
+                        </td>
+                        <td class="text-right">
+                            <span v-if="row.document_type_id == '01' || row.document_type_id == '03'">{{ row.total - row.total_paid }}</span>
+                            <span v-else>- - -</span>
+                        </td>
                         <td><span class="badge bg-secondary text-white" :class="{
                             'bg-danger': (row.state_type_id === '11'),
                             'bg-warning': (row.state_type_id === '13'),
@@ -71,10 +77,11 @@
                             'bg-secondary': (row.state_type_id === '07'),
                             'bg-dark': (row.state_type_id === '09')
                         }">{{ row.state_type_description }}</span></td>
-                        <td>
+                        <td v-if="row.document_type_id == '01' || row.document_type_id == '03'">
                             <span class="badge bg-secondary text-white bg-success" v-if="row.total - row.total_paid == 0">Pagado</span>
-                            <span class="badge bg-secondary text-white bg-warning" v-if="row.total - row.total_paid > 0">Pendiente</span>                            
+                            <span class="badge bg-secondary text-white bg-warning" v-if="row.total - row.total_paid > 0">Pendiente</span>
                         </td>
+                        <td v-else>- - -</td>
                         <td class="text-center">
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickDownload(row.download_xml)"
@@ -92,17 +99,21 @@
                                v-if="row.btn_note">Nota de Crédito/Débito</a>
                             <a :href="`/dispatches/create2/${row.id}`" class="btn waves-effect waves-light btn-xs btn-default m-1__2"
                                v-if="row.btn_note">Guía de remisión</a>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0">Agregar Pago</button>
+                            <button type="button" class="btn waves-effect waves-light btn-xs btn-warning m-1__2" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0">Agregar Pago</button>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickResend(row.id)"
-                                    v-if="row.btn_resend">Reenviar</button>
+                                    v-if="row.btn_resend">Enviar a SUNAT</button>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickOptions(row.id)">Opciones</button>
                         </td>
                     </tr>
                 </data-table>
             </div>
-
+            <!-- <div class="card-footer">
+                <div class="col-md-12">
+                    <h6><strong>Total de ventas en soles </strong>100,000.00</h6>
+                </div>
+            </div> -->
             <documents-voided :showDialog.sync="showDialogVoided"
                             :recordId="recordId"></documents-voided>
 

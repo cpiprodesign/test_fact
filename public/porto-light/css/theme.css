@@ -13300,7 +13300,9 @@ html.dark .table .actions-hover a {
 	border-left-color: #EEE;
 	border-right-color: #EEE;
 	border-top: 3px solid #CCC;
+	border-top: 3px solid #2196F3;
 	color: #CCC;
+	color: #2196F3;
 }
 
 .tab-content {

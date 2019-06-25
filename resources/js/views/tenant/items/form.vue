@@ -68,7 +68,7 @@
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.sale_unit_price}">
                             <label class="control-label">Precio Unitario (Venta)</label>
-                            <el-input v-model="form.sale_unit_price" dusk="sale_unit_price" @change="changePrice()"></el-input>
+                            <el-input v-model="form.sale_unit_price" dusk="sale_unit_price"></el-input>
                             <small class="form-control-feedback" v-if="errors.sale_unit_price"
                                    v-text="errors.sale_unit_price[0]"></small>
                         </div>
@@ -94,7 +94,7 @@
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.purchase_unit_price}">
                             <label class="control-label">Precio Unitario (Compra)</label>
-                            <el-input v-model="form.purchase_unit_price" dusk="purchase_unit_price"></el-input>
+                            <el-input v-model="form.purchase_unit_price" dusk="purchase_unit_price" @blur="changePrice()"></el-input>
                             <small class="form-control-feedback" v-if="errors.purchase_unit_price"
                                    v-text="errors.purchase_unit_price[0]"></small>
                         </div>
@@ -289,7 +289,7 @@
 
                     if(this.price_list[i].type == 1)
                     {
-                        this.form.item_price_list[i].value = this.form.sale_unit_price*(1-this.form.item_price_list[i].percentage/100)
+                        this.form.item_price_list[i].value = this.form.purchase_unit_price*(1-this.form.item_price_list[i].percentage/100)
                     }
                 }
             },

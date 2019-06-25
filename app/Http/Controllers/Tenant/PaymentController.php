@@ -11,10 +11,10 @@ use App\Models\Tenant\SaleNote;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\PaymentRequest;
 use App\Http\Resources\Tenant\PaymentCollection;
-use App\Http\Resources\Tenant\PaymentResource;
 use Exception;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Excel;
+use App\Models\Tenant\Pos;
+use App\Models\Tenant\PosSalesDetails;
 use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
@@ -36,7 +36,7 @@ class PaymentController extends Controller
         $records = Payment::where($request->column, 'like', "%{$request->value}%")
             ->orderBy('date_of_issue');
 
-        return new PaymentCollection(Payment::paginate(env('ITEMS_PER_PAGE', 10)));
+        return new PaymentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function create()
@@ -63,50 +63,79 @@ class PaymentController extends Controller
     public function store(PaymentRequest $request)
     {
         //$document_id = $request->input('document_id');
+        $pos = Pos::active();
 
-        $array = [$request];
-
-        if($request->input('total') > $request->input('total_debt')) {
+        if($pos == null)
+        {
             return [
                 'success' => false,
-                'message' => 'El valor recibido no debe ser mayor a la deuda'
+                'message' => "!Necesita aperturar una caja!"
             ];
         }
+        else{
+            $array = [$request, $pos];
 
-        $fact = DB::connection('tenant')->transaction(function () use ($request){
-
-            if(is_null($request->input('document_id')))
-            {
-                $document = SaleNote::find($request->input('sale_note_id'));
-                $document->total_paid += $request->input('total');
-                $customer_id = $document->customer_id;
-                $document->save();
+            if($request->input('total') > $request->input('total_debt')) {
+                return [
+                    'success' => false,
+                    'message' => 'El valor recibido no debe ser mayor a la deuda'
+                ];
             }
-            else
-            {
-                $document = Document::find($request->input('document_id'));
-                $document->total_paid += $request->input('total');
-                $customer_id = $document->customer_id;
-                $document->save();
-            }
-            
 
-            $payment = new Payment();
-            $payment->customer_id = $customer_id;
-            $payment->fill($request->all());
-            $payment->save();
+            $fact = DB::connection('tenant')->transaction(function () use ($array){
 
-            $account = Account::find($request->input('account_id'));
-            $account->current_balance += $request->input('total');
-            $account->save();
+                $request = $array[0];
+                $pos_id = $array[1];
 
-            return $payment;
-        });
+                if(is_null($request->input('document_id')))
+                {
+                    $document = SaleNote::find($request->input('sale_note_id'));
+                    $document->total_paid += $request->input('total');
+                    $customer_id = $document->customer_id;
+                    $document->save();
+                }
+                else
+                {
+                    $document = Document::find($request->input('document_id'));
+                    $document->total_paid += $request->input('total');
+                    $customer_id = $document->customer_id;
+                    $document->save();
+                }
+
+                
+
+                $payment = new Payment();
+                $payment->customer_id = $customer_id;
+                $payment->pos_id = $pos_id;
+
+                if(is_null($request->input('description')))
+                {
+                    $payment->description = '';
+                }
+
+                $payment->fill($request->all());
+                $payment->save();
+
+                $account = Account::find($request->input('account_id'));
+                $account->current_balance += $request->input('total');
+                $account->save();
+
+                //inicio de caja
+                $pos = Pos::find($pos_id);
+                $pos->id = $pos_id;
+                $pos->close_amount += $request->input('total');
+                $pos->save();
+
+                //fin de caja
+
+                return $payment;
+            });
         
-        return [
-            'success' => true,
-            'message' => 'Pago registrado con éxito'
-        ];
+            return [
+                'success' => true,
+                'message' => 'Pago registrado con éxito'
+            ];
+        }
     }
 
     public function destroy($id)

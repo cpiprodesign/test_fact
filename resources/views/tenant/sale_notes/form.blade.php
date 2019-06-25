@@ -20,9 +20,7 @@
 @endpush
 
 @section('content')
-
     <tenant-sale-notes-invoice></tenant-sale-notes-invoice>
-
 @endsection
 
 @push('scripts')
@@ -32,7 +30,7 @@
 		count = count + 1;
 		if (count == 1) {
 			$("#card-section").removeClass("card-collapsed");
-		}		
+		}
 	});
 </script>
 @endpush

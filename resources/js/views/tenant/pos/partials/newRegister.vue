@@ -13,16 +13,14 @@
                             </el-input>
                         </div>
                     </div>
-
-                    <!--                    <div class="col-md-4">-->
-                    <!--                        <div class="form-group">-->
-                    <!--                            <label class="control-label"> Limite de Saldo </label>-->
-                    <!--                            <el-input class="text-right" type="number" placeholder="0.00"-->
-                    <!--                                      steep="0.1" v-model="form.cash_limit">-->
-                    <!--                            </el-input>-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-
+                    <!--<div class="col-md-4">-->
+                    <!--<div class="form-group">-->
+                    <!--<label class="control-label"> Limite de Saldo </label>-->
+                    <!--<el-input class="text-right" type="number" placeholder="0.00"-->
+                    <!--steep="0.1" v-model="form.cash_limit">-->
+                    <!--</el-input>-->
+                    <!--</div>-->
+                    <!-- </div>-->
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label"> Responsable</label>
@@ -31,7 +29,6 @@
                             </el-input>
                         </div>
                     </div>
-
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">Local</label>
@@ -41,11 +38,10 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="form-actions text-right pt-2">
                 <el-button @click.prevent="close()">Cerrar</el-button>
-                <el-button class="add" type="primary" native-type="submit">Apertutrar</el-button>
+                <el-button class="add" type="primary" native-type="submit">Aperturar</el-button>
             </div>
         </form>
 
@@ -60,7 +56,7 @@
         // mixins: [formDocumentItem],
         data() {
             return {
-                titleDialog: 'Apaerturar Caja',
+                titleDialog: 'Aperturar Caja',
                 resource: 'pos',
                 user: {name: ''},
                 establishment: {},

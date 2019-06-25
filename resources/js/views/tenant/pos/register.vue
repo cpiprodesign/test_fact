@@ -444,8 +444,8 @@
                                         <label class="control-label">Forma</label>
                                         <select v-model="info.tipo" class="form-control form-control-sm" required>
                                             <option value="Efectivo">Efectivo</option>
-                                            <option value="Credito">Crédito</option>
-                                            <option value="Debito">Debito</option>
+                                            <option value="Credito">Tarjeta de crédito</option>
+                                            <option value="Debito">Tarjeta de débito</option>
                                             <option value="Cheque">Cheque</option>
                                         </select>
                                     </div>

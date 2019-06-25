@@ -27,6 +27,7 @@
                         <td>{{ row.name }}</td>
                         <td class="text-right">{{ row.number }}</td>
                         <td class="text-right">
+                            <a :href="`/persons/customers/view/${row.id}`" class="btn waves-effect waves-light btn-xs btn-primary m-1__2">Detalle</a>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                         </td>

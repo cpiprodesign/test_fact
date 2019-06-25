@@ -156,11 +156,7 @@
                     .then(response => {
                         if (response.data.success) {
                             this.$message.success(response.data.message)
-                            // if (this.external) {
-                            //     this.$eventHub.$emit('reloadDataItems', response.data.id)
-                            // } else {
-                                this.$eventHub.$emit('reloadData')
-                            // }
+                            this.$eventHub.$emit('reloadData')
                             this.close()
                         } else {
                             this.$message.error(response.data.message)

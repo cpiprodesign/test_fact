@@ -58,7 +58,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                 </a>
                             </li>
                             <li class="{{ ($path[0] === 'pos')?'nav-active':'' }}">
-                                <a class="nav-link" href="{{route('tenant.pos.index')}}">
+                                <a class="nav-link" target="_blank" href="{{route('tenant.pos.register')}}">
                                     Punto de Venta
                                 </a>
                             </li>
@@ -112,7 +112,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                         </ul>
                     </li>
                     @endif
-                    <li class="nav-parent {{ (in_array($path[0], ['inventory', 'warehouses', 'items']) ||
+                    <li class="nav-parent {{ (in_array($path[0], ['inventory', 'warehouses', 'items', 'price-list']) ||
                                                 ($path[0] === 'reports' && in_array($path[1], ['kardex', 'inventory'])))?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-boxes" aria-hidden="true"></i>
@@ -151,6 +151,14 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                 </a>
                             </li>
                         </ul>
+                    </li>
+                    <li class="
+                        {{ ($path[0] === 'box')?'nav-active':'' }}
+                        ">
+                        <a class="nav-link" href="{{route('tenant.box.index')}}">
+                            <i class="fas fa-cash-register" aria-hidden="true"></i>
+                            <span>Control de Caja</span>
+                        </a>
                     </li>
                     <li>
                         <a class="nav-link" href="#">
@@ -224,40 +232,46 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </li>
                         </ul>
                     </li>
-                    @endif @if(in_array('reports', $vc_modules))
-                    <li class="nav-parent {{  (($path[0] === 'reports') && in_array($path[1], ['', 'purchases', 'expenses'])) ? 'nav-active nav-expanded' : ''}}">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-chart-area" aria-hidden="true"></i>
-                            <span>Reportes</span>
-                        </a>
-                        <ul class="nav nav-children" style="">                            
-                            <li class="{{(($path[0] === 'reports') && ($path[1] === '')) ? 'nav-active' : ''}}">
-                                <a class="nav-link" href="{{route('tenant.reports.index')}}">
-                                    Ventas
-                                </a>
-                            </li>
-                            <li class="{{(($path[0] === 'reports') && ($path[1] === 'purchases')) ? 'nav-active' : ''}}">
-                                <a class="nav-link" href="{{route('tenant.reports.purchases.index')}}">
-                                    Compras
-                                </a>
-                            </li>
-                            <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
-                                <a class="nav-link" href="{{route('tenant.reports.expenses.index')}}">
-                                    Gastos
-                                </a>
-                            </li>
-                            {{-- <li class="{{(($path[0] === 'reports') && ($path[1] === 'kardex')) ? 'nav-active' : ''}}">
-                                <a class="nav-link" href="{{route('tenant.reports.kardex.index')}}">
-                                    Kardex
-                                </a>
-                            </li> --}}
-                            {{-- <li class="{{(($path[0] === 'reports') && ($path[1] == 'inventories')) ? 'nav-active' : ''}}">
-                                <a class="nav-link" href="{{route('tenant.reports.inventories.index')}}">
-                                    Inventarios
-                                </a>
-                            </li> --}}
-                        </ul>
-                    </li>
+                    @endif
+                    @if(in_array('reports', $vc_modules))
+                        <li class="nav-parent {{  (($path[0] === 'reports') && in_array($path[1], ['', 'purchases', 'expenses'])) ? 'nav-active nav-expanded' : ''}}">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-chart-area" aria-hidden="true"></i>
+                                <span>Reportes</span>
+                            </a>
+                            <ul class="nav nav-children" style="">
+                                <li class="{{(($path[0] === 'reports') && ($path[1] === '')) ? 'nav-active' : ''}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.index')}}">
+                                        Ventas
+                                    </a>
+                                </li>
+                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'purchases')) ? 'nav-active' : ''}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.purchases.index')}}">
+                                        Compras
+                                    </a>
+                                </li>
+                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.expenses.index')}}">
+                                        Gastos
+                                    </a>
+                                </li>
+                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.customer.index')}}">
+                                        Ventas por Cliente
+                                    </a>
+                                </li>
+                                {{-- <li class="{{(($path[0] === 'reports') && ($path[1] === 'kardex')) ? 'nav-active' : ''}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.kardex.index')}}">
+                                        Kardex
+                                    </a>
+                                </li> --}}
+                                {{-- <li class="{{(($path[0] === 'reports') && ($path[1] == 'inventories')) ? 'nav-active' : ''}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.inventories.index')}}">
+                                        Inventarios
+                                    </a>
+                                </li> --}}
+                            </ul>
+                        </li>
                     @endif @if(in_array('configuration', $vc_modules))
                     <li class="nav-parent {{ in_array($path[0], ['companies', 'catalogs', 'advanced', 'establishments', 'inventories'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
@@ -302,6 +316,9 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </li>
                             <li class="{{($path[0] === 'inventories' && $path[1] === 'configuration') ? 'nav-active': ''}}">
                                 <a class="nav-link" href="{{route('tenant.inventories.configuration.index')}}">Inventarios</a>
+                            </li>
+                            <li class="{{($path[0] === 'configuration' && $path[1] === 'documents') ? 'nav-active': ''}}">
+                                <a class="nav-link" href="{{route('tenant.documents.configuarion')}}">Documentos</a>
                             </li>
                             <li class="{{ ($path[0] === 'advanced')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.advanced.index')}}">

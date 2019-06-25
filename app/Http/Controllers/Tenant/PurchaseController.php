@@ -90,29 +90,41 @@ class PurchaseController extends Controller
 
     public function store(PurchaseRequest $request)
     {
-        $data = self::convert($request);
+        $pos = \App\Models\Tenant\Pos::active();
+        
+        if($pos == null)
+        {
+            return [
+                'success' => false,
+                'message' => "!Necesita aperturar una caja!"
+            ];
+        }
+        else
+        {
+            $data = self::convert($request);
 
-        $purchase = DB::connection('tenant')->transaction(function () use ($data) {
-            $doc = Purchase::create($data);
+            $purchase = DB::connection('tenant')->transaction(function () use ($data) {
+                $doc = Purchase::create($data);
 
-            foreach ($data['items'] as $row)
-            {
-                $doc->items()->create($row);
+                foreach ($data['items'] as $row)
+                {
+                    $doc->items()->create($row);
 
-                $update = $doc->establishment_item()->firstOrNew(['item_id' => $row['item_id']]);
-                $update->quantity += $row['quantity'];
-                $update->save();
-            }     
+                    $update = $doc->establishment_item()->firstOrNew(['item_id' => $row['item_id']]);
+                    $update->quantity += $row['quantity'];
+                    $update->save();
+                }
 
-            return $doc;
-        });       
- 
-        return [
-            'success' => true,
-            'data' => [
-                'id' => $purchase->id,
-            ],
-        ];
+                return $doc;
+            });       
+    
+            return [
+                'success' => true,
+                'data' => [
+                    'id' => $purchase->id,
+                ],
+            ];
+        }
     }
 
     public static function convert($inputs)
@@ -165,6 +177,7 @@ class PurchaseController extends Controller
                         'purchase_unit_price' => $row->purchase_unit_price,
                         'unit_type_id' => $row->unit_type_id,
                         'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                        'included_igv' => $row->included_igv,
                         'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
                     ];
                 });

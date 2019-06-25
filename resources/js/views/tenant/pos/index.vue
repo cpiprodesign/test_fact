@@ -4,9 +4,7 @@
             <button class="btn btn-sm btn-primary pull-right mt-2 mr-2 "
                     v-if="!posActive"
                     @click.prevent="showNewRegisterDialog = !showNewRegisterDialog">
-                <i class="fas fa-desktop mr-3"></i>
-                Nuevo Punto de Venta
-
+                <i class="fas fa-desktop mr-1"></i> Aperturar Caja
             </button>
             <a v-else href="./pos/register" target="_blank"
                class="btn btn-sm btn-success pull-right mt-2 mr-2 "
@@ -18,13 +16,13 @@
                 <i class="fas fa-cash-register"></i>
             </a></h2>
             <ol class="breadcrumbs">
-                <li class="active"><span>Puntos de Venta</span></li>
+                <li class="active"><span>Control de Cajas</span></li>
             </ol>
         </div>
 
         <div class="card mb-0">
             <div class="card-header bg-info">
-                <h3 class="my-0">Puntos de Ventas</h3>
+                <h3 class="my-0">Listado de Cajas</h3>
             </div>
             <div class="card-body">
                 <data-table :resource="resource">
@@ -45,7 +43,7 @@
                         <td>{{ row.status }}</td>
                         <td>{{ row.created_at }}</td>
                         <td>{{ row.deleted_at }}</td>
-                        <td>S/. {{ row.close_amount }}</td>
+                        <td>S/. {{ row.balance }}</td>
                         <td class="text-right">
                             <a class="btn waves-effect waves-light btn-xs btn-danger" :href="`pos/report/pdf/${row.id}`"
                                title="Descargar Reporte"
@@ -144,7 +142,7 @@
                         type: 'success',
                         message: 'Se realizo el cierre correctamente'
                     });
-                    document.location.href = `./${this.resource}`;
+                    document.location.href = `./box`;
 
                 }).catch(() => {
                     this.$message({

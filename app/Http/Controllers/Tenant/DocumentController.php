@@ -7,9 +7,11 @@ use App\CoreFacturalo\Helpers\Storage\StorageDocument;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\DocumentEmailRequest;
 use App\Http\Requests\Tenant\DocumentRequest;
+use App\Http\Requests\Tenant\DocumentConfigurationRequest;
 use App\Http\Requests\Tenant\DocumentVoidedRequest;
 use App\Http\Resources\Tenant\DocumentCollection;
 use App\Http\Resources\Tenant\DocumentResource;
+use App\Http\Resources\Tenant\DocumentConfigurationResource;
 use App\Mail\Tenant\DocumentEmail;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\ChargeDiscountType;
@@ -30,10 +32,13 @@ use App\Models\Tenant\Quotation;
 use App\Models\Tenant\QuotationItem;
 use App\Models\Tenant\Payment;
 use App\Models\Tenant\Document;
+use App\Models\Tenant\DocumentConfiguration;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Series;
+use App\Models\Tenant\Pos;
+use App\Models\Tenant\PosSales;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -61,6 +66,11 @@ class DocumentController extends Controller
         return view('tenant.documents.view', compact('document', 'payments'));
     }
 
+    public function configuration()
+    {
+        return view('tenant.documents.configuration');
+    }
+    
     public function columns()
     {
         return [
@@ -77,27 +87,39 @@ class DocumentController extends Controller
         return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
+    // public function totals()
+    // {
+    //     $records = Document::where($request->column, 'like', "%{$request->value}%")
+    //         ->latest();
+
+    //     $totals = DB::connection('tenant')->table('documents as doc')
+    //     ->select(DB::raw('(SELECT SUM(total) FROM documents AS doc WHERE doc.customer_id = per.id) AS total'),
+    //         DB::raw('(SELECT SUM(total) FROM sale_notes AS san WHERE san.customer_id = per.id) AS total2'),
+    //         DB::raw('(SELECT SUM(total_paid) FROM documents AS doc WHERE doc.customer_id = per.id) AS total_paid'),
+    //         DB::raw('(SELECT SUM(total_paid) FROM sale_notes AS doc WHERE doc.customer_id = per.id) AS total_paid2'))
+    //     ->where('doc.currency_type_id', 'PEN')
+    //     ->whereIn('id', ['01', '03'])
+    //     ->first();
+
+    //     return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
+    // }
+
     public function create()
     {
+        //$user = auth()->user();
+        //$pos = \App\Models\Tenant\Pos::active();
+        
         return view('tenant.documents.form');
     }
 
     public function create2($quotation_id)
     {
-        return view('tenant.documents.form2', compact('quotation_id'));
+        $user = auth()->user();
+        $pos = \App\Models\Tenant\Pos::active();
+        return view('tenant.documents.form2', compact('quotation_id', 'user', 'pos'));
     }
 
-    // public function cambiar_estado_pago($document_id)
-    // {
-    //     $flight = Document::find($document_id);
-    //     $flight->status_paid = 1;
-    //     $flight->save();
-
-    //     return [
-    //         'estado' => true
-    //     ];
-    // }
-
+    
     public function tables()
     {
         $customers = $this->table('customers');
@@ -281,37 +303,84 @@ class DocumentController extends Controller
         return $record;
     }
 
+    public function configuration_record() 
+    {
+        $document_configuration = DocumentConfiguration::first();
+        $record = new DocumentConfigurationResource($document_configuration);
+
+        return $record;
+    }
+
     public function store(DocumentRequest $request)
     {
-        $fact = DB::connection('tenant')->transaction(function () use ($request) {
-            $facturalo = new Facturalo();
-            $facturalo->save($request->all());
-            $facturalo->createXmlUnsigned();
-            $facturalo->signXmlUnsigned();
-            $facturalo->updateHash();
-            $facturalo->updateQr();
-            $facturalo->createPdf();
+        $pos = Pos::active();
 
+        if($pos == null)
+        {
+            return [
+                'success' => false,
+                'message' => "!Necesita aperturar una caja!"
+            ];
+        }
+        else
+        {
+            $array = [$request, $pos];
+            $fact = DB::connection('tenant')->transaction(function () use ($array) {
 
-            if ($request->input('quotation_id')) {
-                Quotation::where('id', $request->input('quotation_id'))
-                    ->update(['state_type_id' => '05']);
+                $request = $array[0];
+                $pos = $array[1];
 
-            }
+                $facturalo = new Facturalo();
+                $facturalo->save($request->all());
+                $facturalo->createXmlUnsigned();
+                $facturalo->signXmlUnsigned();
+                $facturalo->updateHash();
+                $facturalo->updateQr();
+                $facturalo->createPdf();
+    
+                if ($request->input('quotation_id')) {
+                    Quotation::where('id', $request->input('quotation_id'))
+                        ->update(['state_type_id' => '05']);
+                }
 
-            return $facturalo;
-        });
+                $document = $facturalo->getDocument();
 
-        $fact->senderXmlSignedBill();
-        $document = $fact->getDocument();
-        $response = $fact->getResponse();
+                $pos_sales = new PosSales();
+                $pos_sales->table_name = 'documents';
+                $pos_sales->document_id = $document->id;
+                $pos_sales->pos_id = $pos;
+                
+                $pos_sales->save();
 
+                return $facturalo;
+            });
+    
+            $fact->senderXmlSignedBill();
+            $document = $fact->getDocument();
+            $response = $fact->getResponse();
+    
+            return [
+                'success' => true,
+                'data' => [
+                    'id' => $document->id,
+                ],
+            ];
+        }
+        
+    }
+
+    public function configuration_store(DocumentConfigurationRequest $request)
+    {
+        $id = $request->input('id');
+        $document_configuration = DocumentConfiguration::firstOrNew(['id' => $id]);
+        $document_configuration->fill($request->all());
+        $document_configuration->save();
+        
         return [
             'success' => true,
-            'data' => [
-                'id' => $document->id,
-            ],
+            'message' => 'Configuración actualizada'
         ];
+
     }
 
     public function email(DocumentEmailRequest $request)

@@ -167,8 +167,14 @@ if ($hostname) {
             Route::get('persons/columns', 'Tenant\PersonController@columns');
             Route::get('persons/tables', 'Tenant\PersonController@tables');
             Route::get('persons/{type}', 'Tenant\PersonController@index')->name('tenant.persons.index');
+            Route::get('persons/{type}/view/{person}', 'Tenant\PersonController@view')->name('tenant.persons.view');
             Route::get('persons/{type}/records', 'Tenant\PersonController@records');
             Route::get('persons/record/{person}', 'Tenant\PersonController@record');
+            Route::get('persons/{type}/view/{person}/sells/columns', 'Tenant\PersonController@sell_columns');
+            Route::get('persons/{type}/view/{person}/sells', 'Tenant\PersonController@sells');
+            Route::get('persons/{type}/view/{person}/payments/columns', 'Tenant\PersonController@payments_columns');
+            Route::get('persons/{type}/view/{person}/payments', 'Tenant\PersonController@payments');
+
             Route::post('persons', 'Tenant\PersonController@store');
             Route::delete('persons/{person}', 'Tenant\PersonController@destroy');
             Route::post('persons/import', 'Tenant\PersonController@import');
@@ -185,7 +191,7 @@ if ($hostname) {
             Route::get('pos/tables', 'Tenant\PosController@tables');
             Route::post('pos/{id}/operations', 'Tenant\PosController@operations');
             Route::get('pos/register', 'Tenant\PosController@register')->name('tenant.pos.register');
-            Route::get('pos/report/pdf/{id}', 'Tenant\PosController@pdf')->name('tenant.pos.register');
+            Route::get('pos/report/pdf/{id}', 'Tenant\PosController@pdf');
 
             //Documents
             Route::get('documents', 'Tenant\DocumentController@index')->name('tenant.documents.index');
@@ -207,6 +213,12 @@ if ($hostname) {
             Route::get('documents/item/tables2/{document}', 'Tenant\DocumentController@item_tables2');
             Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
             Route::get('documents/cambiar_estado_pago/{document}', 'Tenant\DocumentController@cambiar_estado_pago');
+            Route::get('configuration/documents', 'Tenant\DocumentController@configuration')->name('tenant.documents.configuarion');
+            Route::get('configuration/documents/record', 'Tenant\DocumentController@configuration_record');
+            Route::post('configuration/documents', 'Tenant\DocumentController@configuration_store');
+
+            //Caja
+            Route::get('box', 'Tenant\PosController@index')->name('tenant.box.index');
 
             //Quotations
             Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index');
@@ -294,10 +306,14 @@ if ($hostname) {
             Route::post('reports/inventories/pdf', 'Tenant\ReportInventoryController@pdf')->name('tenant.report.inventories.pdf');
             Route::post('reports/inventories/excel', 'Tenant\ReportInventoryController@excel')->name('tenant.report.inventories.report_excel');
 
-            // Route::get('reports/kardex', 'Tenant\ReportKardexController@index')->name('tenant.reports.kardex.index');
-            // Route::post('reports/kardex/search', 'Tenant\ReportKardexController@search')->name('tenant.reports.kardex.search');
-            // Route::post('reports/kardex/pdf', 'Tenant\ReportKardexController@pdf')->name('tenant.report.kardex.pdf');
-            // Route::post('reports/kardex/excel', 'Tenant\ReportKardexController@excel')->name('tenant.report.kardex.report_excel');
+            Route::get('reports/customers', 'Tenant\ReportCustomerController@index')->name('tenant.reports.customer.index');            
+            Route::get('reports/customers/{person}', 'Tenant\ReportCustomerController@detail')->name('tenant.reports.customer.detail');            
+            Route::get('reports-customers/columns', 'Tenant\ReportCustomerController@columns');
+            Route::get('reports-customers/records', 'Tenant\ReportCustomerController@records');
+            Route::get('reports-customers/{person}/sells/columns', 'Tenant\ReportCustomerController@sell_columns');
+            Route::get('reports-customers/{person}/sells', 'Tenant\ReportCustomerController@sells');
+            
+            Route::get('documents/view/{document}', 'Tenant\DocumentController@view')->name('tenant.documents.view');
 
             //report expense
             Route::get('reports/expenses', 'Tenant\ReportExpenseController@index')->name('tenant.reports.expenses.index');

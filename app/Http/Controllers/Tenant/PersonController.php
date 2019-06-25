@@ -5,6 +5,10 @@ use App\Http\Requests\Tenant\PersonRequest;
 use App\Http\Resources\Tenant\PersonCollection;
 use App\Http\Resources\Tenant\PersonResource;
 use App\Imports\PersonsImport;
+use App\Models\Tenant\Document;
+use App\Http\Resources\Tenant\DocumentCollection;
+use App\Models\Tenant\Payment;
+use App\Http\Resources\Tenant\PaymentCollection;
 use App\Models\Tenant\Catalogs\Country;
 use App\Models\Tenant\Catalogs\Department;
 use App\Models\Tenant\Catalogs\District;
@@ -15,6 +19,7 @@ use App\Models\Tenant\Person;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
+use Illuminate\Support\Facades\DB;
 
 class PersonController extends Controller
 {
@@ -23,12 +28,56 @@ class PersonController extends Controller
         return view('tenant.persons.index', compact('type'));
     }
 
+    public function view($type, Person $person)
+    {
+        $totals = DB::connection('tenant')->table('persons as per')
+            ->select(DB::raw('(SELECT SUM(total) FROM documents AS doc WHERE doc.customer_id = per.id) AS total'),
+                DB::raw('(SELECT SUM(total) FROM sale_notes AS san WHERE san.customer_id = per.id) AS total2'),
+                DB::raw('(SELECT SUM(total_paid) FROM documents AS doc WHERE doc.customer_id = per.id) AS total_paid'),
+                DB::raw('(SELECT SUM(total_paid) FROM sale_notes AS doc WHERE doc.customer_id = per.id) AS total_paid2'))
+            ->where('per.type', 'customers')
+            ->where('per.id', $person->id)
+            ->first();
+
+        return view('tenant.persons.view', compact('person', 'totals'));
+    }
+
     public function columns()
     {
         return [
             'name' => 'Nombre',
             'number' => 'Número'
         ];
+    }
+
+    public function sell_columns()
+    {
+        return [
+            'number' => 'Número',
+            'date_of_issue' => 'Fecha de emisión'
+        ];
+    }
+
+    public function payments_columns()
+    {
+        return [
+            'description' => 'Descripción'
+        ];
+    }
+
+    public function sells($type, Person $person, Request $request)
+    {
+        $records = Document::where($request->column, 'like', "%{$request->value}%")
+            ->where('customer_id', $person->id);
+
+        return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
+    }
+
+    public function payments($type, Person $person, Request $request)
+    {
+        $records = Payment::where($request->column, 'like', "%{$request->value}%")->where('customer_id', $person->id);
+
+        return new PaymentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function records($type, Request $request)

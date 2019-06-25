@@ -19,10 +19,8 @@
     </style>
 @endpush
 
-@section('content')
-
-    <tenant-documents-invoice></tenant-documents-invoice>
-
+@section('content')    
+    <tenant-documents-invoice></tenant-documents-invoice>   
 @endsection
 
 @push('scripts')

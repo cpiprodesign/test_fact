@@ -18,7 +18,6 @@ use App\Models\Tenant\Catalogs\PriceType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Company;
-use App\Models\Tenant\Configuration;
 use App\Models\Tenant\SaleNote;
 use App\Models\Tenant\SaleNoteItem;
 use App\Models\Tenant\Establishment;
@@ -148,25 +147,51 @@ class SaleNoteController extends Controller
 
     public function store(SaleNoteRequest $request)
     {
-        $fact = DB::connection('tenant')->transaction(function () use ($request) {
+        $pos = \App\Models\Tenant\Pos::active();
 
-            $inputs = $request->all();
+        if($pos == null)
+        {
+            return [
+                'success' => false,
+                'message' => "!Necesita aperturar una caja!"
+            ];
+        }
+        else
+        {
+            $array = [$request, $pos];
 
-            $facturalo = new Facturalo();
-            $facturalo->save($request->all());
-            $facturalo->createPdf2();
-            
-            return $facturalo;
-        });
+            $fact = DB::connection('tenant')->transaction(function () use ($array) {
+                
+                $request = $array[0];
+                $pos = $array[1];
 
-        $document = $fact->getDocument();
+                $inputs = $request->all();
+    
+                $facturalo = new Facturalo();
+                $facturalo->save($request->all());
+                $facturalo->createPdf2();
 
-        return [
-            'success' => true,
-            'data' => [
-                'id' => $document->id,
-            ],
-        ];
+                $document = $facturalo->getDocument();
+
+                $pos_sales = new \App\Models\Tenant\PosSales();
+                $pos_sales->table_name = 'sale_notes';
+                $pos_sales->document_id = $document->id;
+                $pos_sales->pos_id = $pos;
+                
+                $pos_sales->save();
+                
+                return $facturalo;
+            });
+    
+            $document = $fact->getDocument();
+    
+            return [
+                'success' => true,
+                'data' => [
+                    'id' => $document->id,
+                ],
+            ];
+        }
     }
 
     public function update(QuotationRequest $request, $quotation_id)

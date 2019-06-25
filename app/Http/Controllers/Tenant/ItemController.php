@@ -100,13 +100,10 @@ class ItemController extends Controller
             if($id == null)
             {
                 foreach ($request->item_warehouse as $stock_by_location)
-                {
-                    if($stock_by_location['quantity'] != 0)
-                    {
-                        $stock = $item->item_warehouse()->firstOrNew(['warehouse_id' => $stock_by_location['warehouse_id']]);
-                        $stock->stock = $stock_by_location['quantity'];
-                        $stock->save();
-                    }
+                {   
+                    $stock = $item->item_warehouse()->firstOrNew(['warehouse_id' => $stock_by_location['warehouse_id']]);
+                    $stock->stock = $stock_by_location['quantity'];
+                    $stock->save();                    
                 }
             }
             

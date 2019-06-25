@@ -8,6 +8,7 @@
     $establishment2 = \App\Models\Tenant\Establishment::find($document->establishment_id);
     $customer2 = \App\Models\Tenant\Person::find($document->customer_id);
     $configuration = \App\Models\Tenant\Configuration::first();
+    $document_configuration = \App\Models\Tenant\DocumentConfiguration::first();
 @endphp
 <html>
     <head>
@@ -61,16 +62,21 @@
                     <td>{{ $customer->identity_document_type->description }}:</td>
                     <td>{{ $customer->number }}</td>
                     @if($invoice)
-                    <td>Fecha de vencimiento:</td>
-                    <td>{{ $invoice->date_of_due->format('d/m/Y') }}</td>
+                        <td>Fecha de vencimiento:</td>
+                        <td>{{ $invoice->date_of_due->format('d/m/Y') }}</td>
                     @endif
                 </tr>
                 @if ($customer->address !== '')
-                <tr>
-                    <td class="align-top">Dirección:</td>
-                    <td colspan="2">{{ $customer2->getAddressFullAttribute() }}</td>
-
-                </tr>
+                    <tr>
+                        <td class="align-top">Dirección:</td>
+                        <td colspan="2">{{ $customer2->getAddressFullAttribute() }}</td>
+                    </tr>
+                @endif
+                @if ($document_configuration->seller)
+                    <tr>
+                        <td class="align-top">Vendedor:</td>
+                        <td colspan="2">{{ $document->user->name }}</td>
+                    </tr>
                 @endif
             </table>
         </div>
@@ -132,7 +138,7 @@
                                 @endif
                             </td>
                             <td class="text-right align-top">{{ number_format($row->total, 2) }}</td>
-                        </tr>                       
+                        </tr>
                         @php $i++ @endphp
                     @endforeach
                 </tbody>
@@ -152,8 +158,8 @@
                         </tr>
                     @endforeach
                 @endif
-            </table>            
-            <table>               
+            </table>
+            <table>
                 <tr>
                      @if(isset($document->additional_information))
                         <tr>
