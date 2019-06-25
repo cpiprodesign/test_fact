@@ -109,12 +109,11 @@
                     </tr>
                 </data-table>
             </div>
-            <div class="card-footer">
+            <!-- <div class="card-footer">
                 <div class="col-md-12">
                     <h6><strong>Total de ventas en soles </strong>100,000.00</h6>
                 </div>
-            </div>
-
+            </div> -->
             <documents-voided :showDialog.sync="showDialogVoided"
                             :recordId="recordId"></documents-voided>
 
