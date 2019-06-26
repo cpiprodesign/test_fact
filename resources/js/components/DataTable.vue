@@ -35,10 +35,7 @@
                         </template>
                     </div>
                 </div>
-
             </div>
-
-
             <div class="col-md-12">
                 <div class="table-responsive">
                     <table class="table table-sm">
@@ -46,9 +43,15 @@
                         <slot name="heading"></slot>
                         </thead>
                         <tbody>
-                        <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)"></slot>
+                        <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)" name="tbody"></slot>
                         </tbody>
                     </table>
+                    <div>
+                        <slot name="totals" :totals="totals"></slot>
+                        <!-- <div class="col-md-12">
+                                <h5><strong>Total de ventas en soles </strong>{{ totals.total }}</h5>
+                            </div> -->
+                    </div>
                     <div>
                         <el-pagination
                                 @current-change="getRecords"
@@ -61,7 +64,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -83,6 +85,7 @@
                 },
                 columns: [],
                 records: [],
+                totals: [],
                 pagination: {}
             }
         },
@@ -91,6 +94,7 @@
         created() {
             this.$eventHub.$on('reloadData', () => {
                 this.getRecords()
+                this.getTotals()
             })
         },
         async mounted () {
@@ -100,7 +104,7 @@
                 this.search.column = _.head(Object.keys(this.columns))
             });
             await this.getRecords()
-
+            await this.getTotals()
         },
         methods: {
             customIndex(index) {
@@ -113,6 +117,11 @@
                     this.pagination.per_page = parseInt(response.data.meta.per_page)
                 });
             },
+            getTotals(){
+                return this.$http.get(`/${this.resource}/totals?${this.getQueryParameters()}`).then((response) => {
+                    this.totals = response.data.data[0]
+                });
+            },
             getQueryParameters() {
                 return queryString.stringify({
                     page: this.pagination.current_page,
@@ -123,6 +132,7 @@
             changeClearInput(){
                 this.search.value = ''
                 this.getRecords()
+                this.getTotals()
             }
         }
     }

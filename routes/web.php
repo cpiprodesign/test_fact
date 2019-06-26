@@ -198,6 +198,7 @@ if ($hostname) {
             Route::get('documents/view/{document}', 'Tenant\DocumentController@view')->name('tenant.documents.view');
             Route::get('documents/columns', 'Tenant\DocumentController@columns');
             Route::get('documents/records', 'Tenant\DocumentController@records');
+            Route::get('documents/totals', 'Tenant\DocumentController@totals');
             Route::get('documents/create', 'Tenant\DocumentController@create')->name('tenant.documents.create');
             Route::get('documents/create2/{document}', 'Tenant\DocumentController@create2')->name('tenant.documents.create2');
             Route::get('documents/tables', 'Tenant\DocumentController@tables');

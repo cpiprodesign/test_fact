@@ -82,28 +82,28 @@ class DocumentController extends Controller
     public function records(Request $request)
     {
         $records = Document::where($request->column, 'like', "%{$request->value}%")
-            // ->whereIn('id', ['01', '03'])
+            ->whereIn('document_type_id', ['01', '03'])
             ->latest();
 
         return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
-    // public function totals()
-    // {
-    //     $records = Document::where($request->column, 'like', "%{$request->value}%")
-    //         ->latest();
+    public function totals(Request $request)
+    {
+        $total = DB::connection('tenant')
+                        ->table('documents')
+                        ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
+                        ->where($request->column, 'like', "%{$request->value}%")
+                        ->where('status_paid', 0)
+                        ->whereIn('document_type_id', ['01', '03'])
+                        ->whereIn('state_type_id', ['01', '03', '05', '07'])
+                        ->where('currency_type_id', 'PEN')
+                        ->first();
+        
+        $data = [$total];
 
-    //     $totals = DB::connection('tenant')->table('documents as doc')
-    //     ->select(DB::raw('(SELECT SUM(total) FROM documents AS doc WHERE doc.customer_id = per.id) AS total'),
-    //         DB::raw('(SELECT SUM(total) FROM sale_notes AS san WHERE san.customer_id = per.id) AS total2'),
-    //         DB::raw('(SELECT SUM(total_paid) FROM documents AS doc WHERE doc.customer_id = per.id) AS total_paid'),
-    //         DB::raw('(SELECT SUM(total_paid) FROM sale_notes AS doc WHERE doc.customer_id = per.id) AS total_paid2'))
-    //     ->where('doc.currency_type_id', 'PEN')
-    //     ->whereIn('id', ['01', '03'])
-    //     ->first();
-
-    //     return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
-    // }
+        return compact('data');
+    }
 
     public function create()
     {

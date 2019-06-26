@@ -40,7 +40,7 @@
                         <!--<th class="text-center">Anulación</th>-->
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }" :class="{
+                    <tr slot-scope="{ index, row }" slot="tbody" :class="{
                                                     'text-danger': (row.state_type_id === '11'),
                                                     'text-warning': (row.state_type_id === '13'),
                                                     'border-light': (row.state_type_id === '01'),
@@ -115,11 +115,16 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2" @click.prevent="clickOptions(row.id)">Opciones</button>
                         </td>
                     </tr>
+                    <div slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-12">
+                            <h5><strong>Total de ventas en soles </strong>S/. {{ totals.total }}</h5>
+                        </div>
+                    </div>
                 </data-table>
             </div>
             <!-- <div class="card-footer">
                 <div class="col-md-12">
-                    <h6><strong>Total de ventas en soles </strong>100,000.00</h6>
+                    <h6><strong>Total de ventas en soles </strong>{{ total.quantity }}</h6>
                 </div>
             </div> -->
             <documents-voided :showDialog.sync="showDialogVoided"
