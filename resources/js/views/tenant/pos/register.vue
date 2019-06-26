@@ -605,7 +605,7 @@
             await this.refreshItems();
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
-                    this.document_types = response.data.document_types_invoice
+                    this.document_types = response.data.document_types_invoice2
                     this.currency_types = response.data.currency_types
                     this.establishments = response.data.establishments
                     this.operation_types = response.data.operation_types
@@ -902,7 +902,14 @@
             submit() {
                 this.loading_submit = true
                 this.form.informacion_adicional = this.adicionalInfo;
-                this.$http.post(`/${this.resource}`, this.form).then(response => {
+
+                if(this.form.document_type_id == '100'){
+                    this.model = 'sale-notes'
+                }else{
+                    this.model = 'documents'
+                }
+
+                this.$http.post(`/${this.model}`, this.form).then(response => {
                     console.log(response);
 
                     if (response.data.success) {

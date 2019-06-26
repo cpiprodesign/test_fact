@@ -19,7 +19,7 @@ class SaleNoteInput
         $series = $inputs['series'];
         $number = $inputs['number'];
 
-        $sale_note_id = $inputs['sale_note_id'];
+        //$sale_note_id = $inputs['sale_note_id'];
 
         $company = Company::active();
         

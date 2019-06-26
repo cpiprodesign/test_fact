@@ -127,6 +127,7 @@ class DocumentController extends Controller
         $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();// Establishment::all();
         $series = Series::all();
         $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
+        $document_types_invoice2 = DocumentType::whereIn('id', ['01', '03', '100'])->get();
         $document_types_note = DocumentType::whereIn('id', ['07', '08'])->get();
         $note_credit_types = NoteCreditType::whereActive()->orderByDescription()->get();
         $note_debit_types = NoteDebitType::whereActive()->orderByDescription()->get();
@@ -141,7 +142,7 @@ class DocumentController extends Controller
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
         $decimal = Configuration::first()->decimal;
 
-        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_note',
+        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_invoice2', 'document_types_note',
             'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
             'discount_types', 'charge_types', 'payment_methods', 'accounts', 'company', 'document_type_03_filter', 'decimal', 'price_list');
     }
