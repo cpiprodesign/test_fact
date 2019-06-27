@@ -29,7 +29,7 @@
                         <!-- <th class="text-center">Descargas</th> -->
                         <!-- <th class="text-right">Acciones</th> -->
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.supplier_name }}<br/><small v-text="row.supplier_number"></small></td>
@@ -62,6 +62,11 @@
                                     @click.prevent="clickOptions(row.id)">Opciones</button>
                         </td> -->
                     </tr>
+                    <div slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-12">
+                            <h5><strong>Total de ventas en soles </strong>S/. {{ totals.total }}</h5>
+                        </div>
+                    </div>
                 </data-table>
             </div>
 

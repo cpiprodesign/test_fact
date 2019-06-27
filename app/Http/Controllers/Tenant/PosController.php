@@ -116,7 +116,7 @@ class PosController extends Controller
         $pos->save();
 
         $pos_sale = $pos->sales()->create([
-            'table_name' => 'documents',
+            'table_name' => $request->input('table_name'),
             'document_id' => $document_id,
             'total' => $request->balance['total'],
             'payed' => $request->balance['pagando'],

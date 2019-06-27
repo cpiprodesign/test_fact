@@ -119,7 +119,6 @@ class DocumentController extends Controller
         $pos = \App\Models\Tenant\Pos::active();
         return view('tenant.documents.form2', compact('quotation_id', 'user', 'pos'));
     }
-
     
     public function tables()
     {

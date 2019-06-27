@@ -48,9 +48,6 @@
                     </table>
                     <div>
                         <slot name="totals" :totals="totals"></slot>
-                        <!-- <div class="col-md-12">
-                                <h5><strong>Total de ventas en soles </strong>{{ totals.total }}</h5>
-                            </div> -->
                     </div>
                     <div>
                         <el-pagination

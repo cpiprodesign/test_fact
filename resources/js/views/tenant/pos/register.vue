@@ -473,20 +473,17 @@
                     </div>
                 </div>
                 <div class="row " v-if="payment.total<=0">
-
                     <div class="col-lg-12 col-md-12 col-sm-12 embed-responsive embed-responsive-16by9">
-                        <embed class="embed-responsive-item"
-                               v-bind:src="'/print/document/'+this.factura_d.external_id+'/ticket#toolbar=1&view=FitH,top'"
+                        <embed v-if="this.model == 'sale-notes'" class="embed-responsive-item" v-bind:src="'/print2/salenote/'+this.factura_d.id+'/ticket#toolbar=1&view=FitH,top'"
+                               type="application/pdf"/>
+                        <embed v-else class="embed-responsive-item" v-bind:src="'/print/document/'+this.factura_d.external_id+'/ticket#toolbar=1&view=FitH,top'"
                                type="application/pdf"/>
                     </div>
                 </div>
 
-
                 <div slot="title" class="dialog-header">
-
                     <div class="row" v-if="payment.total>0">
                         <div class="col-8">
-
                             <h2 class="pt-1 mt-0">
                                 Procesar Pago
                             </h2>
@@ -825,6 +822,8 @@
                 this.form.customer_id = null
                 if (this.form.document_type_id === '01') {
                     this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
+                } else if(this.form.document_type_id === '100'){
+                    this.customers = _.filter(this.all_customers)
                 } else {
                     if (this.document_type_03_filter) {
                         this.customers = _.filter(this.all_customers, (c) => {
@@ -905,24 +904,26 @@
 
                 if(this.form.document_type_id == '100'){
                     this.model = 'sale-notes'
+                    this.table_name = 'sale_sales'
                 }else{
                     this.model = 'documents'
+                    this.table_name = 'sale_sales'
                 }
 
                 this.$http.post(`/${this.model}`, this.form).then(response => {
-                    console.log(response);
-
+                    
                     if (response.data.success) {
 
                         // this.showDialogOptions = true;
                         // this.documentNewId = response.data.data.id;
                         var temp_add = {
+                            table_name: this.table_name,
                             balance: this.payment,
                             sale: this.informacion_adicional.pagos
                         };
                         this.resetForm();
 
-                        this.$http.get(`/documents/record/${response.data.data.id}`).then(response => {
+                        this.$http.get(`/${this.model}/record/${response.data.data.id}`).then(response => {
                             this.factura_d = response.data.data;
                             this.$http.post(`/pos/${this.factura_d.id}/operations`, temp_add);
                             //window.open(`/print/document/${this.factura_d.external_id}/ticket`, '_blank');

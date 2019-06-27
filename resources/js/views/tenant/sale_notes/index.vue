@@ -15,6 +15,7 @@
                     <tr slot="heading">
                         <th>#</th>
                         <th>Cliente</th>
+                        <th>N° Documento</th>
                         <th class="text-center">Creación</th>
                         <th>Número</th>
                         <th class="text-center">Moneda</th>
@@ -23,22 +24,30 @@
                         <th class="text-right">Por pagar</th>
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
-                        <td>{{ row.customer_name }}<br/><small v-text="row.customer_number"></small></td>
+                        <td>{{ row.customer_name }}</td>
+                        <td>{{row.customer_number}}</td>
                         <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.number }}</td>
                         <td class="text-center">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-right">{{ row.total_paid }}</td>
-                         <td>
+                        <td class="text-right">
                             <span class="badge bg-secondary text-white bg-success" v-if="row.total - row.total_paid == 0">Pagado</span>
                             <span class="badge bg-secondary text-white bg-warning" v-if="row.total - row.total_paid > 0">Pendiente</span>                            
                         </td>
                         <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-warning m-1__2" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0">Agregar Pago</button>
-                            <a :href="`/download/salenote/pdf/`+row.id" class="btn waves-effect waves-light btn-xs btn-info">Pdf</a>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
+                            <el-tooltip class="item" effect="dark" content="Agregar pago" placement="top-end">
+                                <button type="button" class="btn btn-xs" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0"><i class="fa fa-money-bill-wave i-icon text-warning"></i></button>
+                                <button type="button" class="btn btn-xs" v-else="" disabled><i class="fa fa-money-bill-wave i-icon text-disabled"></i></button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="Descargar Pdf" placement="top-end">
+                                <a :href="`/download/salenote/pdf/`+row.id" class="btn btn-xs"><i class="fa fa-file-pdf i-icon text-info"></i></a>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="Eliminar" placement="top-end">
+                                <button type="button" class="btn btn-xs" @click.prevent="clickDelete(row.id)"><i class="fa fa-trash-alt i-icon text-danger"></i></button>
+                            </el-tooltip>
                         </td>
                     </tr>
                 </data-table>
