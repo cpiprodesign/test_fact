@@ -133,6 +133,7 @@ if ($hostname) {
             Route::get('payments/columns', 'Tenant\PaymentController@columns');
             Route::get('payments/tables', 'Tenant\PaymentController@tables');
             Route::get('payments/records', 'Tenant\PaymentController@records');
+            Route::get('payments/totals', 'Tenant\PaymentController@totals');
             Route::post('payments/', 'Tenant\PaymentController@store');
             Route::delete('payments/{payment}', 'Tenant\PaymentController@destroy');
 

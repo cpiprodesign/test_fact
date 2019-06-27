@@ -112,8 +112,8 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2" @click.prevent="clickOptions(row.id)">Opciones</button>
                         </td>
                     </tr>
-                    <div class="row" slot-scope="{ totals }" slot="totals">
-                        <div class="col-md-4">
+                    <div class="row justify-content-center" slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-3">
                             <h5><strong>Total de ventas en soles </strong>S/. {{ totals.total.total }}</h5>
                             <h5><strong>Total pagado en soles </strong>S/. {{ totals.total.total_paid }}</h5>
                             <h5><strong>Total por cobrar en soles </strong>S/. {{ totals.total.total_to_pay }}</h5>
@@ -122,8 +122,8 @@
                             <h5><strong>Total factura emitidas en soles ({{ totals.total01.quantity}}) </strong>S/. {{ totals.total01.total }}</h5>
                             <h5><strong>Total boletas emitidas en soles ({{ totals.total03.quantity}}) </strong>S/. {{ totals.total03.total }}</h5>
                         </div>
-                        <div class="col-md-4">
-                            <h5 v-for="row in totals.total_state_types"><strong>Total {{ row.description}} SUNAT </strong>{{ row.quantity }}</h5>
+                        <div class="col-md-3">
+                            <h5 v-for="row in totals.total_state_types"><strong>Total estado{{ row.description}} SUNAT </strong>{{ row.quantity }}</h5>
                         </div>
                     </div>
                 </data-table>

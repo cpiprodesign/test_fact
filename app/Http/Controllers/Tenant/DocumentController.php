@@ -92,7 +92,7 @@ class DocumentController extends Controller
     {
         $total = DB::connection('tenant')
                         ->table('documents')
-                        ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'), DB::raw('SUM(total_paid) as total_paid'), DB::raw('SUM(total) - SUM(total_paid) as total_to_pay'))
+                        ->select(DB::raw('SUM(total) as total'), DB::raw('SUM(total_paid) as total_paid'), DB::raw('SUM(total) - SUM(total_paid) as total_to_pay'))
                         ->where($request->column, 'like', "%{$request->value}%")
                         ->whereIn('document_type_id', ['01', '03'])
                         ->whereIn('state_type_id', ['01', '03', '05', '07'])
@@ -123,15 +123,6 @@ class DocumentController extends Controller
             ->whereIn('doc.document_type_id', ['01', '03'])
             ->groupBy('stp.description')
             ->get();
-
-        // $total = DB::connection('tenant')
-        // ->table('documents')
-        // ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total_paid) as total'))
-        // ->where($request->column, 'like', "%{$request->value}%")
-        // ->whereIn('document_type_id', ['01', '03'])
-        // ->whereIn('state_type_id', ['01', '03', '05', '07'])
-        // ->where('currency_type_id', 'PEN')
-        // ->first();
         
         $data = [
             'total' => $total, 
