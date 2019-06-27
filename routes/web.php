@@ -220,6 +220,12 @@ if ($hostname) {
             Route::get('configuration/documents/record', 'Tenant\DocumentController@configuration_record');
             Route::post('configuration/documents', 'Tenant\DocumentController@configuration_store');
 
+            //Credit Notes
+            Route::get('credit-notes', 'Tenant\CreditNoteController@index')->name('tenant.credit_notes.index');
+            Route::get('credit-notes/columns', 'Tenant\CreditNoteController@columns');
+            Route::get('credit-notes/records', 'Tenant\CreditNoteController@records');
+            Route::get('credit-notes/totals', 'Tenant\CreditNoteController@totals');
+
             //Caja
             Route::get('box', 'Tenant\PosController@index')->name('tenant.box.index');
 
