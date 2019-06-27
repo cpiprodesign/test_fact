@@ -126,6 +126,7 @@ if ($hostname) {
             Route::get('expenses/record/{expense}', 'Tenant\ExpenseController@record');
             Route::post('expenses', 'Tenant\ExpenseController@store');
             Route::get('expenses/records', 'Tenant\ExpenseController@records');
+            Route::get('expenses/totals', 'Tenant\ExpenseController@totals');
             Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy');
 
             //Payments
@@ -226,6 +227,7 @@ if ($hostname) {
             Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index');
             Route::get('quotations/columns', 'Tenant\QuotationController@columns');
             Route::get('quotations/records', 'Tenant\QuotationController@records');
+            Route::get('quotations/totals', 'Tenant\QuotationController@totals');
             Route::get('quotations/create', 'Tenant\QuotationController@create')->name('tenant.quotations.create');
             Route::get('quotations/edit/{quotation}', 'Tenant\QuotationController@edit')->name('tenant.quotations.edit');
             Route::get('quotations/tables', 'Tenant\QuotationController@tables');

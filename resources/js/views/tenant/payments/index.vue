@@ -39,7 +39,7 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                         </td>
                     </tr>
-                    <div class="row justify-content-center" slot-scope="{ totals }" slot="totals">
+                    <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
                         <div class="col-md-4">
                             <h5><strong>Total de pagos recibidos soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
                         </div>

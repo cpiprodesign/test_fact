@@ -59,6 +59,40 @@ class QuotationController extends Controller
         return new QuotationCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
+    public function totals(Request $request)
+    {
+        $totalPEN = DB::connection('tenant')
+                        ->table('quotations')
+                        ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
+                        //->where($request->column, 'like', "%{$request->value}%")
+                        ->where('currency_type_id', 'PEN')
+                        ->first();
+
+        $totalUSD = DB::connection('tenant')
+                    ->table('quotations')
+                    ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
+                    ->where($request->column, 'like', "%{$request->value}%")
+                    ->where('currency_type_id', 'USD')
+                    ->first();
+
+        $totalPEN = [
+            'quantity' => $totalPEN->quantity,
+            'total' => is_null($totalPEN->total) ? '0.00': $totalPEN->total 
+        ];
+
+        $totalUSD = [
+            'quantity' => $totalUSD->quantity,
+            'total' => is_null($totalUSD->total) ? '0.00' : $totalUSD->total 
+        ];
+        
+        $data = [
+            'totalPEN' => $totalPEN,
+            'totalUSD' => $totalUSD
+        ];
+
+        return compact('data');
+    }
+
     public function create()
     {
         return view('tenant.quotations.form');
