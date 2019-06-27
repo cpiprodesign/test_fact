@@ -27,7 +27,7 @@
                         <th>IGV Incluido</th>                        
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td>{{ row.internal_id }}</td>
                         <td>{{ row.unit_type_id }}</td>

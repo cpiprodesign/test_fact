@@ -15,7 +15,7 @@
                 <h3 class="my-0">Listado de {{ title }}</h3>
             </div>
             <div class="card-body">
-                <data-table :resource="resource">
+                <data-table :resource="resource" slot="tbody">
                     <tr slot="heading">
                         <th>#</th>
                         <th>Producto</th>
@@ -23,7 +23,7 @@
                         <th class="text-right">Stock</th>
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td>{{ row.item_description }}</td>
                         <td>{{ row.warehouse_description }}</td>

@@ -22,7 +22,7 @@
                         <th>Balance</th>
                         <th class="text-center">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }" :class="{'text-warning': (row.balance > 0)}">
+                    <tr slot-scope="{ index, row }" slot="tbody" :class="{'text-warning': (row.balance > 0)}">
                         <td>{{ index }}</td>
                         <td>{{ row.name }}</td>
                         <td>{{ row.number }}</td>

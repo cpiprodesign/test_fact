@@ -22,7 +22,7 @@
                         <th class="text-right">Total</th>
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.customer_name }}<br/><small v-text="row.customer_number"></small></td>

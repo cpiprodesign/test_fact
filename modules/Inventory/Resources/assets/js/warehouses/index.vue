@@ -21,7 +21,7 @@
                         <th>Establecimiento</th>
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td>{{ row.description }}</td>
                         <td>{{ row.establishment_description }}</td>

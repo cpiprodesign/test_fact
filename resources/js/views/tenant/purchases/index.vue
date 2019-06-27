@@ -45,49 +45,26 @@
                         <td class="text-right">{{ row.total_taxed }}</td>
                         <td class="text-right">{{ row.total_igv }}</td>
                         <td class="text-right">{{ row.total }}</td>
-                        
-                        <!-- <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"
-                                    @click.prevent="clickVoided(row.id)"
-                                    v-if="row.btn_voided">Anular</button>
-                            <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning"
-                               v-if="row.btn_note">Nota</a>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickResend(row.id)"
-                                    v-if="row.btn_resend">Reenviar</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickConsultCdr(row.id)"
-                                    v-if="row.btn_consult_cdr">Consultar CDR</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickOptions(row.id)">Opciones</button>
-                        </td> -->
                     </tr>
-                    <div slot-scope="{ totals }" slot="totals">
-                        <div class="col-md-12">
-                            <h5><strong>Total de ventas en soles </strong>S/. {{ totals.total }}</h5>
+                    <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-3">
+                            <h5><strong>Total gastos en soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <h5><strong>Total gastos en dólares ({{ totals.totalUSD.quantity}}) </strong>$ {{ totals.totalUSD.total }}</h5>
                         </div>
                     </div>
                 </data-table>
             </div>
-
-            <!-- <documents-voided :showDialog.sync="showDialogVoided"
-                            :recordId="recordId"></documents-voided>
-
-            <document-options :showDialog.sync="showDialogOptions"
-                              :recordId="recordId"
-                              :showClose="true"></document-options> -->
         </div>
     </div>
 </template>
 
 <script>
 
-    // import DocumentsVoided from './partials/voided.vue'
-    // import DocumentOptions from './partials/options.vue'
     import DataTable from '../../../components/DataTable.vue'
 
     export default {
-        // components: {DocumentsVoided, DocumentOptions, DataTable},
         components: {DataTable},
         data() {
             return {

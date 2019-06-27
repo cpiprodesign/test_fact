@@ -15,7 +15,7 @@
                         <th>Total</th>
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td>{{ row.number }}</td>
                         <td>{{ row.date_of_issue }}</td>
