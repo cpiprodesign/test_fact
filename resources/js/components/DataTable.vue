@@ -22,7 +22,7 @@
                                 style="width: 100%;"
                                 placeholder="Buscar"
                                 value-format="yyyy-MM-dd"
-                                @change="getRecords">
+                                @change="getRecords2">
                             </el-date-picker>
                         </template>
                         <template v-else>
@@ -30,7 +30,7 @@
                                 v-model="search.value"
                                 style="width: 100%;"
                                 prefix-icon="el-icon-search"
-                                @input="getRecords">
+                                @input="getRecords2">
                             </el-input>
                         </template>
                     </div>
@@ -46,12 +46,10 @@
                         <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)" name="tbody"></slot>
                         </tbody>
                     </table>
-                    <div>
-                        <slot name="totals" :totals="totals"></slot>
-                    </div>
+                    <slot name="totals" :totals="totals"></slot>
                     <div>
                         <el-pagination
-                                @current-change="getRecords"
+                                @current-change="getRecords2"
                                 layout="total, prev, pager, next"
                                 :total="pagination.total"
                                 :current-page.sync="pagination.current_page"
@@ -116,7 +114,7 @@
             },
             getTotals(){
                 return this.$http.get(`/${this.resource}/totals?${this.getQueryParameters()}`).then((response) => {
-                    this.totals = response.data.data[0]
+                    this.totals = response.data.data
                 });
             },
             getQueryParameters() {
@@ -125,6 +123,10 @@
                     limit: this.limit,
                     ...this.search
                 })
+            },
+            getRecords2(){
+                this.getRecords()
+                this.getTotals()
             },
             changeClearInput(){
                 this.search.value = ''

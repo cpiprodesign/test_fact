@@ -59,12 +59,10 @@
                         <td class="text-center">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-right">
-                            <span v-if="row.document_type_id == '01' || row.document_type_id == '03'">{{ row.total_paid }}</span>
-                            <span v-else>- - - - -</span>
+                            <span>{{ row.total_paid }}</span>
                         </td>
                         <td class="text-right">
-                            <span v-if="row.document_type_id == '01' || row.document_type_id == '03'">{{ row.total - row.total_paid }}</span>
-                            <span v-else>- - - - - - -</span>
+                            <span>{{ row.total_to_pay }}</span>
                         </td>
                         <td class="text-right"><span class="badge bg-secondary text-white" :class="{
                             'bg-danger': (row.state_type_id === '11'),
@@ -75,11 +73,10 @@
                             'bg-secondary': (row.state_type_id === '07'),
                             'bg-dark': (row.state_type_id === '09')
                         }">{{ row.state_type_description }}</span></td>
-                        <td class="text-right" v-if="row.document_type_id == '01' || row.document_type_id == '03'">
-                            <span class="badge bg-secondary text-white bg-success" v-if="row.total - row.total_paid == 0">Pagado</span>
-                            <span class="badge bg-secondary text-white bg-warning" v-if="row.total - row.total_paid > 0">Pendiente</span>
+                        <td class="text-right">
+                            <span class="badge bg-secondary text-white bg-success" v-if="row.total_to_pay == 0">Pagado</span>
+                            <span class="badge bg-secondary text-white bg-warning" v-if="row.total_to_pay > 0">Pendiente</span>
                         </td>
-                        <td class="text-right" v-else>- - - - -</td>
                         <td class="text-right">
                             <el-tooltip class="item" effect="dark" content="Enviar a Sunat" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickResend(row.id)" v-if="row.btn_resend"><i class="fa fa-file-export i-icon text-danger"></i></button>
@@ -115,18 +112,23 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2" @click.prevent="clickOptions(row.id)">Opciones</button>
                         </td>
                     </tr>
-                    <div slot-scope="{ totals }" slot="totals">
-                        <div class="col-md-12">
-                            <h5><strong>Total de ventas en soles </strong>S/. {{ totals.total }}</h5>
+                    <div class="row" slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-4">
+                            <h5><strong>Total de ventas en soles </strong>S/. {{ totals.total.total }}</h5>
+                            <h5><strong>Total pagado en soles </strong>S/. {{ totals.total.total_paid }}</h5>
+                            <h5><strong>Total por cobrar en soles </strong>S/. {{ totals.total.total_to_pay }}</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <h5><strong>Total factura emitidas en soles ({{ totals.total01.quantity}}) </strong>S/. {{ totals.total01.total }}</h5>
+                            <h5><strong>Total boletas emitidas en soles ({{ totals.total03.quantity}}) </strong>S/. {{ totals.total03.total }}</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 v-for="row in totals.total_state_types"><strong>Total {{ row.description}} SUNAT </strong>{{ row.quantity }}</h5>
                         </div>
                     </div>
                 </data-table>
             </div>
-            <!-- <div class="card-footer">
-                <div class="col-md-12">
-                    <h6><strong>Total de ventas en soles </strong>{{ total.quantity }}</h6>
-                </div>
-            </div> -->
+            
             <documents-voided :showDialog.sync="showDialogVoided"
                             :recordId="recordId"></documents-voided>
 

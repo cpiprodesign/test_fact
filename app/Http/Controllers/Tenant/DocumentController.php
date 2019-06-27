@@ -92,15 +92,53 @@ class DocumentController extends Controller
     {
         $total = DB::connection('tenant')
                         ->table('documents')
-                        ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
+                        ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'), DB::raw('SUM(total_paid) as total_paid'), DB::raw('SUM(total) - SUM(total_paid) as total_to_pay'))
                         ->where($request->column, 'like', "%{$request->value}%")
-                        ->where('status_paid', 0)
                         ->whereIn('document_type_id', ['01', '03'])
                         ->whereIn('state_type_id', ['01', '03', '05', '07'])
                         ->where('currency_type_id', 'PEN')
                         ->first();
+
+        $total01 = DB::connection('tenant')
+            ->table('documents')
+            ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
+            ->where($request->column, 'like', "%{$request->value}%")
+            ->whereIn('document_type_id', ['01'])
+            ->where('currency_type_id', 'PEN')
+            ->first();
         
-        $data = [$total];
+        $total03 = DB::connection('tenant')
+            ->table('documents')
+            ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
+            ->where($request->column, 'like', "%{$request->value}%")
+            ->whereIn('document_type_id', ['03'])
+            ->where('currency_type_id', 'PEN')
+            ->first();
+
+        $total_state_types = DB::connection('tenant')
+            ->table('documents AS doc')
+            ->join('state_types AS stp', 'stp.id', 'doc.state_type_id')
+            ->select(DB::raw('COUNT(*) AS quantity'), 'stp.description')
+            ->where($request->column, 'like', "%{$request->value}%")
+            ->whereIn('doc.document_type_id', ['01', '03'])
+            ->groupBy('stp.description')
+            ->get();
+
+        // $total = DB::connection('tenant')
+        // ->table('documents')
+        // ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total_paid) as total'))
+        // ->where($request->column, 'like', "%{$request->value}%")
+        // ->whereIn('document_type_id', ['01', '03'])
+        // ->whereIn('state_type_id', ['01', '03', '05', '07'])
+        // ->where('currency_type_id', 'PEN')
+        // ->first();
+        
+        $data = [
+            'total' => $total, 
+            'total01' => $total01, 
+            'total03' => $total03,
+            'total_state_types' => $total_state_types
+        ];
 
         return compact('data');
     }
