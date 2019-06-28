@@ -907,7 +907,7 @@
                     this.table_name = 'sale_sales'
                 }else{
                     this.model = 'documents'
-                    this.table_name = 'sale_sales'
+                    this.table_name = 'documents'
                 }
 
                 this.$http.post(`/${this.model}`, this.form).then(response => {
