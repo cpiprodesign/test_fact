@@ -26,8 +26,7 @@
                         <th class="text-right">T.Gravado</th>
                         <th class="text-right">T.Igv</th>
                         <th class="text-right">Total</th>
-                        <!-- <th class="text-center">Descargas</th> -->
-                        <!-- <th class="text-right">Acciones</th> -->
+                        <th class="text-center">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
@@ -45,6 +44,11 @@
                         <td class="text-right">{{ row.total_taxed }}</td>
                         <td class="text-right">{{ row.total_igv }}</td>
                         <td class="text-right">{{ row.total }}</td>
+                        <td class="text-center">
+                            <el-tooltip class="item" effect="dark" content="Editar" placement="top-end">
+                                <a :href="`/${resource}/edit/${row.id}`" class="btn btn-xs" ><i class="fa fa-file-signature i-icon text-danger"></i></a>
+                            </el-tooltip>
+                        </td>
                     </tr>
                     <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
                         <div class="col-md-3">

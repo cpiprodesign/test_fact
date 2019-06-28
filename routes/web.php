@@ -409,11 +409,15 @@ if ($hostname) {
             Route::get('purchases/records', 'Tenant\PurchaseController@records');
             Route::get('purchases/totals', 'Tenant\PurchaseController@totals');
             Route::get('purchases/create', 'Tenant\PurchaseController@create')->name('tenant.purchases.create');
+            Route::get('purchases/edit/{purchase}', 'Tenant\PurchaseController@edit')->name('tenant.purchases.edit');
+            Route::post('purchases/update/{purchase}', 'Tenant\PurchaseController@update');
+            Route::get('purchases/tables2/{purchase}', 'Tenant\PurchaseController@tables2');
             Route::get('purchases/tables', 'Tenant\PurchaseController@tables');
             Route::get('purchases/table/{table}', 'Tenant\PurchaseController@table');
             Route::post('purchases', 'Tenant\PurchaseController@store');
             Route::get('purchases/record/{document}', 'Tenant\PurchaseController@record');
             Route::get('purchases/item/tables', 'Tenant\PurchaseController@item_tables');
+            Route::get('purchases/item/tables2/{purchase}', 'Tenant\PurchaseController@item_tables2');
 
         });
     });
