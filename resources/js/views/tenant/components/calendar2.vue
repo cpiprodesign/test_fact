@@ -15,7 +15,7 @@
                     <el-date-picker v-model="a" :inline=true type="date" name="a" placeholder="Término"></el-date-picker>
                 </div>
             </div>
-            <div class="el-form-item  col-xs-12">
+            <div class="el-form-item  col-xs-12" v-if="document_types.length > 0">
                 <small>Tipo de Documento:</small>
                 <br>
                 <div class="el-form-item__content">
@@ -24,7 +24,7 @@
                     </el-select>
                 </div>
             </div>
-            <div class="el-form-item  col-xs-12">
+            <div class="el-form-item  col-xs-12" v-if="customers.length > 0">
                 <small>Cliente:</small>
                 <br>
                 <div class="el-form-item__content">
@@ -33,7 +33,7 @@
                     </el-select>
                 </div>
             </div>
-            <div class="el-form-item  col-xs-12">
+            <div class="el-form-item  col-xs-12" v-if="establishments.length > 0">
                 <small>Establecimiento:</small>
                 <br>
                 <div class="el-form-item__content">

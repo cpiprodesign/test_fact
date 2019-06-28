@@ -10,8 +10,8 @@
                 <div class="el-form-item__content">
                     <el-date-picker v-model="a" :inline=true type="date" name="a" placeholder="Término"></el-date-picker>
                 </div>
-            </div>
-            <div class="el-form-item  col-xs-12">
+            </div>            
+            <div class="el-form-item  col-xs-12"  v-if="document_types.length > 0">
                 <div class="el-form-item__content">
                     <el-select v-model="document_type" name="document_type" clearable placeholder="Tipo de Documento">
                         <el-option v-for="item in document_types" :key="item.id" :label="item.description.toUpperCase()" :value="item.id"></el-option>
@@ -54,6 +54,7 @@
             }
         },
         created() {
+            //console.log(this.document_types.lenght)
             this.document_type = (this.td != '') ? this.document_types.find(row => row.id == this.td).id : null;
             this.d = (this.data_d != '') ? moment(this.data_d) : '';
             this.a = (this.data_a != '') ? moment(this.data_a) : '';
