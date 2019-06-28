@@ -82,27 +82,57 @@ class DocumentController extends Controller
     public function records(Request $request)
     {
         $records = Document::where($request->column, 'like', "%{$request->value}%")
+            ->whereIn('document_type_id', ['01', '03'])
             ->latest();
 
         return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
-    // public function totals()
-    // {
-    //     $records = Document::where($request->column, 'like', "%{$request->value}%")
-    //         ->latest();
+    public function totals(Request $request)
+    {
+        $total = DB::connection('tenant')
+                        ->table('documents')
+                        ->select(DB::raw('SUM(total) as total'), DB::raw('SUM(total_paid) as total_paid'), DB::raw('SUM(total) - SUM(total_paid) as total_to_pay'))
+                        ->where($request->column, 'like', "%{$request->value}%")
+                        ->whereIn('document_type_id', ['01', '03'])
+                        ->whereIn('state_type_id', ['01', '03', '05', '07'])
+                        ->where('currency_type_id', 'PEN')
+                        ->first();
 
-    //     $totals = DB::connection('tenant')->table('documents as doc')
-    //     ->select(DB::raw('(SELECT SUM(total) FROM documents AS doc WHERE doc.customer_id = per.id) AS total'),
-    //         DB::raw('(SELECT SUM(total) FROM sale_notes AS san WHERE san.customer_id = per.id) AS total2'),
-    //         DB::raw('(SELECT SUM(total_paid) FROM documents AS doc WHERE doc.customer_id = per.id) AS total_paid'),
-    //         DB::raw('(SELECT SUM(total_paid) FROM sale_notes AS doc WHERE doc.customer_id = per.id) AS total_paid2'))
-    //     ->where('doc.currency_type_id', 'PEN')
-    //     ->whereIn('id', ['01', '03'])
-    //     ->first();
+        $total01 = DB::connection('tenant')
+            ->table('documents')
+            ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
+            ->where($request->column, 'like', "%{$request->value}%")
+            ->whereIn('document_type_id', ['01'])
+            ->where('currency_type_id', 'PEN')
+            ->first();
+        
+        $total03 = DB::connection('tenant')
+            ->table('documents')
+            ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
+            ->where($request->column, 'like', "%{$request->value}%")
+            ->whereIn('document_type_id', ['03'])
+            ->where('currency_type_id', 'PEN')
+            ->first();
 
-    //     return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
-    // }
+        $total_state_types = DB::connection('tenant')
+            ->table('documents AS doc')
+            ->join('state_types AS stp', 'stp.id', 'doc.state_type_id')
+            ->select(DB::raw('COUNT(*) AS quantity'), 'stp.description')
+            ->where($request->column, 'like', "%{$request->value}%")
+            ->whereIn('doc.document_type_id', ['01', '03'])
+            ->groupBy('stp.description')
+            ->get();
+        
+        $data = [
+            'total' => $total, 
+            'total01' => $total01, 
+            'total03' => $total03,
+            'total_state_types' => $total_state_types
+        ];
+
+        return compact('data');
+    }
 
     public function create()
     {
@@ -118,7 +148,6 @@ class DocumentController extends Controller
         $pos = \App\Models\Tenant\Pos::active();
         return view('tenant.documents.form2', compact('quotation_id', 'user', 'pos'));
     }
-
     
     public function tables()
     {
@@ -126,6 +155,7 @@ class DocumentController extends Controller
         $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();// Establishment::all();
         $series = Series::all();
         $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
+        $document_types_invoice2 = DocumentType::whereIn('id', ['01', '03', '100'])->get();
         $document_types_note = DocumentType::whereIn('id', ['07', '08'])->get();
         $note_credit_types = NoteCreditType::whereActive()->orderByDescription()->get();
         $note_debit_types = NoteDebitType::whereActive()->orderByDescription()->get();
@@ -140,7 +170,7 @@ class DocumentController extends Controller
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
         $decimal = Configuration::first()->decimal;
 
-        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_note',
+        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_invoice2', 'document_types_note',
             'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
             'discount_types', 'charge_types', 'payment_methods', 'accounts', 'company', 'document_type_03_filter', 'decimal', 'price_list');
     }

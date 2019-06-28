@@ -98,7 +98,7 @@ class HomeController extends Controller
             $sql = "SELECT per.name, doc.`date_of_issue`, doc.total, doc.series, doc.number, doc.id, doc.document_type_id, 'documents' AS resource
                 FROM documents doc
                 INNER JOIN persons per ON per.id = doc.customer_id
-                WHERE (total_paid < total)
+                WHERE (total_paid < total) AND (doc.document_type_id = '01' OR doc.document_type_id = '03')
                 UNION ALL
                 SELECT per.name, san.`date_of_issue`, san.total, san.series, san.number, san.id, san.document_type_id, 'sale-notes' AS resource
                 FROM sale_notes san

@@ -26,10 +26,9 @@
                         <th class="text-right">T.Gravado</th>
                         <th class="text-right">T.Igv</th>
                         <th class="text-right">Total</th>
-                        <!-- <th class="text-center">Descargas</th> -->
-                        <!-- <th class="text-right">Acciones</th> -->
+                        <th class="text-center">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.supplier_name }}<br/><small v-text="row.supplier_number"></small></td>
@@ -45,44 +44,31 @@
                         <td class="text-right">{{ row.total_taxed }}</td>
                         <td class="text-right">{{ row.total_igv }}</td>
                         <td class="text-right">{{ row.total }}</td>
-                        
-                        <!-- <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"
-                                    @click.prevent="clickVoided(row.id)"
-                                    v-if="row.btn_voided">Anular</button>
-                            <a :href="`/${resource}/note/${row.id}`" class="btn waves-effect waves-light btn-xs btn-warning"
-                               v-if="row.btn_note">Nota</a>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickResend(row.id)"
-                                    v-if="row.btn_resend">Reenviar</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickConsultCdr(row.id)"
-                                    v-if="row.btn_consult_cdr">Consultar CDR</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickOptions(row.id)">Opciones</button>
-                        </td> -->
+                        <td class="text-center">
+                            <el-tooltip class="item" effect="dark" content="Editar" placement="top-end">
+                                <a :href="`/${resource}/edit/${row.id}`" class="btn btn-xs" ><i class="fa fa-file-signature i-icon text-danger"></i></a>
+                            </el-tooltip>
+                        </td>
                     </tr>
+                    <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-3">
+                            <h5><strong>Total gastos en soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <h5><strong>Total gastos en dólares ({{ totals.totalUSD.quantity}}) </strong>$ {{ totals.totalUSD.total }}</h5>
+                        </div>
+                    </div>
                 </data-table>
             </div>
-
-            <!-- <documents-voided :showDialog.sync="showDialogVoided"
-                            :recordId="recordId"></documents-voided>
-
-            <document-options :showDialog.sync="showDialogOptions"
-                              :recordId="recordId"
-                              :showClose="true"></document-options> -->
         </div>
     </div>
 </template>
 
 <script>
 
-    // import DocumentsVoided from './partials/voided.vue'
-    // import DocumentOptions from './partials/options.vue'
     import DataTable from '../../../components/DataTable.vue'
 
     export default {
-        // components: {DocumentsVoided, DocumentOptions, DataTable},
         components: {DataTable},
         data() {
             return {

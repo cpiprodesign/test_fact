@@ -23,7 +23,7 @@
                         <th>Usuario</th>
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td>{{ row.description }}</td>
                         <td>{{ row.total }}</td>
@@ -34,6 +34,14 @@
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                         </td>
                     </tr>
+                    <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-3">
+                            <h5><strong>Total gastos en soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <h5><strong>Total gastos en dólares ({{ totals.totalUSD.quantity}}) </strong>$ {{ totals.totalUSD.total }}</h5>
+                        </div>
+                    </div>
                 </data-table>
             </div>
 

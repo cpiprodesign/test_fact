@@ -23,9 +23,10 @@
                         <th>Cuenta</th>
                         <th>Método de Pago</th>
                         <th>Total</th>
+                        <th>Descripción</th>
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }">
+                    <tr slot-scope="{ index, row }" slot="tbody">
                         <td>{{ index }}</td>
                         <td>{{ row.customer }}</td>
                         <td>{{ row.number }}</td>
@@ -33,15 +34,21 @@
                         <td>{{ row.account }}</td>
                         <td>{{ row.payment_method }}</td>
                         <td>{{ row.total }}</td>
+                        <td>{{ row.description }}</td>
                         <td class="text-right">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                         </td>
                     </tr>
+                    <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-4">
+                            <h5><strong>Total de pagos recibidos soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <h5><strong>Total de pagos recibidos dólares ({{ totals.totalUSD.quantity}}) </strong>$ {{ totals.totalUSD.total }}</h5>
+                        </div>                        
+                    </div>
                 </data-table>
             </div>
-
-            <!-- <items-form :showDialog.sync="showDialog"
-                        :recordId="recordId"></items-form> -->
         </div>
     </div>
 </template>

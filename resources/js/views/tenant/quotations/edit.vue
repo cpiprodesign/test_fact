@@ -132,7 +132,7 @@
                                         <tbody v-if="form.items.length > 0">
                                             <tr v-for="(row, index) in form.items">
                                                 <td>{{ index + 1 }}</td>
-                                                <td>{{ row.item.description }}<br/><small></small></td>
+                                                <td>{{ row.item.description }}</td>
                                                 <td class="text-center">{{ row.item.unit_type_id }}</td>
                                                 <td class="text-right">{{ row.quantity }}</td>
                                                 <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td>

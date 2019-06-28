@@ -21,7 +21,7 @@
                         <th style="width: 10%" class="text-center">Fecha Envío</th>
                         <th style="width: 15%" class="text-center">Descargas</th>
                     <tr>
-                    <tr slot-scope="{ index, row }" :class="{'text-danger': (row.state_type_id === '11')}">
+                    <tr slot-scope="{ index, row }" slot="tbody" :class="{'text-danger': (row.state_type_id === '11')}">
                         <td>{{ index }}</td>
                         <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.customer_name }} <br/>

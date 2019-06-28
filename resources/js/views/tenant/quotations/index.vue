@@ -24,7 +24,7 @@
                         <!--<th class="text-center">Anulación</th>-->
                         <th class="text-right">Acciones</th>
                     <tr>
-                    <tr slot-scope="{ index, row }" :class="{
+                    <tr slot-scope="{ index, row }" slot="tbody" :class="{
                                                     'text-danger': (row.state_type_id === '11'),
                                                     'text-warning': (row.state_type_id === '13'),
                                                     'border-light': (row.state_type_id === '01'),
@@ -52,18 +52,6 @@
                         </td>
                         <td class="text-center">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
-                        <!--<td class="text-center">-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-danger"-->
-                                    <!--@click.prevent="clickDownload(row.download_xml_voided)"-->
-                                    <!--v-if="row.has_xml_voided">XML</button>-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-danger"-->
-                                    <!--@click.prevent="clickDownload(row.download_cdr_voided)"-->
-                                    <!--v-if="row.has_cdr_voided">CDR</button>-->
-                            <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-warning"-->
-                                    <!--@click.prevent="clickTicket(row.voided.id, row.group_id)"-->
-                                    <!--v-if="row.btn_ticket">Consultar</button>-->
-                        <!--</td>-->
-                        
                         <td class="text-right">
                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 <div class="btn-group" role="group">
@@ -76,9 +64,17 @@
                                         <a class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>
                         </td>
                     </tr>
+                    <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
+                        <div class="col-md-3">
+                            <h5><strong>Total cotizado en soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <h5><strong>Total cotizado en dólares ({{ totals.totalUSD.quantity}}) </strong>$ {{ totals.totalUSD.total }}</h5>
+                        </div>
+                    </div>
                 </data-table>
             </div>
 

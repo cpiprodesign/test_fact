@@ -22,7 +22,7 @@
                                 style="width: 100%;"
                                 placeholder="Buscar"
                                 value-format="yyyy-MM-dd"
-                                @change="getRecords">
+                                @change="getRecords2">
                             </el-date-picker>
                         </template>
                         <template v-else>
@@ -30,28 +30,26 @@
                                 v-model="search.value"
                                 style="width: 100%;"
                                 prefix-icon="el-icon-search"
-                                @input="getRecords">
+                                @input="getRecords2">
                             </el-input>
                         </template>
                     </div>
                 </div>
-
             </div>
-
-
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-sm">
                         <thead>
                         <slot name="heading"></slot>
                         </thead>
                         <tbody>
-                        <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)"></slot>
+                        <slot v-for="(row, index) in records" :row="row" :index="customIndex(index)" name="tbody"></slot>
                         </tbody>
                     </table>
+                    <slot name="totals" :totals="totals"></slot>
                     <div>
                         <el-pagination
-                                @current-change="getRecords"
+                                @current-change="getRecords2"
                                 layout="total, prev, pager, next"
                                 :total="pagination.total"
                                 :current-page.sync="pagination.current_page"
@@ -61,7 +59,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -83,6 +80,7 @@
                 },
                 columns: [],
                 records: [],
+                totals: [],
                 pagination: {}
             }
         },
@@ -91,6 +89,7 @@
         created() {
             this.$eventHub.$on('reloadData', () => {
                 this.getRecords()
+                this.getTotals()
             })
         },
         async mounted () {
@@ -100,7 +99,7 @@
                 this.search.column = _.head(Object.keys(this.columns))
             });
             await this.getRecords()
-
+            await this.getTotals()
         },
         methods: {
             customIndex(index) {
@@ -113,6 +112,11 @@
                     this.pagination.per_page = parseInt(response.data.meta.per_page)
                 });
             },
+            getTotals(){
+                return this.$http.get(`/${this.resource}/totals?${this.getQueryParameters()}`).then((response) => {
+                    this.totals = response.data.data
+                });
+            },
             getQueryParameters() {
                 return queryString.stringify({
                     page: this.pagination.current_page,
@@ -120,9 +124,14 @@
                     ...this.search
                 })
             },
+            getRecords2(){
+                this.getRecords()
+                this.getTotals()
+            },
             changeClearInput(){
                 this.search.value = ''
                 this.getRecords()
+                this.getTotals()
             }
         }
     }

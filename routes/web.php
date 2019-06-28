@@ -126,6 +126,7 @@ if ($hostname) {
             Route::get('expenses/record/{expense}', 'Tenant\ExpenseController@record');
             Route::post('expenses', 'Tenant\ExpenseController@store');
             Route::get('expenses/records', 'Tenant\ExpenseController@records');
+            Route::get('expenses/totals', 'Tenant\ExpenseController@totals');
             Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy');
 
             //Payments
@@ -133,6 +134,7 @@ if ($hostname) {
             Route::get('payments/columns', 'Tenant\PaymentController@columns');
             Route::get('payments/tables', 'Tenant\PaymentController@tables');
             Route::get('payments/records', 'Tenant\PaymentController@records');
+            Route::get('payments/totals', 'Tenant\PaymentController@totals');
             Route::post('payments/', 'Tenant\PaymentController@store');
             Route::delete('payments/{payment}', 'Tenant\PaymentController@destroy');
 
@@ -198,6 +200,7 @@ if ($hostname) {
             Route::get('documents/view/{document}', 'Tenant\DocumentController@view')->name('tenant.documents.view');
             Route::get('documents/columns', 'Tenant\DocumentController@columns');
             Route::get('documents/records', 'Tenant\DocumentController@records');
+            Route::get('documents/totals', 'Tenant\DocumentController@totals');
             Route::get('documents/create', 'Tenant\DocumentController@create')->name('tenant.documents.create');
             Route::get('documents/create2/{document}', 'Tenant\DocumentController@create2')->name('tenant.documents.create2');
             Route::get('documents/tables', 'Tenant\DocumentController@tables');
@@ -217,6 +220,12 @@ if ($hostname) {
             Route::get('configuration/documents/record', 'Tenant\DocumentController@configuration_record');
             Route::post('configuration/documents', 'Tenant\DocumentController@configuration_store');
 
+            //Credit Notes
+            Route::get('credit-notes', 'Tenant\CreditNoteController@index')->name('tenant.credit_notes.index');
+            Route::get('credit-notes/columns', 'Tenant\CreditNoteController@columns');
+            Route::get('credit-notes/records', 'Tenant\CreditNoteController@records');
+            Route::get('credit-notes/totals', 'Tenant\CreditNoteController@totals');
+
             //Caja
             Route::get('box', 'Tenant\PosController@index')->name('tenant.box.index');
 
@@ -224,6 +233,7 @@ if ($hostname) {
             Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index');
             Route::get('quotations/columns', 'Tenant\QuotationController@columns');
             Route::get('quotations/records', 'Tenant\QuotationController@records');
+            Route::get('quotations/totals', 'Tenant\QuotationController@totals');
             Route::get('quotations/create', 'Tenant\QuotationController@create')->name('tenant.quotations.create');
             Route::get('quotations/edit/{quotation}', 'Tenant\QuotationController@edit')->name('tenant.quotations.edit');
             Route::get('quotations/tables', 'Tenant\QuotationController@tables');
@@ -239,6 +249,7 @@ if ($hostname) {
             Route::get('sale-notes', 'Tenant\SaleNoteController@index')->name('tenant.sale_notes.index');
             Route::get('sale-notes/columns', 'Tenant\SaleNoteController@columns');
             Route::get('sale-notes/records', 'Tenant\SaleNoteController@records');
+            Route::get('sale-notes/totals', 'Tenant\SaleNoteController@totals');
             Route::get('sale-notes/create', 'Tenant\SaleNoteController@create')->name('tenant.sale_notes.create');
             // Route::get('sale-notes/edit/{quotation}', 'Tenant\SaleNoteController@edit')->name('tenant.quotations.edit');
             Route::get('sale-notes/tables', 'Tenant\SaleNoteController@tables');
@@ -396,17 +407,17 @@ if ($hostname) {
             Route::get('purchases', 'Tenant\PurchaseController@index')->name('tenant.purchases.index');
             Route::get('purchases/columns', 'Tenant\PurchaseController@columns');
             Route::get('purchases/records', 'Tenant\PurchaseController@records');
+            Route::get('purchases/totals', 'Tenant\PurchaseController@totals');
             Route::get('purchases/create', 'Tenant\PurchaseController@create')->name('tenant.purchases.create');
+            Route::get('purchases/edit/{purchase}', 'Tenant\PurchaseController@edit')->name('tenant.purchases.edit');
+            Route::post('purchases/update/{purchase}', 'Tenant\PurchaseController@update');
+            Route::get('purchases/tables2/{purchase}', 'Tenant\PurchaseController@tables2');
             Route::get('purchases/tables', 'Tenant\PurchaseController@tables');
             Route::get('purchases/table/{table}', 'Tenant\PurchaseController@table');
             Route::post('purchases', 'Tenant\PurchaseController@store');
             Route::get('purchases/record/{document}', 'Tenant\PurchaseController@record');
-            // Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
-            // Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
-            // Route::post('documents/email', 'Tenant\DocumentController@email');
-            // Route::get('documents/note/{document}', 'Tenant\NoteController@create');
             Route::get('purchases/item/tables', 'Tenant\PurchaseController@item_tables');
-            // Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
+            Route::get('purchases/item/tables2/{purchase}', 'Tenant\PurchaseController@item_tables2');
 
         });
     });

@@ -61,6 +61,22 @@ class SaleNoteController extends Controller
         return new SaleNoteCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
+    public function totals(Request $request)
+    {
+        $total = DB::connection('tenant')
+                        ->table('sale_notes')
+                        ->select(DB::raw('SUM(total) as total'), DB::raw('SUM(total_paid) as total_paid'), DB::raw('SUM(total) - SUM(total_paid) as total_to_pay'))
+                        ->where($request->column, 'like', "%{$request->value}%")
+                        ->where('currency_type_id', 'PEN')
+                        ->first();
+        
+        $data = [
+            'total' => $total
+        ];
+
+        return compact('data');
+    }
+
     public function create()
     {
         return view('tenant.sale_notes.form');

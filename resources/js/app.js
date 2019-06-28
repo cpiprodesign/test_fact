@@ -50,10 +50,11 @@ Vue.component('tenant-persons-index', require('./views/tenant/persons/index.vue'
 Vue.component('tenant-persons-view-sells', require('./views/tenant/persons/view-sells.vue'));
 Vue.component('tenant-persons-view-payments', require('./views/tenant/persons/view-payments.vue'));
 
-
 Vue.component('tenant-customers-index', require('./views/tenant/customers/index.vue'));
 Vue.component('tenant-suppliers-index', require('./views/tenant/suppliers/index.vue'));
 Vue.component('tenant-users-form', require('./views/tenant/users/form.vue'));
+
+Vue.component('tenant-credit-notes-index', require('./views/tenant/credit_notes/index.vue'));
 
 Vue.component('tenant-payments-index', require('./views/tenant/payments/index.vue'));
 Vue.component('tenant-expenses-index', require('./views/tenant/expenses/index.vue'));
@@ -97,8 +98,10 @@ Vue.component('tenant-perceptions-form', require('./views/tenant/perceptions/for
 Vue.component('tenant-dispatches-index', require('./views/tenant/dispatches/index.vue'));
 Vue.component('tenant-dispatches-form', require('./views/tenant/dispatches/form.vue'));
 Vue.component('tenant-dispatches-form2', require('./views/tenant/dispatches/form2.vue'));
+
 Vue.component('tenant-purchases-index', require('./views/tenant/purchases/index.vue'));
 Vue.component('tenant-purchases-form', require('./views/tenant/purchases/form.vue'));
+Vue.component('tenant-purchases-edit', require('./views/tenant/purchases/edit.vue'));
 Vue.component('tenant-purchases-items', require('./views/tenant/dispatches/items.vue'));
 
 Vue.component('tenant-attribute_types-index', require('./views/tenant/attribute_types/index.vue'));
