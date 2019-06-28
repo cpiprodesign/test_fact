@@ -64,7 +64,7 @@
                                         <a class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>
                         </td>
                     </tr>
                     <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
