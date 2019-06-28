@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use phpDocumentor\Reflection\Types\Integer;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\DB;
+use App\Models\Tenant\SaleNote;
 
 class PosController extends Controller
 {
@@ -125,7 +126,15 @@ class PosController extends Controller
 
         $pos_sale->save();
 
-        $document = Document::find($document_id);
+        if($request->input('table_name') == 'documents')
+        {
+            $document = Document::find($document_id);
+        }
+        else
+        {
+            $document = SaleNote::find($document_id);
+        }
+
         $document->total_paid += $request->balance['total'];
         $customer_id = $document->customer_id;
         $document->save();
@@ -135,7 +144,16 @@ class PosController extends Controller
             $payment_method = PaymentMethod::where('description', $detail['tipo'])->first();
 
             $payment = new Payment();
-            $payment->document_id = $document_id;
+
+            if($request->input('table_name') == 'documents')
+            {
+                $payment->document_id = $document_id;
+            }
+            else
+            {
+                $payment->sale_note_id = $document_id;
+            }
+
             $payment->customer_id = $customer_id;
             $payment->payment_method_id = $payment_method->id;
             $payment->date_of_issue = date("Y-m-d");
