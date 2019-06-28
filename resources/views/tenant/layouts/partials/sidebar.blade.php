@@ -262,7 +262,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     </a>
                                 </li>
                                 <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
-                                    <a class="nav-link" href="{{route('tenant.reports.customer.index')}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.customers.index')}}">
                                         Ventas por Cliente
                                     </a>
                                 </li>
