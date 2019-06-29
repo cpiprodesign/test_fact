@@ -134,9 +134,7 @@ class PaymentController extends Controller
                     $document->total_paid += $request->input('total');
                     $customer_id = $document->customer_id;
                     $document->save();
-                }
-
-                
+                }                
 
                 $payment = new Payment();
                 $payment->customer_id = $customer_id;

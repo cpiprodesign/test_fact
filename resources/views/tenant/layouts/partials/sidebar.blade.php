@@ -180,12 +180,6 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <span>Bancos</span>
                         </a>
                     </li>
-                    <li>
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-store" aria-hidden="true"></i>
-                            <span>Tienda Online </span><span class="label label-info"> Pronto</span>
-                        </a>
-                    </li>
                     @if(in_array('configuration', $vc_modules))
                     <li class="nav-parent {{ in_array($path[0], ['users', 'persons'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
@@ -248,7 +242,17 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <ul class="nav nav-children" style="">
                                 <li class="{{(($path[0] === 'reports') && ($path[1] === '')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.index')}}">
+                                        Documentos
+                                    </a>
+                                </li>
+                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.sells.index')}}">
                                         Ventas
+                                    </a>
+                                </li>
+                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
+                                    <a class="nav-link" href="{{route('tenant.reports.customers.index')}}">
+                                        Ventas por Cliente
                                     </a>
                                 </li>
                                 <li class="{{(($path[0] === 'reports') && ($path[1] === 'purchases')) ? 'nav-active' : ''}}">
@@ -260,12 +264,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     <a class="nav-link" href="{{route('tenant.reports.expenses.index')}}">
                                         Gastos
                                     </a>
-                                </li>
-                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
-                                    <a class="nav-link" href="{{route('tenant.reports.customer.index')}}">
-                                        Ventas por Cliente
-                                    </a>
-                                </li>
+                                </li>                                
                                 {{-- <li class="{{(($path[0] === 'reports') && ($path[1] === 'kardex')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.kardex.index')}}">
                                         Kardex

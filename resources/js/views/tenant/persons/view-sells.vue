@@ -14,7 +14,6 @@
                         <th class="text-right">Estado SUNAT</th>
                         <th class="text-right">Estado</th>
                         <th class="text-center">Descargas</th>
-                        <!--<th class="text-center">Anulación</th>-->
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }" :class="{
@@ -37,7 +36,7 @@
                         <td class="text-right">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-right">{{ row.total_paid }}</td>
-                        <td class="text-right">{{ row.total - row.total_paid }}</td>
+                        <td class="text-right">{{ row.total_to_pay }}</td>
                         <td><span class="badge bg-secondary text-white" :class="{
                             'bg-danger': (row.state_type_id === '11'),
                             'bg-warning': (row.state_type_id === '13'),
@@ -47,9 +46,9 @@
                             'bg-secondary': (row.state_type_id === '07'),
                             'bg-dark': (row.state_type_id === '09')
                         }">{{ row.state_type_description }}</span></td>
-                        <td>
-                            <span class="badge bg-secondary text-white bg-success" v-if="row.total - row.total_paid == 0">Pagado</span>
-                            <span class="badge bg-secondary text-white bg-warning" v-if="row.total - row.total_paid > 0">Pendiente</span>                            
+                        <td class="text-right">
+                            <span class="badge bg-secondary text-white bg-success" v-if="row.total_to_pay == 0">Pagado</span>
+                            <span class="badge bg-secondary text-white bg-warning" v-if="row.total_to_pay > 0">Pendiente</span>
                         </td>
                         <td class="text-center">
                             <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-info m-1__2"
@@ -58,7 +57,10 @@
                            
                         </td>
                         <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-warning m-1__2" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0">Agregar Pago</button>                            
+                            <el-tooltip class="item" effect="dark" content="Agregar pago" placement="top-end">
+                                <button type="button" class="btn btn-xs" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0"><i class="fa fa-money-bill-wave i-icon text-warning"></i></button>
+                                <button type="button" class="btn btn-xs" v-else="" disabled><i class="fa fa-money-bill-wave i-icon text-disabled"></i></button>
+                            </el-tooltip>
                         </td>
                     </tr>
                 </data-table1>
