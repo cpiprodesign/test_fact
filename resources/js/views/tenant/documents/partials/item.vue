@@ -306,7 +306,7 @@
                 this.form.item = _.find(this.items, {'id': this.form.item_id})
 
                 if(this.price_list_id == 0){
-                    this.form.unit_price = this.form.item.purchase_unit_price
+                    this.form.unit_price = this.form.item.sale_unit_price
                 } else{
                         this.form.item.item_price_list.forEach((row2) => {
                         if(row2.price_list_id == this.price_list_id){
