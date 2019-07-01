@@ -11,6 +11,11 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 class DocumentExport implements  FromView, ShouldAutoSize
 {
     use Exportable;
+
+    public function excel_view($excel_view = 'tenant.reports.report_excel') {
+        $this->excel_view = $excel_view;        
+        return $this;
+    }
     
     public function records($records) {
         $this->records = $records;
@@ -31,7 +36,7 @@ class DocumentExport implements  FromView, ShouldAutoSize
     }
     
     public function view(): View {
-        return view('tenant.reports.report_excel', [
+        return view($this->excel_view, [
             'records'=> $this->records,
             'company' => $this->company,
             'establishment'=>$this->establishment
