@@ -53,9 +53,9 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
 
     let price_array = calculateIgv(row.item.included_igv, row.affectation_igv_type_id, value)
 
-    row.unit_price = _.round(price_array[0], 2)
+    row.unit_price = _.round(price_array[1], 2)
 
-    let total_value_partial = price_array[1] * row.quantity
+    let total_value_partial = price_array[0] * row.quantity
 
     /* Discounts */
     let discount_base = 0

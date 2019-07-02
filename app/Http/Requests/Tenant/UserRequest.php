@@ -23,6 +23,9 @@ class UserRequest extends FormRequest
             'password' => [
                 'min:6',
                 'confirmed',
+            ],
+            'admin' => [
+                'required'
             ]
         ];
     }

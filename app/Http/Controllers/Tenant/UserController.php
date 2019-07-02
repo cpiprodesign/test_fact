@@ -38,15 +38,21 @@ class UserController extends Controller
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->establishment_id = $request->input('establishment_id');
-        if (!$id) {
+        $user->admin = $request->input('admin');
+
+        if (!$id)
+        {
             $user->api_token = str_random(50);
             $user->password = bcrypt($request->input('password'));
         }
-        elseif ($request->input('password') !== '') {
-            if (env('PASSWORD_CHANGE')) {
+        elseif ($request->input('password') !== '')
+        {
+            if (env('PASSWORD_CHANGE'))
+            {
                 $user->password = bcrypt($request->input('password'));
             }
         }
+        
         $user->save();
 
         $modules = collect($request->input('modules'))->where('checked', true)->pluck('id')->toArray();
