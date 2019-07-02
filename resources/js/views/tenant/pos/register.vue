@@ -31,7 +31,7 @@
                                 <small>{{option.unit_type_id}}</small>
                                 <br>
                                 <span class="font-weight-bold text-primary">
-                                    {{option.currency_type_symbol}} {{option.sale_unit_price}}
+                                    {{option.currency_type_symbol}} {{ calculateIgv(option.included_igv, option.sale_affectation_igv_type_id, option.sale_unit_price) }}
                                 </span>
                             </div>
                         </div>
@@ -85,20 +85,8 @@
                                     </button>
 
                                 </td>
-
-
-                                <!--                                <td class="text-right">{{ currency_type.symbol }} {{ row.total_value }}</td>-->
-                                <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
-                                <!--                                <td class="text-right">-->
-                                <!--                                    <button type="button"-->
-                                <!--                                            class="btn waves-effect waves-light btn-xs btn-danger"-->
-                                <!--                                            >x-->
-                                <!--                                    </button>-->
-                                <!--                                </td>-->
-
                             </tr>
                             </tbody>
-
                         </table>
                     </div>
                     <div class="card-footer bg-dark" style="height: 44vh">
@@ -545,7 +533,7 @@
     import PersonForm from '../persons/form.vue'
     import DocumentOptions from './partials/options.vue'
     import {functions, exchangeRate} from '../../../mixins/functions'
-    import {calculateRowItem} from '../../../helpers/functions'
+    import {calculateRowItem, calculateIgv} from '../../../helpers/functions'
     import Logo from '../companies/logo.vue'
 
 
@@ -666,13 +654,11 @@
                 var lista = this.items
                     .filter(function (item) {
 
-                         if(item.internal_id == null)
-                        {
+                        if(item.internal_id == null){
                             item.internal_id = "---"
                         }
 
-                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1; //|| item.item_code_gs1.toLowerCase().indexOf(data.toLowerCase()) > -1;
-
+                        return item.internal_id.toLowerCase().indexOf(data.toLowerCase()) > -1 || item.description.toLowerCase().indexOf(data.toLowerCase()) > -1;
                     })
                     .sort(function (a, b) {
                         if (a.internal_id > b.internal_id) {
@@ -684,18 +670,9 @@
                         // a must be equal to b
                         return 0;
                     });
-                // if (lista.length === 1 ) {
-                //
-                //     this.selectItem(lista[0].id);
-                //     this.searchBox = '';
-                //     return this.items;
-                //
-                // }
+               
                 return lista;
-
-
             },
-
         },
 
         watch: {
@@ -1028,8 +1005,12 @@
                 //this.$emit('add', this.row)
                 this.initTempItem();
                 this.calculateTotal();
-            }
+            },
+            calculateIgv(included_igv, affectation_igv_type_id, value){
+                let price_array = calculateIgv(included_igv, affectation_igv_type_id, value)
 
+                return price_array[1]
+            }
         }
     }
 </script>
