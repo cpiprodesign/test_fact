@@ -50,25 +50,12 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
     //let unit_price2 = 0
     
     let value = row.unit_price
-    let price_igv = value
-    let price = value
 
-    if(row.item.included_igv){
-        if (row.affectation_igv_type_id === '10'){
-            price = value/(1 + percentage_igv / 100)
-            price_igv = value;
-        }
-    }
-    else{
-        if (row.affectation_igv_type_id === '10'){
-            price_igv = value*(1 + percentage_igv / 100)
-            price = value;
-        }
-    }
+    let price_array = calculateIgv(row.item.included_igv, row.affectation_igv_type_id, value)
 
-    row.unit_price = _.round(price_igv, 2)
+    row.unit_price = _.round(price_array[1], 2)
 
-    let total_value_partial = price * row.quantity
+    let total_value_partial = price_array[0] * row.quantity
 
     /* Discounts */
     let discount_base = 0
@@ -160,4 +147,26 @@ function formaterDecimal(stock){
     return stock
 }
 
-export {calculateRowItem, formaterDecimal}
+function calculateIgv(included_igv, affectation_igv_type_id, value){
+    
+    let percentage_igv = 18
+    let price = value
+    let price_igv = value
+
+    if(included_igv){
+        if (affectation_igv_type_id === '10'){
+            price = value/(1 + percentage_igv / 100)
+            price_igv = value;
+        }
+    }
+    else{
+        if (affectation_igv_type_id === '10'){
+            price_igv = value*(1 + percentage_igv / 100)
+            price = value;
+        }
+    }
+
+    return [ _.round(price, 2),  _.round(price_igv, 2)]
+}
+
+export {calculateRowItem, formaterDecimal, calculateIgv}
