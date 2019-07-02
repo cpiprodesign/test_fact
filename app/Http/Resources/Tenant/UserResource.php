@@ -18,6 +18,7 @@ class UserResource extends JsonResource
         $all_modules = Module::orderBy('description')->get();
         $modules_in_user = $this->modules->pluck('id')->toArray();
         $modules = [];
+        
         foreach ($all_modules as $module)
         {
             $modules[] = [
@@ -26,10 +27,12 @@ class UserResource extends JsonResource
                 'checked' => (bool) in_array($module->id, $modules_in_user)
             ];
         }
+
         return [
             'id' => $this->id,
             'email' => $this->email,
             'name' => $this->name,
+            'admin' => $this->admin,
             'api_token' => $this->api_token,
             'establishment_id' => $this->establishment_id,
             'modules' => $modules

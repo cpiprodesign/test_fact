@@ -48,7 +48,14 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="form-group" :class="{'has-danger': errors.admin}">
+                            <label class="control-label d-block text-success">Rol Administrador</label>
+                            <el-checkbox v-model="form.admin" class="d-block text-success"></el-checkbox>
+                            <small class="form-control-feedback d-block" v-if="errors.admin" v-text="errors.admin[0]"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-12" v-show="form.admin == false">
+                        <div class="form-group ">
                             <label class="control-label">Módulos</label>
                             <div class="row">
                                 <div class="col-4" v-for="module in form.modules">
@@ -103,6 +110,7 @@
                     api_token: null,
                     establishment_id: null,
                     password: null,
+                    admin: false,
                     password_confirmation: null,
                     modules: []
                 }
@@ -121,6 +129,7 @@
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                             this.form = response.data.data
+                            this.form.admin = response.data.data.admin == 1 ? true : false
                         })
                 }
             },
