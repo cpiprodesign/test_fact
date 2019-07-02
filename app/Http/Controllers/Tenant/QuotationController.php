@@ -106,7 +106,16 @@ class QuotationController extends Controller
     public function tables()
     {
         $customers = $this->table('customers');
-        $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();// Establishment::all();
+
+        if(auth()->user()->admin)
+        {
+            $establishments = Establishment::all();
+        }
+        else
+        {
+            $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
+        }
+        
         $series = Series::all();
         $document_types_invoice = DocumentType::whereIn('id', ['02'])->get();
         $currency_types = CurrencyType::whereActive()->get();

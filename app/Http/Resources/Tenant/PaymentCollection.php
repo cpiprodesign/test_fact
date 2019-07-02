@@ -19,12 +19,12 @@ class PaymentCollection extends ResourceCollection
         return $this->collection->transform(function($row, $key) {
 
             if(is_null($row->document_id))
-            {
-                $number = $row->sale_note->series.'-'.$row->sale_note->number;
+            {   
+                $number = $row->sale_note->series.'-'.$row->sale_note->number;               
             }
             else
             {
-                $number = $row->document->series.'-'.$row->document->number;                
+                $number = $row->document->series.'-'.$row->document->number;
             }
 
             return [
