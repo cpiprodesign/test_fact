@@ -57,9 +57,11 @@
                         <div class="col-md-6">
                             <div class="form-group" :class="{'has-danger': errors.soap_send_id}">
                                 <label class="control-label">SOAP Envio</label>
-                                <el-select v-model="form.soap_send_id">
-                                    <el-option v-for="(option, index) in soap_sends" :key="index" :value="index" :label="option"></el-option>
-                                </el-select>
+
+                                <el-input v-if="form.soap_send_id == '01'" :disabled="true" :value="'SUNAT'"></el-input>
+                                <el-input v-if="form.soap_send_id == '02'" :disabled="true" :value="'OSE'"></el-input>
+                                
+                                
                                 <small class="form-control-feedback" v-if="errors.soap_send_id" v-text="errors.soap_send_id[0]"></small>
                             </div>
                         </div>

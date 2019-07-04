@@ -19,7 +19,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row px-4 mt-2 pb-3">
                             <div class="col-2 font-weight-bold text-primary">
                                 2019
@@ -129,6 +128,7 @@
                             <th>Correo</th>
                             <th class="text-center">Comprobantes</th>
                             <th class="text-center">Usuarios</th>
+                            <th class="text-center">Tipo SOAP</th>
                             <th class="text-center">F.Creación</th>
                             <th class="text-right">Acciones</th>
                         </tr>
@@ -149,8 +149,13 @@
                                 <template v-if="row.max_users > 9999"><i class="fas fa-infinity"></i></template>
                                 <template v-else>{{ row.max_users }}</template>
                             </td>
+                            <td class="text-center">
+                                <span v-if="row.soap_send_id == '01'">SUNAT</span>
+                                <span v-else>OSE</span>
+                            </td>
                             <td class="text-center">{{ row.created_at }}</td>
                             <td class="text-right">
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-default m-1__2" @click.prevent="clickEdit(row.id)">Editar</button>
                                 <template v-if="!row.locked">
                                     <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2" @click.prevent="clickPassword(row.id)">Resetear clave</button>
                                     <button type="button" class="btn waves-effect waves-light btn-xs btn-danger m-1__2" @click.prevent="clickDelete(row.id)">Eliminar</button>
@@ -164,22 +169,26 @@
         </div>
         <system-clients-form :showDialog.sync="showDialog"
                              :recordId="recordId"></system-clients-form>
+
+        <system-clients-edit :showDialogEdit.sync="showDialogEdit"
+                             :recordId="recordId"></system-clients-edit>
     </div>
 </template>
 
 <script>
-
     import CompaniesForm from './form.vue'
+    import CompaniesFormEdit from './edit.vue'
     import {deletable} from "../../../mixins/deletable"
     import {changeable} from "../../../mixins/changeable"
     import ChartLine from './charts/Line'
 
     export default {
         mixins: [deletable,changeable],
-        components: {CompaniesForm, ChartLine},
+        components: {CompaniesForm, CompaniesFormEdit, ChartLine},
         data() {
             return {
                 showDialog: false,
+                showDialogEdit: false,
                 resource: 'clients',
                 recordId: null,
                 records: [],
@@ -190,8 +199,6 @@
                     labels: null,
                     datasets: [
                         {
-                            // label: 'Data One',
-                            // backgroundColor: '#f87979',
                             data: null
                         }
                     ]
@@ -206,8 +213,6 @@
                     this.dataChartLine.labels = line.labels
                     this.dataChartLine.datasets[0].data = line.data
                     this.total_documents = response.data.total_documents
-                    // console.log(response.data)
-                    // this.records = response.data.data
                 })
             this.loaded = true
         },
@@ -223,11 +228,14 @@
                     .then(response => {
                         this.records = response.data.data
                     })
-
             },
             clickCreate(recordId = null) {
                 this.recordId = recordId
                 this.showDialog = true
+            },
+            clickEdit(recordId = null) {
+                this.recordId = recordId
+                this.showDialogEdit = true
             },
             clickPassword(id) {
                 this.change(`/${this.resource}/password/${id}`)

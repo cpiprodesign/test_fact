@@ -23,6 +23,7 @@ class ClientCollection extends ResourceCollection
                 'token' => $row->token,
                 'number' => $row->number,
                 'plan' => $row->plan->name,
+                'soap_send_id' => $row->company->soap_send_id,
                 'locked' => (bool) $row->locked,
                 'count_doc' => $row->count_doc,
                 'max_documents' => (int) $row->plan->limit_documents,
