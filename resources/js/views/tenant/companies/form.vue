@@ -55,6 +55,15 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
+                            <div class="form-group" :class="{'has-danger': errors.soap_send_id}">
+                                <label class="control-label">SOAP Envio</label>
+                                <el-select v-model="form.soap_send_id">
+                                    <el-option v-for="(option, index) in soap_sends" :key="index" :value="index" :label="option"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.soap_send_id" v-text="errors.soap_send_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group" :class="{'has-danger': errors.soap_type_id}">
                                 <label class="control-label">SOAP Tipo</label>
                                 <el-select v-model="form.soap_type_id">
@@ -64,7 +73,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div v-if="form.soap_type_id == '02'">
                         <div class="row" >
                             <div class="col-md-12 mt-2">
@@ -115,6 +123,7 @@
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
+                    this.soap_sends = response.data.soap_sends
                     this.soap_types = response.data.soap_types
                 })
             await this.$http.get(`/${this.resource}/record`)
@@ -133,6 +142,7 @@
                     number: null,
                     name: null,
                     trade_name: null,
+                    soap_send_id: '01',
                     soap_type_id: '01',
                     soap_username: null,
                     soap_password: null,

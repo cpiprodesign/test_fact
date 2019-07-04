@@ -20,7 +20,7 @@
                         <th>Número</th>
                         <th class="text-center">Moneda</th>
                         <th class="text-right">Total</th>
-                        <th class="text-right">Estado SUNAT</th>
+                        <th class="text-right">Estado SUNAT/OSE</th>
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }" slot="tbody" :class="{
@@ -51,7 +51,7 @@
                             'bg-dark': (row.state_type_id === '09')
                         }">{{ row.state_type_description }}</span></td>                        
                         <td class="text-right">      
-                            <el-tooltip class="item" effect="dark" content="Enviar a Sunat" placement="top-end">
+                            <el-tooltip class="item" effect="dark" content="Enviar a Sunat/OSE" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickResend(row.id)" v-if="row.btn_resend"><i class="fa fa-file-export i-icon text-danger"></i></button>
                                 <button type="button" class="btn btn-xs" v-else=""><i class="fa fa-file-export i-icon text-disabled"></i></button>
                             </el-tooltip>                      
@@ -76,7 +76,7 @@
                             <h5><strong>Total notas de débito en soles ({{ totals.total08.quantity}}) </strong>S/. {{ totals.total08.total }}</h5>
                         </div>
                         <div class="col-md-3">
-                            <h5 v-for="row in totals.total_state_types"><strong>Total estado {{ row.description}} SUNAT </strong>{{ row.quantity }}</h5>
+                            <h5 v-for="row in totals.total_state_types"><strong>Total estado {{ row.description}} SUNAT/OSE </strong>{{ row.quantity }}</h5>
                         </div>
                     </div>                  
                 </data-table>
