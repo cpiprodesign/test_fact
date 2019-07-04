@@ -35,7 +35,7 @@
                         <th class="text-right">Total</th>
                         <th class="text-right">Pagado</th>
                         <th class="text-right">Por pagar</th>
-                        <th class="text-right">Estado SUNAT</th>
+                        <th class="text-right">Estado SUNAT/OSE</th>
                         <th class="text-center">Estado</th>
                         <!--<th class="text-center">Anulación</th>-->
                         <th class="text-right">Acciones</th>
@@ -78,7 +78,7 @@
                             <span class="badge bg-secondary text-white bg-warning" v-if="row.total_to_pay > 0">Pendiente</span>
                         </td>
                         <td class="text-right">
-                            <el-tooltip class="item" effect="dark" content="Enviar a Sunat" placement="top-end">
+                            <el-tooltip class="item" effect="dark" content="Enviar a SUNAT/OSE" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickResend(row.id)" v-if="row.btn_resend"><i class="fa fa-file-export i-icon text-danger"></i></button>
                                 <button type="button" class="btn btn-xs" v-else=""><i class="fa fa-file-export i-icon text-disabled"></i></button>
                             </el-tooltip>
@@ -123,7 +123,7 @@
                             <h5><strong>Total boletas emitidas en soles ({{ totals.total03.quantity}}) </strong>S/. {{ totals.total03.total }}</h5>
                         </div>
                         <div class="col-md-3">
-                            <h5 v-for="row in totals.total_state_types"><strong>Total estado{{ row.description}} SUNAT </strong>{{ row.quantity }}</h5>
+                            <h5 v-for="row in totals.total_state_types"><strong>Total estado{{ row.description}} SUNAT/OSE </strong>{{ row.quantity }}</h5>
                         </div>
                     </div>
                 </data-table>
