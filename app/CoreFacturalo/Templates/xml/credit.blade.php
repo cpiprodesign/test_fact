@@ -56,8 +56,8 @@
     @endforeach
     @endif
     <cac:Signature>
-        <cbc:ID>{{ $company->number }}</cbc:ID>
-        <cbc:Note>{{ env('SIGNATURE_NOTE') }}</cbc:Note>
+        <cbc:ID>{{ config('configuration.signature_uri') }}</cbc:ID>
+        <cbc:Note>{{ config('configuration.signature_note') }}</cbc:Note>
         <cac:SignatoryParty>
             <cac:PartyIdentification>
                 <cbc:ID>{{ $company->number }}</cbc:ID>
@@ -68,7 +68,7 @@
         </cac:SignatoryParty>
         <cac:DigitalSignatureAttachment>
             <cac:ExternalReference>
-                <cbc:URI>{{ env('SIGNATURE_URI') }}</cbc:URI>
+                <cbc:URI>#{{ config('configuration.signature_uri') }}</cbc:URI>
             </cac:ExternalReference>
         </cac:DigitalSignatureAttachment>
     </cac:Signature>

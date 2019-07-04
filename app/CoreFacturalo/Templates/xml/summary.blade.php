@@ -15,8 +15,8 @@
     <cbc:UBLVersionID>2.0</cbc:UBLVersionID>
     <cbc:CustomizationID>1.1</cbc:CustomizationID>
     <cbc:ID>{{ $document->identifier }}</cbc:ID>
-    <cbc:ReferenceDate>{{ $document->date_of_reference->format('Y-m-d') }}</cbc:ReferenceDate>
-    <cbc:IssueDate>{{ $document->date_of_issue->format('Y-m-d') }}</cbc:IssueDate>
+    <cbc:ID>{{ config('configuration.signature_uri') }}</cbc:ID>
+    <cbc:Note>{{ config('configuration.signature_note') }}</cbc:Note>
     <cac:Signature>
         <cbc:ID>{{ $company->number }}</cbc:ID>
         <cac:SignatoryParty>
@@ -29,7 +29,7 @@
         </cac:SignatoryParty>
         <cac:DigitalSignatureAttachment>
             <cac:ExternalReference>
-                <cbc:URI>{{ env('SIGNATURE_URI') }}</cbc:URI>
+                <cbc:URI>#{{ config('configuration.signature_uri') }}</cbc:URI>
             </cac:ExternalReference>
         </cac:DigitalSignatureAttachment>
     </cac:Signature>
