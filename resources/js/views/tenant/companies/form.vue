@@ -73,7 +73,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div v-if="form.soap_type_id == '02'">
                         <div class="row" >
                             <div class="col-md-12 mt-2">
@@ -95,15 +94,6 @@
                                     <el-input v-model="form.soap_password"></el-input>
                                     <small class="form-control-feedback" v-if="errors.soap_password" v-text="errors.soap_password[0]"></small>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" v-if="form.soap_send_id == '02'">
-                        <div class="col-md-12">
-                            <div class="form-group" :class="{'has-danger': errors.soap_url}">
-                                <label class="control-label">SOAP Url</label>
-                                <el-input v-model="form.soap_url"></el-input>
-                                <small class="form-control-feedback" v-if="errors.soap_url" v-text="errors.soap_url[0]"></small>
                             </div>
                         </div>
                     </div>

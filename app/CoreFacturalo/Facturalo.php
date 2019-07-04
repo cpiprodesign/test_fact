@@ -559,12 +559,18 @@ class Facturalo
 
     private function setSoapCredentials()
     {
-        //$this->soapUsername = ($this->isDemo)?'20333632650MODDATOS':$this->company->soap_username;
         $this->soapUsername = ($this->isDemo)?$this->company->number.'MODDATOS':$this->company->soap_username;
         $this->soapPassword = ($this->isDemo)?'moddatos':$this->company->soap_password;
 
         if($this->isOse) {
-            $this->endpoint = $this->company->soap_url;
+            
+            if($this->isDemo){
+                $this->endpoint = config('configuration.ose_demo');
+            }
+            else{
+                $this->endpoint = config('configuration.ose_production');
+            }
+
         } else {
             switch ($this->type) {
                 case 'retention':
