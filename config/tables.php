@@ -13,8 +13,8 @@ return [
             '15' => 'Anulando',// 'Anulación enviada',
         ],
         'soap_sends' => [
-            '01' => 'Sunat',
-            '02' => 'Ose',
+            '01' => 'SUNAT',
+            '02' => 'OSE',
         ],
         'soap_types' => [
             '01' => 'Demo',

@@ -448,7 +448,9 @@ if ($hostname) {
             Route::get('clients/create', 'System\ClientController@create');
             Route::get('clients/tables', 'System\ClientController@tables');
             Route::get('clients/charts', 'System\ClientController@charts');
+            Route::get('clients/record/{client}', 'System\ClientController@record');
             Route::post('clients', 'System\ClientController@store');
+            Route::post('clients/update/{client}', 'System\ClientController@update');
             Route::delete('clients/{client}', 'System\ClientController@destroy');
             Route::post('clients/password/{client}', 'System\ClientController@password');
 

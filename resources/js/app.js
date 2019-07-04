@@ -124,6 +124,7 @@ Vue.component('tenant-inventories-form', require('../../modules/Inventory/Resour
 // System
 Vue.component('system-clients-index', require('./views/system/clients/index.vue'));
 Vue.component('system-clients-form', require('./views/system/clients/form.vue'));
+Vue.component('system-clients-edit', require('./views/system/clients/edit.vue'));
 Vue.component('system-users-form', require('./views/system/users/form.vue'));
 
 Vue.component('system-plans-index', require('./views/system/plans/index.vue'));

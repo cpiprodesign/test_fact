@@ -15,6 +15,7 @@ use App\Models\System\Plan;
 use Hyn\Tenancy\Models\Hostname;
 use Hyn\Tenancy\Models\Website;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -32,10 +33,26 @@ class ClientController extends Controller
     {
         $url_base = '.'.env('APP_URL_BASE');
         $plans = Plan::all();
+        $soap_sends = config('tables.system.soap_sends');
 
-        return compact('url_base','plans');
+        return compact('url_base', 'plans', 'soap_sends');
     }
 
+    public function record(Client $client)
+    {
+        //$client = Client::find($id);
+        $tenancy = app(Environment::class);
+        $tenancy->tenant($client->hostname->website);
+        $client->company = DB::connection('tenant')->table('companies')->first();
+
+        $data = [
+            'plan_id' => $client->plan_id,
+            'soap_send_id' => $client->company->soap_send_id
+        ];
+
+        return compact('data');
+    }
+    
     public function records()
     {
         $records = Client::latest()->get();
@@ -44,6 +61,7 @@ class ClientController extends Controller
             $tenancy->tenant($row->hostname->website);
             $row->count_doc = DB::connection('tenant')->table('documents')->count();
             $row->count_user = DB::connection('tenant')->table('users')->count();
+            $row->company = DB::connection('tenant')->table('companies')->first();
         }
         return new ClientCollection($records);
     }
@@ -77,7 +95,6 @@ class ClientController extends Controller
         $documents_by_month = [];
         foreach($groups_by_month as $month => $group)
         {
-//            $labels[] = $month;
             $documents_by_month[] = $group->sum('count');
         }
 
@@ -99,7 +116,9 @@ class ClientController extends Controller
         $hostname = new Hostname();
 
         DB::connection('system')->beginTransaction();
-        try {
+
+        try
+        {
             $website->uuid = $uuid;
             app(WebsiteRepository::class)->create($website);
             $hostname->fqdn = $fqdn;
@@ -121,7 +140,8 @@ class ClientController extends Controller
 
             DB::connection('system')->commit();
         }
-        catch (Exception $e) {
+        catch (Exception $e)
+        {
             DB::connection('system')->rollBack();
             app(HostnameRepository::class)->delete($hostname, true);
             app(WebsiteRepository::class)->delete($website, true);
@@ -137,7 +157,8 @@ class ClientController extends Controller
             'number' => $request->input('number'),
             'name' => $request->input('name'),
             'trade_name' => $request->input('name'),
-            'soap_type_id' => '01'
+            'soap_type_id' => '01',
+            'soap_send_id' => $request->input('soap_send_id')
         ]);
 
         DB::connection('tenant')->table('configurations')->insert([
@@ -193,6 +214,57 @@ class ClientController extends Controller
         ];
     }
 
+    public function update(Client $client, Request $request)
+    {
+        if($request->input('plan_id') == '' || is_null($request->input('plan_id')))
+        {
+            return [
+                'success' => false,
+                'message' => 'Ingrese el plan'
+            ];
+        }
+        else if($request->input('soap_send_id') == '' || is_null($request->input('soap_send_id')))
+        {
+            return [
+                'success' => false,
+                'message' => 'Ingrese el tipo de SOAP'
+            ];
+        }
+        else
+        {
+            DB::connection('system')->beginTransaction();
+
+            try
+            {
+                $client = Client::find($client->id);
+                $client->plan_id = $request->input('plan_id');
+                $client->save();
+
+                $tenancy = app(Environment::class);
+                $tenancy->tenant($client->hostname->website);
+                //$client->company = DB::connection('tenant')->table('companies')->first();
+
+                DB::connection('tenant')->table('companies')->update(['soap_send_id' => $request->input('soap_send_id')]);
+
+                DB::connection('system')->commit();
+            }
+            catch (Exception $e)
+            {
+                DB::connection('system')->rollBack();
+
+                return [
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ];
+            }
+            
+            return [
+                'success' => true,
+                'message' => 'Cliente Editado satisfactoriamente'
+            ];
+        }
+    }
+
     public function destroy($id)
     {
         $client = Client::find($id);
@@ -215,6 +287,7 @@ class ClientController extends Controller
         $website = Website::find($client->hostname->website_id);
         $tenancy = app(Environment::class);
         $tenancy->tenant($website);
+
         DB::connection('tenant')->table('users')
             ->where('id', 1)
             ->update(['password' => bcrypt($client->number)]);
