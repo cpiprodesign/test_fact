@@ -72,7 +72,7 @@
     </div>
 </template>
 
-<script>    
+<script>
     import DocumentsPay from '../documents/partials/pay.vue'
     import DataTable1 from '../../../components/DataTable1.vue'
 
@@ -97,20 +97,6 @@
                 this.recordId = recordId
                 this.showDialogPay = true
             },
-//            clickTicket(voided_id, group_id) {
-//                this.$http.get(`/voided/ticket/${voided_id}/${group_id}`)
-//                    .then(response => {
-//                        if (response.data.success) {
-//                            this.$message.success(response.data.message)
-//                            this.getData()
-//                        } else {
-//                            this.$message.error(response.data.message)
-//                        }
-//                    })
-//                    .catch(error => {
-//                        this.$message.error(error.response.data.message)
-//                    })
-//            },
             clickDownload(download) {
                 window.open(download, '_blank');
             },
