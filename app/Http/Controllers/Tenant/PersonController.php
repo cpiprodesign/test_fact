@@ -20,6 +20,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Excel;
 use Illuminate\Support\Facades\DB;
+use function GuzzleHttp\json_encode;
 
 class PersonController extends Controller
 {
@@ -39,7 +40,36 @@ class PersonController extends Controller
             ->where('per.id', $person->id)
             ->first();
 
-        return view('tenant.persons.view', compact('person', 'totals'));
+        $condition = "AND doc.customer_id = $person->id";
+        
+        $sql = "SELECT doc.customer_id, doc.`total`, doc.`total_paid`, cdt.description AS `type`, doc.`date_of_issue`, doc.`series`, doc.`number`
+                FROM documents doc
+                INNER JOIN cat_document_types cdt ON cdt.id = doc.document_type_id
+                WHERE (doc.`document_type_id` = '01' OR doc.`document_type_id` = '03')
+                AND (doc.`state_type_id` = '01' OR doc.`state_type_id` = '03' OR doc.`state_type_id` = '05' 
+                OR doc.`state_type_id` = '07') $condition
+                UNION ALL
+                SELECT doc.customer_id, doc.`total`, doc.`total_paid`, 'NOTA DE VENTA', doc.`date_of_issue`, doc.`series`, doc.`number`
+                FROM sale_notes doc
+                WHERE doc.`document_type_id` = '100' $condition
+                ORDER BY `date_of_issue` DESC";
+    
+        $sells = DB::connection('tenant')->select($sql);
+
+        $sql = "SELECT tab.id, tab.`date_of_issue`, tab.series, tab.number, tab.`currency_type_id`, tab.total, 'Venta' AS operation_type, NULL AS detail
+                FROM payments pay
+                INNER JOIN documents tab ON tab.id = pay.document_id
+                WHERE tab.`customer_id` = $person->id
+                UNION ALL
+                SELECT tab.id, tab.`date_of_issue`, tab.series, tab.number, tab.`currency_type_id`, tab.total, 'Nota de Venta' AS operation_type, NULL
+                FROM payments pay
+                INNER JOIN sale_notes tab ON tab.id = pay.sale_note_id
+                WHERE tab.`customer_id` = $person->id
+                ORDER BY date_of_issue";
+
+        $payments = DB::connection('tenant')->select($sql);
+
+        return view('tenant.persons.view', compact('person', 'totals', 'sells', 'payments'));
     }
 
     public function columns()
@@ -48,36 +78,6 @@ class PersonController extends Controller
             'name' => 'Nombre',
             'number' => 'Número'
         ];
-    }
-
-    public function sell_columns()
-    {
-        return [
-            'number' => 'Número',
-            'date_of_issue' => 'Fecha de emisión'
-        ];
-    }
-
-    public function payments_columns()
-    {
-        return [
-            'description' => 'Descripción'
-        ];
-    }
-
-    public function sells($type, Person $person, Request $request)
-    {
-        $records = Document::where($request->column, 'like', "%{$request->value}%")
-            ->where('customer_id', $person->id);
-
-        return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
-    }
-
-    public function payments($type, Person $person, Request $request)
-    {
-        $records = Payment::where($request->column, 'like', "%{$request->value}%")->where('customer_id', $person->id);
-
-        return new PaymentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function records($type, Request $request)
