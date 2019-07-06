@@ -91,10 +91,101 @@
                 </ul>
                 <div class="tab-content">
                     <div id="popular" class="tab-pane active">
-                        <tenant-persons-view-sells :id="{{ json_encode($person->id) }}"></tenant-persons-view-sells>
+                        <div class="row col-md-12">
+                            <div class="table-responsive">
+                                <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
+                                    <thead class="">
+                                        <tr>
+                                            <th class="">#</th>
+                                            <th class="">Tipo</th>
+                                            <th class="">Número</th>
+                                            <th class="">Total</th>
+                                            <th class="">Total Pagado</th>
+                                            <th class="">Pendiente</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $i = 1;
+                                            $total = 0;
+                                            $total_paid = 0;
+                                            $total_balance = 0;
+                                        @endphp
+                                        @foreach($sells as $key => $value)
+                                            @php
+                                                $balance = $value->total - $value->total_paid
+                                            @endphp
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>{{$value->type}}</td>
+                                                <td>{{$value->series}} - {{$value->number}}</td>
+                                                <td>{{$value->total}}</td>
+                                                <td>{{$value->total_paid}}</td>
+                                                <td>{{$balance}}</td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                                $total = $value->total + $total;
+                                                $total_paid = $value->total_paid + $total_paid;
+                                                $total_balance = $balance + $total_balance;
+                                            @endphp
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="2"></th>
+                                            <th class="font-weight-bold">Totales</th>
+                                            <th class="font-weight-bold">{{number_format($total, 2)}}</th>
+                                            <th class="font-weight-bold">{{number_format($total_paid, 2)}}</th>
+                                            <th class="font-weight-bold">{{number_format($total_balance, 2)}}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <div id="recent" class="tab-pane">
-                        <tenant-persons-view-payments :id="{{ json_encode($person->id) }}"></tenant-persons-view-payments>
+                        <div class="row col-md-12">
+                            <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
+                                <thead class="">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tipo de Operación</th>
+                                        <th>Fecha</th>
+                                        <th>Cuenta</th>
+                                        <th>Moneta</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $i = 1;
+                                        $total = 0;
+                                    @endphp
+                                    @foreach($payments as $key => $value)
+                                        <tr>
+                                            <td>{{ $i }}</td>
+                                            <td>{{ $value->operation_type }}</td>
+                                            <td>{{ $value->date_of_issue }}</td>
+                                            <td>{{ $value->series }} - {{ $value->number }}</td>
+                                            <td>{{ $value->currency_type_id }}</td>
+                                            <td>{{ $value->total }}</td>
+                                        </tr>
+                                        @php
+                                            $i++;
+                                            $total = $value->total + $total;                                            
+                                        @endphp
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4"></th>
+                                        <th class="font-weight-bold">Totales</th>
+                                        <th class="font-weight-bold">{{number_format($total, 2)}}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
