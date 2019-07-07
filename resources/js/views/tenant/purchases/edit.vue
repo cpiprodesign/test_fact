@@ -158,7 +158,7 @@
     import PersonForm from '../persons/form.vue'
     import PurchaseOptions from './partials/options.vue'
     import {functions, exchangeRate} from '../../../mixins/functions'
-    import {calculateRowItem} from '../../../helpers/functions'
+    import {calculateRowItem, formaterNumber} from '../../../helpers/functions'
 
     export default {
         props: ['purchase_id'],
@@ -361,15 +361,15 @@
                     total += parseFloat(row.total)
                 });
 
-                this.form.total_exportation = _.round(total_exportation, 2)
-                this.form.total_taxed = _.round(total_taxed, 2)
-                this.form.total_exonerated = _.round(total_exonerated, 2)
-                this.form.total_unaffected = _.round(total_unaffected, 2)
-                this.form.total_free = _.round(total_free, 2)
-                this.form.total_igv = _.round(total_igv, 2)
-                this.form.total_value = _.round(total_value, 2)
-                this.form.total_taxes = _.round(total_igv, 2)
-                this.form.total = _.round(total, 2)
+                this.form.total_exportation = formaterNumber(total_exportation)
+                this.form.total_taxed = formaterNumber(total_taxed)
+                this.form.total_exonerated = formaterNumber(total_exonerated)
+                this.form.total_unaffected = formaterNumber(total_unaffected)
+                this.form.total_free = formaterNumber(total_free)
+                this.form.total_igv = formaterNumber(total_igv)
+                this.form.total_value = formaterNumber(total_value)
+                this.form.total_taxes = formaterNumber(total_igv)
+                this.form.total = formaterNumber(total)
             },
             submit() {
                 this.loading_submit = true

@@ -51,12 +51,13 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
     
     let value = row.unit_price
 
-    let price_array = calculateIgv(row.item.included_igv, row.affectation_igv_type_id, value)
+    let price = calculateIgv(row.item.included_igv, row.affectation_igv_type_id, value)
 
-    row.unit_price = _.round(price_array[1], 2)
+    row.unit_price = formaterNumber(value)
 
-    let total_value_partial = price_array[0] * row.quantity
+    let total_value_partial = (price * row.quantity)
 
+    console.log("total_value "+total_value_partial);
     /* Discounts */
     let discount_base = 0
     let discount_no_base = 0
@@ -90,8 +91,6 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
         }
         row.charges.splice(index, charge)
     })
-    console.log('total base charge:'+charge_base)
-    console.log('total no base charge:'+charge_no_base)
 
     let total_isc = 0
     let total_other_taxes = 0
@@ -112,27 +111,24 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
     if (row.affectation_igv_type_id === '30') { //Unaffected
         total_igv = 0
     }
-
+    
     let total_taxes = total_igv + total_isc + total_other_taxes
     let total = total_value + total_taxes
-
-    row.total_charge = _.round(total_charge, 2)
-    row.total_discount = _.round(total_discount, 2)
-    row.total_charge = _.round(total_charge, 2)
-    row.total_value = _.round(total_value, 2)
-    row.total_base_igv = _.round(total_base_igv, 2)
-    row.total_igv =  _.round(total_igv, 2)
-    row.total_taxes = _.round(total_taxes, 2)
-    row.total = _.round(total, 2)
-
+    
+    row.total_charge = total_charge
+    row.total_discount = total_discount
+    row.total_value = total_value
+    row.total_base_igv = total_base_igv
+    row.total_igv = total_igv
+    row.total_taxes = total_taxes
+    row.total = total
+    
     if (row.affectation_igv_type.free) {
         row.price_type_id = '02'
         row.unit_value = 0
-        // row.total_value = 0
         row.total = 0
     }
 
-    // console.log(row)
     return row
 }
 
@@ -147,6 +143,16 @@ function formaterDecimal(stock){
     return stock
 }
 
+function formaterNumber(value, decimal = 2) {
+
+    if (value == undefined || value == "" || value == null) {
+        return 0;
+    }
+    else {
+        return parseFloat(value).toFixed(decimal).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+}
+
 function calculateIgv(included_igv, affectation_igv_type_id, value){
     
     let percentage_igv = 18
@@ -156,17 +162,15 @@ function calculateIgv(included_igv, affectation_igv_type_id, value){
     if(included_igv){
         if (affectation_igv_type_id === '10'){
             price = value/(1 + percentage_igv / 100)
-            price_igv = value;
         }
     }
     else{
         if (affectation_igv_type_id === '10'){
-            price_igv = value*(1 + percentage_igv / 100)
             price = value;
         }
     }
 
-    return [ _.round(price, 2),  _.round(price_igv, 2)]
+    return price
 }
 
-export {calculateRowItem, formaterDecimal, calculateIgv}
+export {calculateRowItem, formaterDecimal, formaterNumber, calculateIgv}
