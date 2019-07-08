@@ -68,25 +68,10 @@ class HomeController extends Controller
 
         if($establishment_id == 0)
         {
-            $total_invoices = DB::connection('tenant')
-                    ->table('documents')
-                    ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', 1)
-                    ->first();
-    
-            $total_charge = DB::connection('tenant')
-                        ->table('documents')
-                        ->select(DB::raw('SUM(total) as total'))
-                        ->where('status_paid', 0)
-                        ->first(); 
+            $total_sells = $this->totals("AND doc.date_of_issue = '".date("Y-m-d")."'");
             
-            $total_sell = DB::connection('tenant')
-                ->table('documents')
-                ->select(DB::raw('SUM(total) as total'))
-                ->where('status_paid', 1)
-                ->where(DB::raw('DATE(created_at)'), date("Y-m-d"))
-                ->first();            
-
+            $totals = $this->totals();
+            
             $sql = "SELECT ite.`description`, itw.stock, ite.`stock_min`,
                 (SELECT description FROM warehouses war WHERE war.id = itw.warehouse_id LIMIT 1) AS warehouse
                 FROM items ite
@@ -106,35 +91,17 @@ class HomeController extends Controller
                 WHERE (total_paid < total)
                 ORDER BY date_of_issue";
 
-            $customers = DB::connection('tenant')->select($sql, array($establishment_id));
+            $customers = DB::connection('tenant')->select($sql);
         }
         else 
         {
             $warehouse = Warehouse::where('establishment_id', $establishment_id)->first();
             $warehouse_id = $warehouse->id;
 
-            $total_invoices = DB::connection('tenant')
-                    ->table('documents')
-                    ->select(DB::raw('SUM(total) as total'))
-                    ->where('total_paid', '=', 'total')
-                    ->where('establishment_id', $establishment_id)
-                    ->first();
-    
-            $total_charge = DB::connection('tenant')
-                        ->table('documents')
-                        ->select(DB::raw('SUM(total) as total'))
-                        ->where('total_paid', '<', 'total')
-                        ->where('establishment_id', $establishment_id)
-                        ->first(); 
+            $total_sells = $this->totals("AND doc.establishment_id = $establishment_id AND doc.date_of_issue = '".date("Y-m-d")."'");
             
-            $total_sell = DB::connection('tenant')
-                ->table('documents')
-                ->select(DB::raw('SUM(total) as total'))
-                ->where('status_paid', 1)
-                ->where(DB::raw('DATE(created_at)'), date("Y-m-d"))
-                ->where('establishment_id', $establishment_id)
-                ->first();
-
+            $totals = $this->totals("AND doc.establishment_id = $establishment_id");
+    
             $sql = "SELECT ite.`description`, itw.stock, ite.`stock_min`,
                 (SELECT description FROM warehouses war WHERE war.id = itw.warehouse_id LIMIT 1) AS warehouse
                 FROM items ite
@@ -143,30 +110,28 @@ class HomeController extends Controller
 
             $items = DB::connection('tenant')->select($sql, array($establishment_id));
 
+            $condition = "AND doc.establishment_id = $establishment_id";
+
             $sql = "SELECT per.name, doc.`date_of_issue`, doc.total, doc.series, doc.number, doc.id, doc.document_type_id, 'documents' AS resource
                     FROM documents doc
                     INNER JOIN persons per ON per.id = doc.customer_id
-                    WHERE (total_paid < total) AND doc.establishment_id = ?
+                    WHERE (total_paid < total) $condition
                     UNION ALL
-                    SELECT per.name, san.`date_of_issue`, san.total, san.series, san.number, san.id, san.document_type_id, 'sale-notes' AS resource
-                    FROM sale_notes san
-                    INNER JOIN persons per ON per.id = san.customer_id
-                    WHERE (total_paid < total) AND san.establishment_id = ?
+                    SELECT per.name, doc.`date_of_issue`, doc.total, doc.series, doc.number, doc.id, doc.document_type_id, 'sale-notes' AS resource
+                    FROM sale_notes doc
+                    INNER JOIN persons per ON per.id = doc.customer_id
+                    WHERE (total_paid < total) $condition
                     ORDER BY date_of_issue";
 
-            $customers = DB::connection('tenant')->select($sql, array($establishment_id));
+            $customers = DB::connection('tenant')->select($sql);
         }
 
-        $total_invoices = (int)$total_invoices->total;
-        $total_charge = (int)$total_charge->total;
-        $total_sell = (int)$total_sell->total;
+        $total_sells = (int)$total_sells->total;
 
-        // $line = $this->chart_cash_flow($establishment_id);
-
-        return compact('total_invoices', 'total_charge', 'total_sell', 'items', 'customers'); 
+        return compact('totals', 'total_sells', 'items', 'customers'); 
     }
 
-    public function total($establishment_id = 0, $range="Diario", $status_paid = 1)
+    public function total($establishment_id = 0, $range="Diario")
     {
         if($establishment_id == 0)
         {
@@ -175,7 +140,9 @@ class HomeController extends Controller
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', $status_paid)
+                    ->select(DB::raw('SUM(total_paid) as total_paid'))
+                    ->whereIn('document_type_id', ['01', '03'])
+                    ->whereIn('state_type_id', ['01', '03', '05', '07'])
                     ->whereDate('created_at', date('Y-m-d'))
                     ->first();
             }
@@ -184,7 +151,6 @@ class HomeController extends Controller
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', $status_paid)
                     ->whereMonth('created_at', date('m'))
                     ->whereYear('created_at', date('Y'))
                     ->first();
@@ -194,7 +160,6 @@ class HomeController extends Controller
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', $status_paid)
                     ->whereYear('created_at', date('Y'))
                     ->first();
             }
@@ -203,7 +168,6 @@ class HomeController extends Controller
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', $status_paid)
                     ->first();
             }            
         }
@@ -214,7 +178,6 @@ class HomeController extends Controller
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', $status_paid)
                     ->where('establishment_id', $establishment_id)
                     ->whereDate('created_at', date('Y-m-d'))
                     ->first();
@@ -224,7 +187,6 @@ class HomeController extends Controller
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', $status_paid)
                     ->where('establishment_id', $establishment_id)
                     ->whereMonth('created_at', date('m'))
                     ->whereYear('created_at', date('Y'))
@@ -235,7 +197,6 @@ class HomeController extends Controller
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', $status_paid)
                     ->where('establishment_id', $establishment_id)
                     ->whereYear('created_at', date('Y'))
                     ->first();
@@ -245,7 +206,6 @@ class HomeController extends Controller
                 $total = DB::connection('tenant')
                     ->table('documents')
                     ->select(DB::raw('SUM(total) as total'))
-                    ->where('status_paid', $status_paid)
                     ->where('establishment_id', $establishment_id)                    
                     ->first();
             }
@@ -256,41 +216,51 @@ class HomeController extends Controller
 
     public function load_sells($establishment_id = 0, $range="Diario")
     {
-        if($establishment_id == 0)
+        $condition = "";
+
+        if($range == 'Diario')
         {
-            if($range == 'Diario')
-            {
-                $sells = Document::whereDate('created_at', date('Y-m-d'))->get();
-            }
-            else if($range == 'Mensual')
-            {
-                $sells = Document::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get();
-            }
-            else
-            {
-                $sells = Document::whereYear('created_at', date('Y'))->get();
-            }
+            $condition .= "AND doc.date_of_issue = '".date("Y-m-d")."'";
+
+            $sells = Document::whereDate('created_at', date('Y-m-d'))->get();
         }
-        else 
+        else if($range == 'Mensual')
         {
-            if($range == 'Diario')
-            {
-                $sells = Document::where('establishment_id', $establishment_id)->whereDate('created_at', date('Y-m-d'))->get();
-            }
-            else if($range == 'Mensual')
-            {
-                $sells = Document::where('establishment_id', $establishment_id)->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get();
-            }
-            else
-            {
-                $sells = Document::where('establishment_id', $establishment_id)->whereYear('created_at', date('Y'))->get();
-            }                      
+            $condition .= "AND MONTH(doc.date_of_issue)= '".date("m")."' AND YEAR(doc.date_of_issue)= '".date("Y")."'";
+        }
+        else
+        {
+            $condition .= "AND YEAR(doc.date_of_issue)= '".date("Y")."'";
         }
 
-        $total_invoices = (int)$this->total($establishment_id, $range, 1)->total;
-        $total_charges = (int)$this->total($establishment_id, $range, 0)->total;
+        if($establishment_id != 0)
+        {
+            $condition .=  "AND doc.establishment_id = $establishment_id";
+        }
+
+        $sql = "SELECT rep.*, per.number AS customer_number, per.name
+            FROM
+            (SELECT doc.customer_id, doc.`total`, doc.`total_paid`, cdt.description AS `type`, doc.`created_at`, doc.`series`, doc.`number`, doc.currency_type_id
+                        FROM documents doc
+                        INNER JOIN cat_document_types cdt ON cdt.id = doc.document_type_id
+                        WHERE (doc.`document_type_id` = '01' OR doc.`document_type_id` = '03')
+                        AND (doc.`state_type_id` = '01' OR doc.`state_type_id` = '03' OR doc.`state_type_id` = '05' 
+                        OR doc.`state_type_id` = '07') $condition
+                        UNION ALL
+                        SELECT doc.customer_id, doc.`total`, doc.`total_paid`, 'NOTA DE VENTA', doc.`created_at`, doc.`series`, doc.`number`, doc.currency_type_id
+                        FROM sale_notes doc
+                        WHERE doc.`document_type_id` = '100' $condition) rep
+            INNER JOIN persons per ON per.id = rep.customer_id
+            ORDER BY created_at DESC";
+
+        $sells = DB::connection('tenant')->select($sql);
+
+        $totals = $this->totals($condition);
+
+        $total = $totals->total;
+        $total_paid = $totals->total_paid;
         
-        return compact('sells', 'total_invoices', 'total_charges');
+        return compact('sells', 'total', 'total_paid');
     }
 
     public function chart_cash_flow($establishment_id)
@@ -299,40 +269,40 @@ class HomeController extends Controller
         $data = [];
         $data2 = [];
 
-        if($establishment_id == 0)
+        $establishment_id = (int)$establishment_id;
+
+        $condition = "";
+
+        if($establishment_id != 0)
         {
-            $documents = DB::connection('tenant')->select("SELECT DISTINCT(DATE(created_at)) AS created_at FROM documents ORDER BY created_at desc LIMIT 10");
-
-            $sql = "SELECT SUM(total) AS total FROM documents WHERE status_paid = ?  AND DATE(created_at) = ?";
-
-            foreach($documents as $document)
-            {
-                $labels[] = $document->created_at;
-
-                $cantidad = DB::connection('tenant')->select($sql, array(1, $document->created_at));
-                $cantidad2 = DB::connection('tenant')->select($sql, array(0, $document->created_at));
-
-                $data[] = (int)$cantidad[0]->total;
-                $data2[] = (int)$cantidad2[0]->total;
-            }
+            $condition .= "AND doc.establishment_id = $establishment_id";            
         }
-        else 
+        
+        $documents = DB::connection('tenant')
+            ->select("SELECT rep.`date_of_issue`, SUM(total) AS total, SUM(total_paid) AS total_paid
+                            FROM
+                            (SELECT doc.`date_of_issue`, doc.total, doc.total_paid
+                            FROM documents doc
+                            INNER JOIN cat_document_types cdt ON cdt.id = doc.document_type_id
+                            WHERE (doc.`document_type_id` = '01' OR doc.`document_type_id` = '03')
+                            AND doc.currency_type_id = 'PEN'
+                            AND (doc.`state_type_id` = '01' OR doc.`state_type_id` = '03' OR doc.`state_type_id` = '05' OR doc.`state_type_id` = '07')
+                            AND DATEDIFF(CURRENT_DATE(), doc.`date_of_issue`) < 8 $condition
+                            UNION ALL
+                            SELECT doc.`date_of_issue`, doc.total, doc.total_paid
+                            FROM sale_notes doc
+                            WHERE doc.currency_type_id = 'PEN' AND doc.`document_type_id` = '100' 
+                            AND DATEDIFF(CURRENT_DATE(), doc.`date_of_issue`) < 8
+                            ) AS rep
+                GROUP BY rep.`date_of_issue` ORDER BY `date_of_issue`");
+
+        foreach($documents as $document)
         {
-            $documents = DB::connection('tenant')->select("SELECT DISTINCT(DATE(created_at)) AS created_at FROM documents WHERE establishment_id = $establishment_id ORDER BY created_at desc LIMIT 10");
+            $labels[] = $document->date_of_issue;
 
-            $sql = "SELECT SUM(total) AS total FROM documents WHERE establishment_id = ? AND status_paid = ?  AND DATE(created_at) = ?";
-
-            foreach($documents as $document)
-            {
-                $labels[] = $document->created_at;
-
-                $cantidad = DB::connection('tenant')->select($sql, array($establishment_id, 1, $document->created_at));
-                $cantidad2 = DB::connection('tenant')->select($sql, array($establishment_id, 0, $document->created_at));
-
-                $data[] = (int)$cantidad[0]->total;
-                $data2[] = (int)$cantidad2[0]->total;
-            }
-        }        
+            $data[] = $document->total;
+            $data2[] = $document->total_paid;
+        }
 
         $line = [
             'labels' => $labels,
@@ -350,8 +320,17 @@ class HomeController extends Controller
 
         $labels = ["Total Pagado", "Total Pendiente"];
 
-        $total_invoices = (int)$this->total($establishment_id, "", 1)->total;
-        $total_charge = (int)$this->total($establishment_id, "", 0)->total;
+        $condition = "";
+
+        if($establishment_id != 0)
+        {
+            $condition .= "AND doc.establishment_id = $establishment_id";
+        }
+
+        $totals = $this->totals();
+
+        $total_invoices = $totals->total_paid;
+        $total_charge = $totals->total - $totals->total_paid;
 
         $data = [$total_invoices, $total_charge];        
 
@@ -377,5 +356,27 @@ class HomeController extends Controller
         }
 
         return $vc_modules;
+    }
+
+    public function totals($condition = "", $currency_type_id = 'PEN')
+    {
+        $sql = "SELECT SUM(total) total, SUM(total_paid) total_paid
+                FROM
+                (SELECT doc.`total`, doc.`total_paid`
+                FROM documents doc
+                INNER JOIN cat_document_types cdt ON cdt.id = doc.document_type_id
+                WHERE (doc.`document_type_id` = '01' OR doc.`document_type_id` = '03')
+                AND doc.currency_type_id = '".$currency_type_id."'
+                AND (doc.`state_type_id` = '01' OR doc.`state_type_id` = '03' OR doc.`state_type_id` = '05' 
+                OR doc.`state_type_id` = '07') $condition
+                UNION ALL
+                SELECT doc.`total`, doc.`total_paid`
+                FROM sale_notes doc
+                WHERE doc.currency_type_id = '".$currency_type_id."' 
+                AND doc.`document_type_id` = '100' $condition) AS rep";
+
+        $totals = DB::connection('tenant')->select($sql)[0];
+
+        return $totals;
     }
 }

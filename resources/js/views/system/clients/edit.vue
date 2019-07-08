@@ -56,7 +56,8 @@
                 error: {},
                 form: {},
                 url_base: null,
-                plans:[]
+                plans:[],
+                soap_sends: []
             }
         },
         created() {

@@ -21,12 +21,12 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h5 class="el-dialog__title">Flujo de caja de la última semana (Todos los establecimientos)</h5>
-                                <chart-line :data="dataChartLine" v-if="loaded_line" ></chart-line>
+                                <chart-line :data="dataChartLine"></chart-line>
                             </div>
                         </div>
-                        <div class="row">    
+                        <div class="row">
                             <div class="col-md-12" style="max-height: 300px; overflow-y: scroll">
-                                <h5 class="el-dialog__title">Productos por agotarse</h5>                                
+                                <h5 class="el-dialog__title">Productos por agotarse</h5>
                                 <table class="table table-sm">
                                     <thead class="table-active">
                                         <tr>
@@ -66,7 +66,7 @@
                                             <td>Opción</td>
                                         </tr>
                                     </thead>
-                                    <tbody v-for="(row,index) in customers" :key="row.id">
+                                    <tbody v-for="(row,index) in customers" :key="`A-${index}`">
                                         <tr>
                                             <td>{{ row.name }}</td>
                                             <td>
@@ -98,7 +98,7 @@
                                 <div class="card-header-icon"><i class="fas fa-donate"></i></div>
                             </header>
                             <div class="card-body p-4 text-center">
-                                <p class="font-weight-semibold mb-0 mx-4">Total Facturado</p>
+                                <p class="font-weight-semibold mb-0 mx-4">Total de Ingresos</p>
                                 <h5 class="font-weight-semibold mt-0">S/. {{ total_invoices }}</h5>
                             </div>
                         </section>
@@ -110,10 +110,10 @@
                                 <p class="font-weight-semibold mb-0 mx-4">Cuentas por Cobrar</p>
                                 <h5 class="font-weight-semibold mt-0">S/. {{ total_charge }}</h5>
                             </div>
-                        </section>                        
+                        </section>
                         <section class="card card-horizontal card-tenant-dashboard">
                             <h5>Todos los establecimientos (% Pagos)</h5>
-                            <chart-pie :data="dataChartPie" v-if="loaded_pie"></chart-pie>
+                            <chart-pie :data="dataChartPie"></chart-pie>
                         </section>
                     </div>
                 </div>
@@ -152,98 +152,83 @@
             }
         },
         async mounted() {
-            await this.load_grafic()
-            await this.load_grafic_pie()
-            await this.load()
-            await this.$http.get(`/${this.resource}/establishments/`)
+            this.loaded = false
+
+            await this.$http.get(`/${this.resource}/chart_cash_flow/${this.establishment_id}`)
                 .then(response => {
-                    this.establishments = response.data.establishments
+                    this.dataChartLine = null;
+                    this.dataChartLine = {
+                        labels: null,
+                        datasets: [{
+                            data: null,
+                            label: "Total Facturado",
+                            backgroundColor: "#28a745",
+                            borderColor: "#28a745",
+                            fill: false
+                        }, {
+                            data: null,
+                            label: "Pagos pendientes",
+                            backgroundColor: "#ffcd56",
+                            borderColor: "#ffcd56",
+                            fill: false
+                        }
+                    ]}
+                    let line = response.data.line
+                    this.dataChartLine.labels = line.labels
+                    this.dataChartLine.datasets[0].data = line.data
+                    this.dataChartLine.datasets[1].data = line.data2
+            })
+
+            await  this.$http.get(`/${this.resource}/chart_pie_total/${this.establishment_id}`)
+                .then(response => {
+                    this.loaded_pie = false
+
+                    this.dataChartPie = null;
+                    this.dataChartPie =  {
+                        labels: null,
+                        datasets: [{
+                            label: "",
+                            backgroundColor: ["#28a745", "#ffcd56"],
+                            data: null
+                        }]
+                    }
+                    let pie = response.data.pie
+                    this.dataChartPie.labels = pie.labels
+                    this.dataChartPie.datasets[0].data = pie.data     
             })
             
+            this.loaded = true 
         },
         created() {
-
+            
             this.loaded = false
+            this.$http.get(`/${this.resource}/establishments/`)
+                .then(response => {
+                    this.establishments = response.data.establishments
+            })            
 
             this.$eventHub.$on('reloadData', () => {
                 this.load()
-                // location.href = '/dashboard'
-            });   
+            });
 
-              
-            
+            this.load()
             this.loaded = true
-           
         },
         methods: {
+
             load() {
                 return this.$http.get(`/${this.resource}/load/${this.establishment_id}`)
                         .then(response => {
                             this.items = response.data.items
                             this.customers = response.data.customers
-                            this.total_invoices = response.data.total_invoices
-                            this.total_charge = response.data.total_charge
-                            this.total_sell = response.data.total_sell
+                            this.total_invoices = response.data.totals.total
+                            this.total_charge = response.data.totals.total - response.data.totals.total_paid
+                            this.total_sell = response.data.total_sells
                         });
             },
-            load_grafic_pie(){
-                this.loaded_pie = false
-
-                this.dataChartPie = null;
-                this.dataChartPie =  {
-                    labels: null,
-                    datasets: [{
-                        label: "",
-                        backgroundColor: ["#28a745", "#ffcd56"],
-                        data: null
-                    }]
-                }
-
-                this.$http.get(`/${this.resource}/chart_pie_total/${this.establishment_id}`)
-                .then(response => {
-                    let pie = response.data.pie
-                    this.dataChartPie.labels = pie.labels
-                    this.dataChartPie.datasets[0].data = pie.data     
-                })
-                
-                this.loaded_pie = true
-            },
-            load_grafic(){
-
-                this.loaded_line = true
-                
-                this.dataChartLine = null;
-                this.dataChartLine = {
-                    labels: null,
-                    datasets: [{
-                        data: null,
-                        label: "Total Facturado",
-                        backgroundColor: "#28a745",
-                        borderColor: "#28a745",
-                        fill: false
-                    }, {
-                        data: null,
-                        label: "Pagos pendientes",
-                        backgroundColor: "#ffcd56",
-                        borderColor: "#ffcd56",
-                        fill: false
-                    }
-                ]}
-                
-                this.$http.get(`/${this.resource}/chart_cash_flow/${this.establishment_id}`)
-                .then(response => {
-                    let line = response.data.line
-                    this.dataChartLine.labels = line.labels
-                    this.dataChartLine.datasets[0].data = line.data
-                    this.dataChartLine.datasets[1].data = line.data2
-                })
-
-                this.loaded_line = true
-            },
+            
             changeEstablishment() {
-                this.load_grafic()
                 this.load()
-                this.load_grafic_pie()                
             },
             clickPay(recordId = null, resource_pay = 'documents') {
                 this.recordId = recordId

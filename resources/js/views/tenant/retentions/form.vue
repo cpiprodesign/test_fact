@@ -259,7 +259,7 @@
                 this.form.items.forEach((row) => {
                     total += parseFloat(row.total)
                 });
-                this.form.total = _.round(total, 2)
+                this.form.total = formaterNumber(total)
             },
             submit() {
                 this.loading_submit = true

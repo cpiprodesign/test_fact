@@ -85,6 +85,10 @@
                             <el-tooltip class="item" effect="dark" content="Visualizar" placement="top-end">
                                 <a :href="`/${resource}/view/${row.id}`" class="btn btn-xs"><i class="fa fa-eye i-icon text-info"></i></a>
                             </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="Anular" placement="top-end">
+                                <button type="button" class="btn btn-xs" @click.prevent="clickVoided(row.id)" v-if="row.btn_voided"><i class="fa fa-backspace i-icon text-danger"></i></button>
+                                <button type="button" class="btn btn-xs" v-else="" disabled><i class="fa fa-backspace i-icon text-disabled"></i></button>
+                            </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="Nota de Crédito/Debito" placement="top-end">
                                 <a :href="`/${resource}/note/${row.id}`" class="btn btn-xs" v-if="row.btn_note"><i class="fa fa-file-signature i-icon text-danger"></i></a>
                                 <a class="btn btn-xs" v-else=""><i class="fa fa-file-signature i-icon text-disabled"></i></a>

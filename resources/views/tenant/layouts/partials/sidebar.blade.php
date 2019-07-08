@@ -209,12 +209,18 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                         nav-parent
                         {{ ($path[0] === 'retentions')?'nav-active nav-expanded':'' }}
                         {{ ($path[0] === 'dispatches')?'nav-active nav-expanded':'' }}
+                        {{ ($path[0] === 'voided')?'nav-active nav-expanded':'' }}
                         ">
                         <a class="nav-link" href="#">
                             <i class="fas fa-file-alt" aria-hidden="true"></i>
                             <span>Otros comprobantes</span>
                         </a>
                         <ul class="nav nav-children" style="">
+                            <li class="{{ ($path[0] === 'voided')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.voided.index')}}">
+                                    Anulaciones
+                                </a>
+                            </li>
                             <li class="{{ ($path[0] === 'dispatches')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.dispatches.index')}}">
                                     Guías de remisión
