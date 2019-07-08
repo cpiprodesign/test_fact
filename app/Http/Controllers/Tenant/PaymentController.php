@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\Tenant\Pos;
 use App\Models\Tenant\PosSalesDetails;
 use Illuminate\Support\Facades\DB;
+use function GuzzleHttp\json_encode;
 
 class PaymentController extends Controller
 {
@@ -27,42 +28,73 @@ class PaymentController extends Controller
     public function columns()
     {
         return [
-            'description' => 'Descripción'
+           // 'payments.description' => 'Descripción'
         ];
     }
 
     public function records(Request $request)
     {
-        $records = Payment::where($request->column, 'like', "%{$request->value}%")
-            ->orderBy('date_of_issue');
+        //consulta en sql
+        // $sql = "SELECT dat.*, symbol, cpm.`description` AS payment_method, acc.`name` AS account FROM 
+        // (SELECT tab.id, tab.series, tab.number, tab.`currency_type_id`, payment_method_id, account_id, tab.total, 'Venta' AS operation_type, NULL AS detail
+        // FROM payments pay
+        // INNER JOIN documents tab ON tab.id = pay.document_id
+        // UNION ALL
+        // SELECT tab.id, tab.series, tab.number, tab.`currency_type_id`, payment_method_id, account_id, tab.total, 'Nota de Venta' AS operation_type, NULL
+        // FROM payments pay
+        // INNER JOIN sale_notes tab ON tab.id = pay.sale_note_id
+        // ) dat
+        // INNER JOIN cat_currency_types cur ON cur.id = dat.currency_type_id
+        // INNER JOIN cat_payment_methods cpm ON cpm.`id` = dat.payment_method_id
+        // INNER JOIN accounts acc ON acc.id = dat.account_id";
+
+        $payment_documents = Payment::where('payments.total', '>', 0)
+            ->select('payments.id', 'documents.series', 'documents.number', 'payments.currency_type_id', 'payments.total', 'cat_payment_methods.description AS payment_method', 
+            'accounts.name AS account', 'symbol', 'persons.name AS customer', 'payments.created_at')
+            ->join('documents', 'documents.id', 'payments.document_id')
+            ->join('persons', 'persons.id', 'payments.customer_id')
+            ->join('cat_payment_methods', 'cat_payment_methods.id', 'payments.payment_method_id')
+            ->join('accounts', 'accounts.id', 'payments.account_id')
+            ->join('cat_currency_types', 'cat_currency_types.id','payments.currency_type_id');
+        
+        $payment_sale_notes = Payment::where('payments.total', '>', 0)
+            ->select('payments.id', 'sale_notes.series', 'sale_notes.number', 'payments.currency_type_id', 'payments.total', 'cat_payment_methods.description AS payment_method', 
+            'accounts.name AS account', 'symbol', 'persons.name AS customer', 'payments.created_at')
+            ->join('sale_notes', 'sale_notes.id', 'payments.sale_note_id')
+            ->join('persons', 'persons.id', 'payments.customer_id')
+            ->join('cat_payment_methods', 'cat_payment_methods.id', 'payments.payment_method_id')
+            ->join('accounts', 'accounts.id', 'payments.account_id')
+            ->join('cat_currency_types', 'cat_currency_types.id', 'payments.currency_type_id');
+
+        $records = $payment_documents->union($payment_sale_notes)->orderby('created_at', 'desc');
+                
+        //return compact('records');
+        
+
+
+        //SELECT tab.id, tab.series, tab.number, tab.`currency_type_id`, payment_method_id, account_id, tab.total, 'Venta' AS operation_type, null as detail
+        // FROM payments pay
+        // INNER JOIN documents tab ON tab.id = pay.document_id
 
         return new PaymentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
     public function totals(Request $request)
     {
-        $totalPEN = DB::connection('tenant')
-                        ->table('payments')
-                        ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
-                        ->where($request->column, 'like', "%{$request->value}%")
-                        ->where('currency_type_id', 'PEN')
-                        ->first();
+        $totalPEN1 = $this->query_total('documents', 'document_id', 'PEN');
+        $totalPEN2 = $this->query_total('sale_notes', 'sale_note_id', 'PEN');
 
-        $totalUSD = DB::connection('tenant')
-                    ->table('payments')
-                    ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
-                    ->where($request->column, 'like', "%{$request->value}%")
-                    ->where('currency_type_id', 'USD')
-                    ->first();
+        $totalUSD1 = $this->query_total('documents', 'document_id', 'USD');
+        $totalUSD2 = $this->query_total('sale_notes', 'sale_note_id', 'USD');
 
         $totalPEN = [
-            'quantity' => $totalPEN->quantity,
-            'total' => is_null($totalPEN->total) ? '0.00': $totalPEN->total 
+            'quantity' => $totalPEN1->quantity + $totalPEN2->quantity,
+            'total' => is_null($totalPEN1->total) && is_null($totalPEN2->total) ? '0.00': ($totalPEN1->total + $totalPEN2->total)
         ];
 
         $totalUSD = [
-            'quantity' => $totalUSD->quantity,
-            'total' => is_null($totalUSD->total) ? '0.00' : $totalUSD->total 
+            'quantity' => $totalUSD1->quantity + $totalUSD2->quantity,
+            'total' => is_null($totalUSD1->total) && is_null($totalUSD2->total) ? '0.00': ($totalUSD1->total + $totalUSD2->total)
         ];
         
         $data = [
@@ -71,6 +103,23 @@ class PaymentController extends Controller
         ];
 
         return compact('data');
+    }
+
+    public function query_total($table, $column, $currency='PEN')
+    {
+        $total = DB::connection('tenant')
+                        ->table('payments')
+                        ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(payments.total) as total'))
+                        ->join($table, 'payments.'.$column, $table.'.id')
+                        ->where('payments.currency_type_id', $currency)
+                        ->where('payments.total', '>', 0)
+                        ->first();
+
+        // $results = DB::select( DB::raw("SELECT * FROM some_table WHERE some_col = :somevariable"), array(
+        //     'somevariable' => $someVariable,
+        //     ));
+        
+        return $total;
     }
 
     public function create()

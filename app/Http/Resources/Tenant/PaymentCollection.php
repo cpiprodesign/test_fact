@@ -18,23 +18,14 @@ class PaymentCollection extends ResourceCollection
     {
         return $this->collection->transform(function($row, $key) {
 
-            if(is_null($row->document_id))
-            {   
-                $number = $row->sale_note->series.'-'.$row->sale_note->number;               
-            }
-            else
-            {
-                $number = $row->document->series.'-'.$row->document->number;
-            }
-
             return [
                 'id' => $row->id,
-                'customer' => $row->customer->name,
-                'number' => $number,
+                'customer' => $row->customer,
+                'number' => $row->series.'-'.$row->number,
                 'date_of_issue' => $row->date_of_issue,
-                'account' => $row->account->name,
-                'payment_method' => $row->payment_method->description,
-                'total' => "{$row->currency_type->symbol} {$row->total}"
+                'account' => $row->account,
+                'payment_method' => $row->payment_method,
+                'total' => "{$row->symbol} {$row->total}"
             ];
         });
     }
