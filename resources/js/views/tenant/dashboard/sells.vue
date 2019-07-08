@@ -47,7 +47,7 @@
                                 </header>
                                 <div class="card-body p-4 text-center">
                                     <p class="font-weight-semibold mb-0 mx-4">Total Pagados</p>
-                                    <h5 class="font-weight-semibold mt-0">S/. {{ total_invoices }}</h5>
+                                    <h5 class="font-weight-semibold mt-0">S/. {{ total_paid }}</h5>
                                 </div>
                             </section>
                         </div>
@@ -69,40 +69,28 @@
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Fecha Emisión</th>
+                                    <th>Fecha Emisión</th>
+                                    <th>Tipo</th>
+                                    <th>Documento Cliente</th>
                                     <th>Cliente</th>
-                                    <th>Número</th>
-                                    <th>Estado</th>
-                                    <th>Estado de Pago</th>
+                                    <th>N° Documento</th>
                                     <th class="text-center">Moneda</th>
-                                    <th class="text-right">Total</th>
+                                    <th>Total</th>
+                                    <th>Total Pagado</th>
+                                    <th>Pendiente</th>
                                 </tr>
                             </thead>
-                            <tbody v-for="(row,index) in sells" :key="row.id">
+                            <tbody v-for="(row,index) in sells">
                                 <tr>
                                     <td>{{ row.created_at }}</td>
-                                    <td>{{ row.customer.name }}</td>
-                                    <td>
-                                        {{ row.series }}-{{ row.number }}
-                                        <small>{{row.document_type_description}}</small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary text-white" :class="{
-                                            'bg-danger': (row.state_type.id === '11'),
-                                            'bg-warning': (row.state_type.id === '13'),
-                                            'bg-secondary': (row.state_type.id === '01'),
-                                            'bg-info': (row.state_type.id === '03'),
-                                            'bg-success': (row.state_type.id === '05'),
-                                            'bg-secondary': (row.state_type.id === '07'),
-                                            'bg-dark': (row.state_type.id === '09')
-                                        }">{{ row.state_type.description }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary text-white bg-success" v-if="row.status_paid == 1">Pagado</span>
-                                        <span class="badge bg-secondary text-white bg-dark" v-if="row.status_paid == 0">Pendiente</span>
-                                    </td>
-                                    <td class="text-center">{{ row.currency_type_id }}</td>
-                                    <td class="text-right">{{ row.total }}</td>
+                                    <td>{{ row.type }}</td>
+                                    <td>{{ row.customer_number }}</td>
+                                    <td>{{ row.name }}</td>
+                                    <td>{{ row.series }}-{{ row.number }}</td>
+                                    <td  class="text-center">{{ row.currency_type_id }}</td>
+                                    <td>{{ row.total }}</td>
+                                    <td>{{ row.total_paid }}</td>
+                                    <td>{{ row.total - row.total_paid }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -128,27 +116,23 @@
                     {"id": "Mensual"},
                     {"id": "Anual"}
                 ], 
+                sells: [],
                 establishments: [],
                 establishment_id: 0,
-                total_invoices: 0,
+                total_paid: 0,
                 total_charges: 0,
                 total: 0
             }
         },
-        async mounted() {
-        //     this.loaded = false
-        //   await this.load_grafic() 
-        //    this.loaded = true
-        },
-        async created() {
+        created() {
             this.loaded = false
 
-            await this.$http.get(`/${this.resource}/establishments/`)
+            this.$http.get(`/${this.resource}/establishments/`)
                 .then(response => {
                     this.establishments = response.data.establishments
             })
 
-            await this.load()
+            this.load()
             
             this.loaded = true
         },
@@ -157,9 +141,9 @@
                 this.$http.get(`/${this.resource}/load_sells/${this.establishment_id}/${this.range_id}`)
                     .then(response => {
                         this.sells = response.data.sells
-                        this.total_invoices = response.data.total_invoices
-                        this.total_charges = response.data.total_charges
-                        this.total = this.total_invoices + this.total_charges
+                        this.total = response.data.total
+                        this.total_paid = response.data.total_paid
+                        this.total_charges = response.data.total - response.data.total_paid
                 })
             },
             changeEstablishment() {
