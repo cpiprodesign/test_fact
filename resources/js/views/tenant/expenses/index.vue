@@ -38,9 +38,9 @@
                         <div class="col-md-3">
                             <h5><strong>Total gastos en soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
                         </div>
-                        <div class="col-md-3">
+                        <!-- <div class="col-md-3">
                             <h5><strong>Total gastos en dólares ({{ totals.totalUSD.quantity}}) </strong>$ {{ totals.totalUSD.total }}</h5>
-                        </div>
+                        </div> -->
                     </div>
                 </data-table>
             </div>

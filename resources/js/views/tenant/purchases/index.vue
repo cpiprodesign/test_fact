@@ -52,10 +52,10 @@
                     </tr>
                     <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">
                         <div class="col-md-3">
-                            <h5><strong>Total gastos en soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
+                            <h5><strong>Total compras en soles ({{ totals.totalPEN.quantity}}) </strong>S/. {{ totals.totalPEN.total }}</h5>
                         </div>
                         <div class="col-md-3">
-                            <h5><strong>Total gastos en dólares ({{ totals.totalUSD.quantity}}) </strong>$ {{ totals.totalUSD.total }}</h5>
+                            <h5><strong>Total compras en dólares ({{ totals.totalUSD.quantity}}) </strong>$ {{ totals.totalUSD.total }}</h5>
                         </div>
                     </div>
                 </data-table>
