@@ -290,16 +290,21 @@
             },
             changeItem() {
                 this.form.item = _.find(this.items, {'id': this.form.item_id})
-                this.form.unit_price = this.form.item.purchase_unit_price
+                this.form.unit_price = null
                 this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
             },
             clickAddItem() {
                 this.form.item.unit_price = this.form.unit_price
-                this.form.affectation_igv_type = _.find(this.affectation_igv_types, {'id': this.form.affectation_igv_type_id})
-                this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale)
-                this.initForm()
-                // this.initializeFields()
-                this.$emit('add', this.row)
+                if(this.form.unit_price == null){
+                    this.$message.error("Ingrese el precio de la compra")
+                }
+                else{
+                    this.form.affectation_igv_type = _.find(this.affectation_igv_types, {'id': this.form.affectation_igv_type_id})
+                    this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale)
+                    this.initForm()
+                    // this.initializeFields()
+                    this.$emit('add', this.row)
+                }
             },
             reloadDataItems(item_id) {
                 this.$http.get(`/${this.resource}/table/items`).then((response) => {
