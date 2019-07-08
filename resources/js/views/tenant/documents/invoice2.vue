@@ -149,7 +149,7 @@
                                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price) }}</td>
                                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_value) }}</td>
                                                 <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
-                                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total). }}</td>
+                                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
                                                 <td class="text-right">
                                                     <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveItem(index)">x</button>
                                                 </td>
