@@ -24,9 +24,9 @@
                                 <chart-line :data="dataChartLine"></chart-line>
                             </div>
                         </div>
-                        <div class="row">    
+                        <div class="row">
                             <div class="col-md-12" style="max-height: 300px; overflow-y: scroll">
-                                <h5 class="el-dialog__title">Productos por agotarse</h5>                                
+                                <h5 class="el-dialog__title">Productos por agotarse</h5>
                                 <table class="table table-sm">
                                     <thead class="table-active">
                                         <tr>
@@ -98,7 +98,7 @@
                                 <div class="card-header-icon"><i class="fas fa-donate"></i></div>
                             </header>
                             <div class="card-body p-4 text-center">
-                                <p class="font-weight-semibold mb-0 mx-4">Total Facturado</p>
+                                <p class="font-weight-semibold mb-0 mx-4">Total de Ingresos</p>
                                 <h5 class="font-weight-semibold mt-0">S/. {{ total_invoices }}</h5>
                             </div>
                         </section>
@@ -110,7 +110,7 @@
                                 <p class="font-weight-semibold mb-0 mx-4">Cuentas por Cobrar</p>
                                 <h5 class="font-weight-semibold mt-0">S/. {{ total_charge }}</h5>
                             </div>
-                        </section>                        
+                        </section>
                         <section class="card card-horizontal card-tenant-dashboard">
                             <h5>Todos los establecimientos (% Pagos)</h5>
                             <chart-pie :data="dataChartPie"></chart-pie>
