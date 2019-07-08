@@ -133,10 +133,10 @@
                                         <td>{{ row.item.description }}<br/><small>{{ row.affectation_igv_type.description }}</small></td>
                                         <td class="text-center">{{ row.item.unit_type_id }}</td>
                                         <td class="text-right">{{ row.quantity }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ row.total_discount }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price) }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_discount) }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_charge) }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
                                         <td class="text-right">
                                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveItem(index)">x</button>
                                         </td>
@@ -181,6 +181,7 @@
     import DocumentFormItem from './partials/item.vue'
     import DocumentOptions from '../documents/partials/options.vue'
     import {functions, exchangeRate} from '../../../mixins/functions'
+    import {formaterNumber} from '../../../helpers/functions'
 
     export default {
         components: {DocumentFormItem, DocumentOptions},
@@ -334,15 +335,15 @@
                     total += parseFloat(row.total)
                 });
 
-                this.form.total_exportation = _.round(total_exportation, 2)
-                this.form.total_taxed = _.round(total_taxed, 2)
-                this.form.total_exonerated = _.round(total_exonerated, 2)
-                this.form.total_unaffected = _.round(total_unaffected, 2)
-                this.form.total_free = _.round(total_free, 2)
-                this.form.total_igv = _.round(total_igv, 2)
-                this.form.total_value = _.round(total_value, 2)
-                this.form.total_taxes = _.round(total_igv, 2)
-                this.form.total = _.round(total, 2)
+                this.form.total_exportation = formaterNumber(total_exportation)
+                this.form.total_taxed = formaterNumber(total_taxed)
+                this.form.total_exonerated = formaterNumber(total_exonerated)
+                this.form.total_unaffected = formaterNumber(total_unaffected)
+                this.form.total_free = formaterNumber(total_free)
+                this.form.total_igv = formaterNumber(total_igv)
+                this.form.total_value = formaterNumber(total_value)
+                this.form.total_taxes = formaterNumber(total_igv)
+                this.form.total = formaterNumber(total)
             },
             submit() {
                 this.loading_submit = true
@@ -369,6 +370,9 @@
             },
             close() {
                 location.href = '/documents'
+            },
+            formaterNumber(value){
+                return formaterNumber(value);
             }
         }
     }

@@ -42,7 +42,15 @@ class PosController extends Controller
 
     public function records(Request $request)
     {
-        $records = Pos::orderBy('created_at', 'desc')->withTrashed();
+        if(auth()->user()->admin)
+        {
+            
+            $records = Pos::orderBy('created_at', 'desc')->withTrashed();
+        }
+        else
+        {
+            $records = Pos::where('user_id', auth()->user()->establishment_id)->orderBy('created_at', 'desc')->withTrashed();
+        }
 
         $request->column = explode('.', $request->column);
 
