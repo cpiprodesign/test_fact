@@ -65,9 +65,11 @@ class ReportKardexController extends Controller
                                     ->where([['item_id', $request->item_id],['warehouse_id', $warehouse_id]])  
                                     ->orderBy('id')
                                     ->get();
+
+        // echo json_encode($reports); exit;
         
         $models = $this->models;
-        
+
         return view('inventory::reports.kardex.index', compact('items', 'reports', 'balance','models', 'warehouses', 'warehouse_id'));
     }
     
