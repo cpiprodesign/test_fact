@@ -149,7 +149,7 @@ function formaterNumber(value, decimal = 2) {
         return 0;
     }
     else {
-        return parseFloat(value).toFixed(decimal).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        return parseFloat(value).toFixed(decimal).replace(/\d(?=(\d{3})+\.)/g, '$&');
     }
 }
 
