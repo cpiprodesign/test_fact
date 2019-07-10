@@ -19,6 +19,7 @@ class Payment extends ModelTenant
         'account_id',
         'description',
         'total',
+        'pos_id'
     ];
 
     public function document()

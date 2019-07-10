@@ -22,6 +22,7 @@
                         <th class="text-right">Total</th>
                         <th class="text-right">Pagado</th>
                         <th class="text-right">Por pagar</th>
+                        <th class="text-right">Estado Pago</th>
                         <th class="text-right">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }" slot="tbody">
@@ -33,6 +34,7 @@
                         <td class="text-center">{{ row.currency_type_id }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-right">{{ row.total_paid }}</td>
+                        <td class="text-right">{{ row.total2 }}</td>
                         <td class="text-right">
                             <span class="badge bg-secondary text-white bg-success" v-if="row.total - row.total_paid == 0">Pagado</span>
                             <span class="badge bg-secondary text-white bg-warning" v-if="row.total - row.total_paid > 0">Pendiente</span>                            
@@ -46,7 +48,8 @@
                                 <a :href="`/download/salenote/pdf/`+row.id" class="btn btn-xs"><i class="fa fa-file-pdf i-icon text-info"></i></a>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="Eliminar" placement="top-end">
-                                <button type="button" class="btn btn-xs" @click.prevent="clickDelete(row.id)"><i class="fa fa-trash-alt i-icon text-danger"></i></button>
+                                <button type="button" class="btn btn-xs" @click.prevent="clickDelete(row.id)" v-if="row.has_delete"><i class="fa fa-trash-alt i-icon text-danger"></i></button>
+                                <button type="button" class="btn btn-xs" v-else><i class="fa fa-trash-alt i-icon text-disabled"></i></button>
                             </el-tooltip>
                         </td>
                     </tr>

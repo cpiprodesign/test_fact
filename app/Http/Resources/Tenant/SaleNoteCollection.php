@@ -3,6 +3,8 @@
 namespace App\Http\Resources\Tenant;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Models\Tenant\Payment;
+use App\Models\Tenant\Pos;
 
 class SaleNoteCollection extends ResourceCollection
 {
@@ -15,7 +17,24 @@ class SaleNoteCollection extends ResourceCollection
     public function toArray($request)
     {
         return $this->collection->transform(function($row, $key) {
-            $has_pdf = true;            
+            $has_pdf = true;
+            
+            $has_delete = true;
+
+            $payments = Payment::where('sale_note_id', $row->id)->get();
+
+            if(count($payments) > 0)
+            {
+                foreach($payments as $payment)
+                {
+                    $pos = Pos::find($payment->pos_id);
+
+                    if(is_null($pos))
+                    {
+                        $has_delete = false;
+                    }
+                }
+            }
 
             return [
                 'id' => $row->id,
@@ -32,8 +51,10 @@ class SaleNoteCollection extends ResourceCollection
                 'total_igv' => $row->total_igv,
                 'total' => $row->total,
                 'total_paid' => $row->total_paid,
+                'total2' => number_format(($row->total - $row->total_paid), 2),
                 'document_type_description' => $row->document_type->description,
                 'has_pdf' => $has_pdf,
+                'has_delete' => $has_delete,
                 'download_pdf' => $row->download_external_pdf,
                 'created_at' => $row->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $row->updated_at->format('Y-m-d H:i:s'),

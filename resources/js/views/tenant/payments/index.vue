@@ -36,7 +36,10 @@
                         <td>{{ row.total }}</td>
                         <td>{{ row.description }}</td>
                         <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
+                            <el-tooltip class="item" effect="dark" content="Eliminar" placement="top-end">
+                                <button type="button" class="btn btn-xs" @click.prevent="clickDelete(row.id)" v-if="row.has_delete"><i class="fa fa-trash-alt i-icon text-danger"></i></button>
+                                <button type="button" class="btn btn-xs" v-else><i class="fa fa-trash-alt i-icon text-disabled"></i></button>
+                            </el-tooltip>
                         </td>
                     </tr>
                     <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">

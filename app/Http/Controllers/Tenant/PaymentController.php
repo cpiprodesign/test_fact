@@ -50,7 +50,7 @@ class PaymentController extends Controller
 
         $payment_documents = Payment::where('payments.total', '>', 0)
             ->select('payments.id', 'documents.series', 'documents.number', 'payments.currency_type_id', 'payments.total', 'cat_payment_methods.description AS payment_method', 
-            'accounts.name AS account', 'symbol', 'persons.name AS customer', 'payments.created_at')
+            'accounts.name AS account', 'symbol', 'persons.name AS customer', 'payments.created_at', 'payments.pos_id')
             ->join('documents', 'documents.id', 'payments.document_id')
             ->join('persons', 'persons.id', 'payments.customer_id')
             ->join('cat_payment_methods', 'cat_payment_methods.id', 'payments.payment_method_id')
@@ -59,7 +59,7 @@ class PaymentController extends Controller
         
         $payment_sale_notes = Payment::where('payments.total', '>', 0)
             ->select('payments.id', 'sale_notes.series', 'sale_notes.number', 'payments.currency_type_id', 'payments.total', 'cat_payment_methods.description AS payment_method', 
-            'accounts.name AS account', 'symbol', 'persons.name AS customer', 'payments.created_at')
+            'accounts.name AS account', 'symbol', 'persons.name AS customer', 'payments.created_at', 'payments.pos_id')
             ->join('sale_notes', 'sale_notes.id', 'payments.sale_note_id')
             ->join('persons', 'persons.id', 'payments.customer_id')
             ->join('cat_payment_methods', 'cat_payment_methods.id', 'payments.payment_method_id')
@@ -68,14 +68,6 @@ class PaymentController extends Controller
 
         $records = $payment_documents->union($payment_sale_notes)->orderby('created_at', 'desc');
                 
-        //return compact('records');
-        
-
-
-        //SELECT tab.id, tab.series, tab.number, tab.`currency_type_id`, payment_method_id, account_id, tab.total, 'Venta' AS operation_type, null as detail
-        // FROM payments pay
-        // INNER JOIN documents tab ON tab.id = pay.document_id
-
         return new PaymentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
 
@@ -114,10 +106,6 @@ class PaymentController extends Controller
                         ->where('payments.currency_type_id', $currency)
                         ->where('payments.total', '>', 0)
                         ->first();
-
-        // $results = DB::select( DB::raw("SELECT * FROM some_table WHERE some_col = :somevariable"), array(
-        //     'somevariable' => $someVariable,
-        //     ));
         
         return $total;
     }
@@ -165,53 +153,56 @@ class PaymentController extends Controller
                 ];
             }
 
-            $fact = DB::connection('tenant')->transaction(function () use ($array){
+            if($request->input('total') > 0)
+            {
+                $fact = DB::connection('tenant')->transaction(function () use ($array){
 
-                $request = $array[0];
-                $pos_id = $array[1];
-
-                if(is_null($request->input('document_id')))
-                {
-                    $document = SaleNote::find($request->input('sale_note_id'));
-                    $document->total_paid += $request->input('total');
-                    $customer_id = $document->customer_id;
-                    $document->save();
-                }
-                else
-                {
-                    $document = Document::find($request->input('document_id'));
-                    $document->total_paid += $request->input('total');
-                    $customer_id = $document->customer_id;
-                    $document->save();
-                }                
-
-                $payment = new Payment();
-                $payment->customer_id = $customer_id;
-                $payment->pos_id = $pos_id;
-
-                if(is_null($request->input('description')))
-                {
-                    $payment->description = '';
-                }
-
-                $payment->fill($request->all());
-                $payment->save();
-
-                $account = Account::find($request->input('account_id'));
-                $account->current_balance += $request->input('total');
-                $account->save();
-
-                //inicio de caja
-                $pos = Pos::find($pos_id);
-                $pos->id = $pos_id;
-                $pos->close_amount += $request->input('total');
-                $pos->save();
-
-                //fin de caja
-
-                return $payment;
-            });
-        
+                    $request = $array[0];
+                    $pos_id = $array[1];
+    
+                    if(is_null($request->input('document_id')))
+                    {
+                        $document = SaleNote::find($request->input('sale_note_id'));
+                        $document->total_paid += $request->input('total');
+                        $customer_id = $document->customer_id;
+                        $document->save();
+                    }
+                    else
+                    {
+                        $document = Document::find($request->input('document_id'));
+                        $document->total_paid += $request->input('total');
+                        $customer_id = $document->customer_id;
+                        $document->save();
+                    }                
+    
+                    $payment = new Payment();
+                    $payment->customer_id = $customer_id;
+                    $payment->pos_id = $pos_id;
+    
+                    if(is_null($request->input('description')))
+                    {
+                        $payment->description = '';
+                    }
+    
+                    $payment->fill($request->all());
+                    $payment->save();
+    
+                    $account = Account::find($request->input('account_id'));
+                    $account->current_balance += $request->input('total');
+                    $account->save();
+    
+                    //inicio de caja
+                    $pos = Pos::find($pos_id);
+                    $pos->id = $pos_id;
+                    $pos->close_amount += $request->input('total');
+                    $pos->save();
+    
+                    //fin de caja
+    
+                    return $payment;
+                });
+            }
+            
             return [
                 'success' => true,
                 'message' => 'Pago registrado con éxito'
@@ -225,18 +216,33 @@ class PaymentController extends Controller
             $payment = Payment::findOrFail($id);
             $document_id = $payment->document_id;
             $account_id = $payment->account_id;
+            $sale_note_id = $payment->sale_note_id;
+            $pos_id = $payment->pos_id;
             $total = $payment->total;
             $payment->delete();
 
-            $document = Document::find($document_id);
-            $document->total_paid -= $total;
-            $document->save();
+            if(is_null($document_id))
+            {   
+                $document = SaleNote::find($sale_note_id);
+                $document->total_paid -= $total;
+                $document->save();
+            }
+            else if(is_null($sale_note_id))
+            {
+                $document = Document::find($document_id);
+                $document->total_paid -= $total;
+                $document->save();
+            }
+            
+            $pos = Pos::find($pos_id);
+            $pos->close_amount -= $total;
+            $pos->save();
 
             $account = Account::find($account_id);
             $account->current_balance -= $total;
             $account->save();
-        });        
-
+        });
+        
         return [
             'success' => true,
             'message' => 'Pago eliminado con éxito'
