@@ -40,14 +40,14 @@ class ExpenseController extends Controller
     public function totals(Request $request)
     {
         $totalPEN = DB::connection('tenant')
-                        ->table('payments')
+                        ->table('expenses')
                         ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
                         ->where($request->column, 'like', "%{$request->value}%")
                         ->where('currency_type_id', 'PEN')
                         ->first();
 
         $totalUSD = DB::connection('tenant')
-                    ->table('payments')
+                    ->table('expenses')
                     ->select(DB::raw('COUNT(*) as quantity'), DB::raw('SUM(total) as total'))
                     ->where($request->column, 'like', "%{$request->value}%")
                     ->where('currency_type_id', 'USD')

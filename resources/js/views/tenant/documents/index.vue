@@ -78,7 +78,10 @@
                             <span class="badge bg-secondary text-white bg-warning" v-if="row.total_to_pay > 0">Pendiente</span>
                         </td>
                         <td class="text-right">
-                            <el-tooltip class="item" effect="dark" content="Enviar a SUNAT/OSE" placement="top-end">
+                            <el-tooltip class="item" effect="dark" v-if="row.document_type_id == '03'" content="Boletas se envian como Resúmenes" placement="top-end">
+                                <button type="button" class="btn btn-xs"><i class="fa fa-file-export i-icon text-disabled"></i></button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" v-else="" content="Enviar a SUNAT/OSE" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickResend(row.id)" v-if="row.btn_resend"><i class="fa fa-file-export i-icon text-danger"></i></button>
                                 <button type="button" class="btn btn-xs" v-else=""><i class="fa fa-file-export i-icon text-disabled"></i></button>
                             </el-tooltip>
@@ -192,20 +195,6 @@
                 this.recordId = recordId
                 this.showDialogPay = true
             },
-//            clickTicket(voided_id, group_id) {
-//                this.$http.get(`/voided/ticket/${voided_id}/${group_id}`)
-//                    .then(response => {
-//                        if (response.data.success) {
-//                            this.$message.success(response.data.message)
-//                            this.getData()
-//                        } else {
-//                            this.$message.error(response.data.message)
-//                        }
-//                    })
-//                    .catch(error => {
-//                        this.$message.error(error.response.data.message)
-//                    })
-//            },
             clickDownload(download) {
                 window.open(download, '_blank');
             },

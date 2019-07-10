@@ -68,7 +68,7 @@
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.sale_unit_price}">
                             <label class="control-label">Precio Unitario (Venta)</label>
-                            <el-input v-model="form.sale_unit_price" dusk="sale_unit_price"></el-input>
+                            <el-input v-model="form.sale_unit_price" dusk="sale_unit_price" @blur="changePrice()"></el-input>
                             <small class="form-control-feedback" v-if="errors.sale_unit_price"
                                    v-text="errors.sale_unit_price[0]"></small>
                         </div>
@@ -93,8 +93,8 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.purchase_unit_price}">
-                            <label class="control-label">Precio Unitario (Compra)</label>
-                            <el-input v-model="form.purchase_unit_price" dusk="purchase_unit_price" @blur="changePrice()"></el-input>
+                            <label class="control-label">Costo Unidad</label>
+                            <el-input v-model="form.purchase_unit_price" dusk="purchase_unit_price"></el-input>
                             <small class="form-control-feedback" v-if="errors.purchase_unit_price"
                                    v-text="errors.purchase_unit_price[0]"></small>
                         </div>
@@ -172,36 +172,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col-md-12" v-if="form.item_price_list.length > 0">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Lista de Precios</th>
-                                        <th>Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(row, index) in form.item_price_list">
-                                        <td>
-                                            <el-select v-model="row.price_list_id">
-                                                <el-option v-for="option in price_list" :key="option.id" :value="option.id" :label="option.name"></el-option>
-                                            </el-select>
-                                        </td>
-                                        <td>
-                                            <el-input v-model="row.value" v-if="row.type==1" readonly=""></el-input>
-                                            <el-input v-model="row.value" v-if="row.type==2"></el-input>
-                                        </td>
-                                        <td class="series-table-actions text-right">
-                                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickCancel(index)">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> -->
                 </div>
             </div>
             <div v-show="recordId==null">
@@ -283,13 +253,12 @@
             clickCancel(index) {
                 this.form.item_price_list.splice(index, 1)
             },
-            changePrice()
-            {
+            changePrice(){
                 for (let i = 0; i < this.price_list.length; i++) {
 
                     if(this.price_list[i].type == 1)
                     {
-                        this.form.item_price_list[i].value = this.form.purchase_unit_price*(1-this.form.item_price_list[i].percentage/100)
+                        this.form.item_price_list[i].value = this.form.sale_unit_price*(1-this.form.item_price_list[i].percentage/100)
                     }
                 }
             },
@@ -336,7 +305,6 @@
                         .then(response => {
                             this.form = response.data.data
 
-                            //item_price_list
                             let temp_item_price_list = [];
 
                             for (let i = 0; i < this.price_list.length; i++) {
@@ -370,25 +338,20 @@
                             this.form.item_price_list = temp_item_price_list;
 
                             this.form.stock = 0;
-                            //temp_item_warehouse = [];
                         })
                 } else {
                     let temp_item_warehouse = [];
                     let temp_item_price_list = [];
-
-                    //item_warehouse
 
                     for (let i = 0; i < this.warehouses.length; i++) {
 
                         temp_item_warehouse.push({
                             "warehouse_id": this.warehouses[i].id,
                             "description": this.warehouses[i].description,
-                            // "item_id": this.recordId,
                             "quantity": 0
                         })
                     }
                    
-                    //item_price_list
                     for (let i = 0; i < this.price_list.length; i++) {
 
                         temp_item_price_list.push({
@@ -403,9 +366,6 @@
                     this.form.item_warehouse = temp_item_warehouse;
                     this.form.item_price_list = temp_item_price_list;
                     this.form.stock = 0;
-
-                    //temp_item_warehouse = [];
-                    //temp_item_price_list = [];
                 }
             },
             submit() {

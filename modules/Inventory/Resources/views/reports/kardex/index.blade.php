@@ -82,15 +82,15 @@
                                                     {{(Functions::formaterDecimal($value->quantity) < 0) ? "Venta":"Anulación"}}
                                                     @break
                                                 @case($models[1])
-                                                    {{"Compra"}}                                                    
+                                                    {{"Compra"}}
                                                     @break 
                                                     
                                                 @case($models[2])
-                                                    {{"Nota de venta"}}                                                    
+                                                    {{"Nota de venta"}}
                                                     @break  
 
                                                 @case($models[3])
-                                                    {{$value->inventory_kardexable->description}}                                                    
+                                                    {{$value->inventory_kardexable->description}}
                                                     @break  
                                             @endswitch
                                         </td>
@@ -106,49 +106,66 @@
                                                     {{ optional($value->inventory_kardexable)->series.'-'.optional($value->inventory_kardexable)->number }}
                                                     @break
                                                 @case($models[3])
-                                                    {{"-"}}                                                 
+                                                    {{"-"}}
                                                     @break  
                                             @endswitch
                                         </td>
                                         <td>
-                                            @switch($value->inventory_kardexable_type) 
-
+                                            @switch($value->inventory_kardexable_type)
                                                 @case($models[0])
                                                     {{ (Functions::formaterDecimal($value->quantity) > 0) ?  Functions::formaterDecimal($value->quantity):"-"}}
                                                     @break
-
                                                 @case($models[1])
-                                                    {{  Functions::formaterDecimal($value->quantity) }}                                                    
-                                                    @break 
-                                                    
+                                                    {{  Functions::formaterDecimal($value->quantity) }}
+                                                    @break
                                                 @case($models[3])
-                                                    {{ ($value->inventory_kardexable->type == 1 || $value->inventory_kardexable->type == 4) ? Functions::formaterDecimal($value->quantity) : "-" }}                                                    
+                                                    {{-- {{ ($value->inventory_kardexable->type == 1 || $value->inventory_kardexable->type == 4) ? Functions::formaterDecimal($value->quantity) : "-" }} --}}
+                                                    @if($value->inventory_kardexable->type == 1 || $value->inventory_kardexable->type == 4)
+                                                        @if($value->quantity > 0)
+                                                            {{  Functions::formaterDecimal($value->quantity) }}
+                                                        @else
+                                                            {{"-"}}
+                                                        @endif
+                                                    @elseif($value->inventory_kardexable->type == 2)
+                                                        @if($value->quantity > 0)
+                                                            {{  Functions::formaterDecimal($value->quantity) }}
+                                                        @endif
+                                                    @else
+                                                        {{"-"}}
+                                                    @endif
+
                                                     @break 
                                                 @default
-                                                    {{"-"}}                                                 
+                                                    {{"-"}}
                                                     @break  
                                             @endswitch
                                         </td>
                                         <td>
-                                        
                                             @switch($value->inventory_kardexable_type) 
                                                 @case($models[0])
                                                     {{ (Functions::formaterDecimal($value->quantity) < 0) ?  Functions::formaterDecimal($value->quantity):"-" }}                                                    
                                                     @break 
                                                 @case($models[2])
-                                                    {{  Functions::formaterDecimal($value->quantity) }}                                                    
+                                                    {{  Functions::formaterDecimal($value->quantity) }}
                                                     @break      
                                                 @case($models[3])
-                                                    {{ ($value->inventory_kardexable->type == 2 || $value->inventory_kardexable->type == 3) ? Functions::formaterDecimal($value->quantity) : "-" }}                                                    
+                                                    @if($value->inventory_kardexable->type == 2 || $value->inventory_kardexable->type == 3)
+                                                        @if($value->quantity < 0)
+                                                            {{  Functions::formaterDecimal($value->quantity) }} 
+                                                        @else
+                                                            {{"-"}}
+                                                        @endif
+                                                    @else
+                                                        {{"-"}}
+                                                    @endif
                                                     @break  
                                                 @default
-                                                    {{"-"}}                                                 
+                                                    {{"-"}}
                                                     @break  
                                             @endswitch
-                                        
                                         </td>
-                                        @php                  
-                                            $balance += Functions::formaterDecimal($value->quantity);    
+                                        @php
+                                            $balance += Functions::formaterDecimal($value->quantity);
                                         @endphp
                                         <td>{{Functions::formaterDecimal($balance)}}</td>
                                     </tr>

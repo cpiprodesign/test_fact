@@ -11,7 +11,7 @@ use App\Traits\ReportTrait;
 use App\Models\Tenant\{
     Establishment,
     Purchase,
-    Company,
+    Company
 };
 use Carbon\Carbon;
 

@@ -25,6 +25,8 @@
                 </div>
             </div>     
             <div class="el-form-item  col-xs-12"  v-if="document_types.length > 0">
+                <small>Tipo de Documento:</small>
+                <br>
                 <div class="el-form-item__content">
                     <el-select v-model="document_type" name="document_type" clearable placeholder="Tipo de Documento">
                         <el-option v-for="item in document_types" :key="item.id" :label="item.description.toUpperCase()" :value="item.id"></el-option>

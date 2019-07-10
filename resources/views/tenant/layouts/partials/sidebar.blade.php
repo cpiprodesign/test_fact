@@ -240,7 +240,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                     </li>
                     @endif
                     @if(in_array('reports', $vc_modules))
-                        <li class="nav-parent {{  (($path[0] === 'reports') && in_array($path[1], ['', 'purchases', 'expenses'])) ? 'nav-active nav-expanded' : ''}}">
+                        <li class="nav-parent {{  (($path[0] === 'reports') && in_array($path[1], ['', 'purchases', 'sells', 'customers', 'expenses'])) ? 'nav-active nav-expanded' : ''}}">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-chart-area" aria-hidden="true"></i>
                                 <span>Reportes</span>
@@ -251,12 +251,12 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                         Documentos
                                     </a>
                                 </li>
-                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
+                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'sells')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.sells.index')}}">
                                         Ventas
                                     </a>
                                 </li>
-                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
+                                <li class="{{(($path[0] === 'reports') && ($path[1] === 'customers')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.customers.index')}}">
                                         Ventas por Cliente
                                     </a>

@@ -41,7 +41,7 @@ class InventoryKardexServiceProvider extends ServiceProvider
             
             $document = $document_item->document;
             $factor = ($document->document_type_id === '07') ? 1 : -1;
-            $warehouse = $this->findWarehouse();
+            $warehouse = $this->findWarehouse($document->establishment_id);
             //$this->createInventory($document_item->item_id, $factor * $document_item->quantity, $warehouse->id);
             $this->createInventoryKardex($document_item->document, $document_item->item_id, ($factor * ($document_item->quantity * $presentationQuantity)), $warehouse->id);
             $this->updateStock($document_item->item_id, ($factor * ($document_item->quantity * $presentationQuantity)), $warehouse->id);

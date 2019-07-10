@@ -38,66 +38,62 @@
                                 @endif
                             </div>
                             <div class="row">
-                                <div class="card m-2">
-                                    <div class="card-body ">
-                                        <div class="table-responsive">
-                                            <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
-                                                <thead class="">
-                                                    <tr>
-                                                        <th class="">#</th>
-                                                        <th class="">Tipo</th>
-                                                        <th class="">Número</th>
-                                                        <th class="">Cliente</th>
-                                                        <th class="">N° Documento</th>
-                                                        <th class="">Total</th>
-                                                        <th class="">Total Pagado</th>
-                                                        <th class="">Pendiente</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @php
-                                                        $i = 1;
-                                                        $total = 0;
-                                                        $total_paid = 0;
-                                                        $total_balance = 0;
-                                                    @endphp
-                                                    @foreach($records as $key => $value)
-                                                        @php
-                                                            $balance = $value->total - $value->total_paid
-                                                        @endphp
-                                                        <tr>
-                                                            <td>{{$i}}</td>
-                                                            <td>{{$value->type}}</td>
-                                                            <td>{{$value->series}} - {{$value->number}}</td>
-                                                            <td>{{$value->name}}</td>
-                                                            <td>{{$value->document_number}}</td>
-                                                            <td>{{$value->total}}</td>
-                                                            <td>{{$value->total_paid}}</td>
-                                                            <td>{{$balance}}</td>
-                                                        </tr>
-                                                        @php
-                                                            $i++;
-                                                            $total = $value->total + $total;
-                                                            $total_paid = $value->total_paid + $total_paid;
-                                                            $total_balance = $balance + $total_balance;
-                                                        @endphp
-                                                    @endforeach
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th colspan="4"></th>
-                                                        <th class="font-weight-bold">Totales</th>
-                                                        <th class="font-weight-bold">{{number_format($total, 2)}}</th>
-                                                        <th class="font-weight-bold">{{number_format($total_paid, 2)}}</th>
-                                                        <th class="font-weight-bold">{{number_format($total_balance, 2)}}</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
+                                <div class="table-responsive">
+                                    <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">
+                                        <thead class="">
+                                            <tr>
+                                                <th class="">#</th>
+                                                <th class="">Tipo</th>
+                                                <th class="">Número</th>
+                                                <th class="">Cliente</th>
+                                                <th class="">N° Documento</th>
+                                                <th class="">Total</th>
+                                                <th class="">Total Pagado</th>
+                                                <th class="">Pendiente</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                $i = 1;
+                                                $total = 0;
+                                                $total_paid = 0;
+                                                $total_balance = 0;
+                                            @endphp
+                                            @foreach($records as $key => $value)
+                                                @php
+                                                    $balance = $value->total - $value->total_paid
+                                                @endphp
+                                                <tr>
+                                                    <td>{{$i}}</td>
+                                                    <td>{{$value->type}}</td>
+                                                    <td>{{$value->series}} - {{$value->number}}</td>
+                                                    <td>{{$value->name}}</td>
+                                                    <td>{{$value->document_number}}</td>
+                                                    <td>{{$value->total}}</td>
+                                                    <td>{{$value->total_paid}}</td>
+                                                    <td>{{$balance}}</td>
+                                                </tr>
+                                                @php
+                                                    $i++;
+                                                    $total = $value->total + $total;
+                                                    $total_paid = $value->total_paid + $total_paid;
+                                                    $total_balance = $balance + $total_balance;
+                                                @endphp
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="4"></th>
+                                                <th class="font-weight-bold">Totales</th>
+                                                <th class="font-weight-bold">{{number_format($total, 2)}}</th>
+                                                <th class="font-weight-bold">{{number_format($total_paid, 2)}}</th>
+                                                <th class="font-weight-bold">{{number_format($total_balance, 2)}}</th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
-                            </div>                            
+                            </div>
                             <div class="pagination-wrapper">
                                 {{-- {{ $records->appends(['search' => Session::get('form_document_list')])->render()  }} --}}
                                 {{-- {{$records->links()}} --}}
