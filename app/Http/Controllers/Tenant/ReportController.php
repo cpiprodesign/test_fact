@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Tenant;
 
-use App\Http\Resources\Tenant\DocumentCollection;
 use App\Models\Tenant\Catalogs\DocumentType;
 use App\Http\Controllers\Controller;
-use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Exports\DocumentExport;
 use Illuminate\Http\Request;
@@ -13,9 +11,8 @@ use App\Traits\ReportTrait;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tenant\{
     Establishment,
-    Document,
     Company,
-    Person,
+    Person
 };
 use Carbon\Carbon;
 
@@ -45,7 +42,8 @@ class ReportController extends Controller
         return view('tenant.reports.index', compact('documentTypes', 'customers', 'establishments'));
     }
     
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $documentTypes = DocumentType::all();
         $customers = Person::whereType('customers')->orderBy('name')->get()->transform(function ($row) {
             return [
@@ -70,7 +68,8 @@ class ReportController extends Controller
         return view("tenant.reports.index", compact("reports", "a", "d", "td", "documentTypes", "customers", "customer_td", "establishments", "establishment_td"));
     }
     
-    public function pdf(Request $request) {        
+    public function pdf(Request $request)
+    {        
         $d = $request->d;
         $a = $request->a;
         $td = $request->td;
@@ -88,7 +87,8 @@ class ReportController extends Controller
         return $pdf->download($filename.'.pdf');
     }
     
-    public function excel(Request $request) {
+    public function excel(Request $request)
+    {
         $d = $request->d;
         $a = $request->a;
         $td = $request->td;
@@ -101,6 +101,7 @@ class ReportController extends Controller
         $records = $this->records($d, $a, $td, $customer_td, $establishment_td);
         
         return (new DocumentExport)
+                ->excel_view()
                 ->records($records)
                 ->company($company)
                 ->establishment($establishment)
@@ -144,77 +145,5 @@ class ReportController extends Controller
         $items = DB::connection('tenant')->select($sql);
 
         return $items;
-    }
-
-    public function getReports($td, $customer_td)
-    {
-        if (is_null($td) && is_null($customer_td))
-        {
-            $reports = Document::with(['state_type', 'person'])
-                ->latest()
-                ->get();
-        }
-        else if(!is_null($td) && is_null($customer_td))
-        {
-            $reports = Document::with([ 'state_type', 'person'])
-                ->latest()
-                ->where('document_type_id', $td)
-                ->get();
-        }
-        else if(is_null($td) && !is_null($customer_td))
-        {
-            $reports = Document::with([ 'state_type', 'person'])
-                ->latest()
-                ->where('customer_id', $customer_td)
-                ->get();
-        }
-        else 
-        {
-            $reports = Document::with([ 'state_type', 'person'])
-                ->latest()
-                ->where('document_type_id', $td)
-                ->where('customer_id', $customer_td)
-                ->get();
-        }
-
-        return $reports;
-    }
-
-    public function getReports2($td, $customer_td, $d, $a)
-    {
-        if (is_null($td) && is_null($customer_td))
-        {
-            $reports = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->get();
-        }
-        else if(!is_null($td) && is_null($customer_td))
-        {
-            $reports = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->where('document_type_id', $td)
-                    ->get();
-        }
-        else if(is_null($td) && !is_null($customer_td))
-        {
-            $reports = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->where('customer_id', $customer_td)
-                    ->get();
-        }
-        else 
-        {
-            $reports = Document::with([ 'state_type', 'person'])
-                    ->whereBetween('date_of_issue', [$d, $a])
-                    ->latest()
-                    ->where('document_type_id', $td)
-                    ->where('customer_id', $customer_td)
-                    ->get();
-        }
-
-        return $reports;
     }
 }

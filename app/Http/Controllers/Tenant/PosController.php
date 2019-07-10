@@ -84,12 +84,12 @@ class PosController extends Controller
 
     public function details($pos_id)
     {
-        $sql = "SELECT dat.*, symbol FROM (SELECT tab.id, tab.series, tab.number, tab.`currency_type_id`, tab.total, 'Venta' AS operation_type, null as detail
+        $sql = "SELECT dat.*, symbol FROM (SELECT tab.id, tab.series, tab.number, tab.`currency_type_id`, pay.total, 'Venta' AS operation_type, null as detail
                 FROM payments pay
                 INNER JOIN documents tab ON tab.id = pay.document_id
                 WHERE pay.pos_id = $pos_id
                 UNION ALL
-                SELECT tab.id, tab.series, tab.number, tab.`currency_type_id`, tab.total, 'Nota de Venta' AS operation_type, null
+                SELECT tab.id, tab.series, tab.number, tab.`currency_type_id`, pay.total, 'Nota de Venta' AS operation_type, null
                 FROM payments pay
                 INNER JOIN sale_notes tab ON tab.id = pay.sale_note_id
                 WHERE pay.pos_id = $pos_id

@@ -34,6 +34,8 @@
                 </div>
             </div>
             <div class="el-form-item  col-xs-12">
+                <small></small>
+                <br>
                 <div class="el-form-item__content">
                     <button class="btn btn-custom" type="submit"><i class="fa fa-search"></i> Buscar</button>
                 </div>
