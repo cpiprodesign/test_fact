@@ -28,10 +28,12 @@ class AlertDocumentController extends Controller
 
     public function records(Request $request)
     {
-        $records = DB::connection('tenant')->select("SELECT doc.id, per.name, per.number as customer_number, doc.`document_type_id`, doc.`series`, doc.`number`, doc.`date_of_issue`, doc.`total`, 7 - DATEDIFF(CURRENT_DATE(), doc.`date_of_issue`) as diferent
+        $date = date("Y-m-d");
+        $records = DB::connection('tenant')->select("SELECT doc.id, per.name, per.number as customer_number, doc.`document_type_id`, doc.`series`, doc.`number`, 
+                doc.`date_of_issue`, doc.`total`, 7 - DATEDIFF('".$date."', doc.`date_of_issue`) as diferent
                     FROM documents doc
                     INNER JOIN persons per ON per.id = doc.`customer_id`
-                    WHERE doc.`state_type_id` = '01' AND DATEDIFF(CURRENT_DATE(), doc.`date_of_issue`) > 3
+                    WHERE doc.`state_type_id` = '01' AND DATEDIFF('".$date."', doc.`date_of_issue`) > 3
                     ORDER BY doc.`date_of_issue` desc");
 
         return compact('records');
