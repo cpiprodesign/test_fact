@@ -219,7 +219,6 @@
                         this.$message.error(error.response.data.message)
                     })
             },
-
             clickOptions(recordId = null) {
                 this.recordId = recordId
                 this.showDialogOptions = true

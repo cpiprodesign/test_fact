@@ -21,19 +21,24 @@ if ($hostname) {
         Route::get('download/{model}/{type}/{id}/{format?}', 'Tenant\DownloadController@downloadExternal2')->name('tenant.download.id');
         /*fin cotizacion*/
 
-//        Route::middleware(['auth', 'module'])->group(function() {
+        //Route::middleware(['auth', 'module'])->group(function() {
         Route::middleware(['auth'])->group(function () {
             Route::get('/', function () {
                 return redirect()->route('tenant.dashboard');
             });
 
+            //dashboard
             Route::get('dashboard', 'Tenant\HomeController@index')->name('tenant.dashboard');
             Route::get('dashboard/sells', 'Tenant\HomeController@sells')->name('tenant.dashboard.sells');
             Route::get('dashboard/load_sells/{establishment_id}/{range}', 'Tenant\HomeController@load_sells');
             Route::get('dashboard/establishments', 'Tenant\HomeController@establishments');
             Route::get('dashboard/load/{establishment_id}', 'Tenant\HomeController@load');
-            Route::get('dashboard/chart_cash_flow/{establishment_id}', 'Tenant\HomeController@chart_cash_flow');            
-            Route::get('dashboard/chart_pie_total/{establishment_id}', 'Tenant\HomeController@chart_pie_total');            
+            Route::get('dashboard/chart_cash_flow/{establishment_id}', 'Tenant\HomeController@chart_cash_flow');
+            Route::get('dashboard/chart_pie_total/{establishment_id}', 'Tenant\HomeController@chart_pie_total');
+
+            //alerts
+            Route::get('alerts/documents', 'Tenant\AlertDocumentController@index')->name('tenant.alerts.documents.index');
+            Route::get('alerts/documents/records', 'Tenant\AlertDocumentController@records');
 
             Route::get('catalogs', 'Tenant\CatalogController@index')->name('tenant.catalogs.index');
             Route::get('advanced', 'Tenant\AdvancedController@index')->name('tenant.advanced.index');
@@ -113,7 +118,7 @@ if ($hostname) {
             //Price List
             Route::get('price-list', 'Tenant\PriceListController@index')->name('tenant.price_list.index');
             Route::get('price-list/columns', 'Tenant\PriceListController@columns');
-            // Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
+            //Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
             Route::get('price-list/record/{price_list}', 'Tenant\PriceListController@record');
             Route::post('price-list', 'Tenant\PriceListController@store');
             Route::get('price-list/records', 'Tenant\PriceListController@records');
