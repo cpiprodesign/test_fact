@@ -17,7 +17,7 @@
                 @php
                     $notificacion = Illuminate\Support\Facades\DB::connection('tenant')->select("SELECT COUNT(*) AS quantity
                     FROM documents doc
-                    WHERE doc.`state_type_id` = '01' AND DATEDIFF(CURRENT_DATE(), doc.`date_of_issue`) > 3
+                    WHERE doc.`state_type_id` = '01' AND DATEDIFF('".date("Y-m-d")."', doc.`date_of_issue`) > 3
                     ORDER BY doc.`date_of_issue` desc");
                 @endphp
                 @if($notificacion[0]->quantity > 0)  
