@@ -74,8 +74,8 @@
                             'bg-dark': (row.state_type_id === '09')
                         }">{{ row.state_type_description }}</span></td>
                         <td class="text-right">
-                            <span class="badge bg-secondary text-white bg-success" v-if="row.total_to_pay == 0">Pagado</span>
                             <span class="badge bg-secondary text-white bg-warning" v-if="row.total_to_pay > 0">Pendiente</span>
+                            <span class="badge bg-secondary text-white bg-success" v-else>Pagado</span>
                         </td>
                         <td class="text-right">
                             <el-tooltip class="item" effect="dark" v-if="row.document_type_id == '03'" content="Boletas se envian como Resúmenes" placement="top-end">
@@ -101,7 +101,7 @@
                                 <a class="btn btn-xs" v-else=""><i class="fa fa-clipboard-check i-icon text-disabled"></i></a>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="Agregar pago" placement="top-end">
-                                <button type="button" class="btn btn-xs" @click.prevent="clickPay(row.id)" v-if="row.total - row.total_paid > 0"><i class="fa fa-money-bill-wave i-icon text-warning"></i></button>
+                                <button type="button" class="btn btn-xs" @click.prevent="clickPay(row.id)" v-if="row.total_to_pay > 0"><i class="fa fa-money-bill-wave i-icon text-warning"></i></button>
                                 <button type="button" class="btn btn-xs" v-else="" disabled><i class="fa fa-money-bill-wave i-icon text-disabled"></i></button>
                             </el-tooltip>
                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -212,7 +212,6 @@
                         this.$message.error(error.response.data.message)
                     })
             },
-
             clickOptions(recordId = null) {
                 this.recordId = recordId
                 this.showDialogOptions = true
