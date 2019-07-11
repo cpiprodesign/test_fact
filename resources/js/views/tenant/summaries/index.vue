@@ -51,7 +51,7 @@
                                 <button type="button" class="btn waves-effect waves-light btn-xs btn-warning"
                                         @click.prevent="clickTicket(row.id)"
                                         dusk="consult-ticket"
-                                        v-if="row.btn_ticket">Consultar</button>
+                                        v-if="row.btn_ticket">Enviar a SUNAT/OSE</button>
                             </td>
                         </tr>
                         </tbody>

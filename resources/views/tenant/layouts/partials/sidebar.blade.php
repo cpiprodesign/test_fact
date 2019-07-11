@@ -25,6 +25,19 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </a>
                         </li>
                     @endif
+                    <li class="nav-parent {{ in_array($path[0], ['alerts'])?'nav-active nav-expanded':'' }}">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-bell" aria-hidden="true"></i>
+                            <span>Alertas</span>
+                        </a>
+                        <ul class="nav nav-children" style="">
+                            <li class="{{ ($path[0] === 'alerts' && $path[1] != 'documentos')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.alerts.documents.index')}}">
+                                    Pendientes SUNAT/OSE
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     @if(in_array('documents', $vc_modules))
                     <li class="
                         nav-parent

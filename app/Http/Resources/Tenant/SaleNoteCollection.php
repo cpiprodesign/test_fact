@@ -51,7 +51,7 @@ class SaleNoteCollection extends ResourceCollection
                 'total_igv' => $row->total_igv,
                 'total' => $row->total,
                 'total_paid' => $row->total_paid,
-                'total2' => number_format(($row->total - $row->total_paid), 2),
+                'total_to_pay' => number_format($row->total - $row->total_paid, 2, ".", ""),
                 'document_type_description' => $row->document_type->description,
                 'has_pdf' => $has_pdf,
                 'has_delete' => $has_delete,
