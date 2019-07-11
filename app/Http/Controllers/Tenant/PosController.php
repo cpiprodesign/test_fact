@@ -49,7 +49,7 @@ class PosController extends Controller
         }
         else
         {
-            $records = Pos::where('user_id', auth()->user()->establishment_id)->orderBy('created_at', 'desc')->withTrashed();
+            $records = Pos::where('user_id', auth()->id())->orderBy('created_at', 'desc')->withTrashed();
         }
 
         $request->column = explode('.', $request->column);
