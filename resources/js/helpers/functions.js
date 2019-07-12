@@ -53,11 +53,10 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
 
     let price = calculateIgv(row.item.included_igv, row.affectation_igv_type_id, value)
 
-    row.unit_price = formaterNumber(value)
+    row.unit_price = value
 
     let total_value_partial = (price * row.quantity)
 
-    console.log("total_value "+total_value_partial);
     /* Discounts */
     let discount_base = 0
     let discount_no_base = 0
@@ -157,7 +156,7 @@ function calculateIgv(included_igv, affectation_igv_type_id, value){
     
     let percentage_igv = 18
     let price = value
-    let price_igv = value
+    //let price_igv = value
 
     if(included_igv){
         if (affectation_igv_type_id === '10'){

@@ -118,10 +118,10 @@
                                         <td>{{ row.item.description }}<br/><small>{{ row.affectation_igv_type.description }}</small></td>
                                         <td class="text-center">{{ row.item.unit_type_id }}</td>
                                         <td class="text-right">{{ row.quantity }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ row.total_discount }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_discount) }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_charge) }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
                                         <td class="text-right">
                                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveItem(index)">x</button>
                                         </td>
@@ -197,7 +197,8 @@
                 all_series: [],
                 series: [],
                 currency_type: {},
-                purchaseNewId: null
+                purchaseNewId: null,
+                decimal: 2
             }
         },
         created() {
@@ -215,7 +216,8 @@
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
 
-
+                    this.decimal = response.data.decimal;
+                    
                     this.changeDateOfIssue()
                     this.changeDocumentType()
                     this.changeCurrencyType()
@@ -403,6 +405,9 @@
 
                 })
             },
+            formaterNumber(value, decimal){
+                return formaterNumber(value, decimal);
+            }
         }
     }
 </script>
