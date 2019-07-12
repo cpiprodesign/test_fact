@@ -12,6 +12,7 @@ use App\Models\Tenant\Purchase;
 use App\Models\Tenant\PurchaseItem;
 use App\CoreFacturalo\Requests\Inputs\Common\LegendInput;
 use App\Models\Tenant\Item;
+use App\Models\Tenant\Configuration;
 use App\Http\Resources\Tenant\PurchaseCollection;
 use App\Http\Resources\Tenant\PurchaseResource;
 use App\Models\Tenant\Catalogs\AffectationIgvType;  
@@ -106,12 +107,13 @@ class PurchaseController extends Controller
         }
 
         $currency_types = CurrencyType::whereActive()->get();
-        $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();        
+        $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
         $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
         $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $company = Company::active();
+        $decimal = Configuration::first()->decimal;
 
-        return compact('suppliers', 'establishment','currency_types', 'discount_types', 'charge_types', 'document_types_invoice','company', 'establishments');
+        return compact('suppliers', 'establishment','currency_types', 'discount_types', 'charge_types', 'document_types_invoice','company', 'establishments', 'decimal');
     }
 
     public function tables2(Purchase $purchase)

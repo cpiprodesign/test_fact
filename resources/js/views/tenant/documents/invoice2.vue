@@ -146,7 +146,7 @@
                                                 <td>{{ row.item.description }}<br/><small></small></td>
                                                 <td class="text-center">{{ row.item.unit_type_id }}</td>
                                                 <td class="text-right">{{ row.quantity }}</td>
-                                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price) }}</td>
+                                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
                                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_value) }}</td>
                                                 <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
                                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
@@ -242,7 +242,8 @@
                 all_series: [],
                 series: [],
                 currency_type: {},
-                documentNewId: null
+                documentNewId: null,
+                decimal: 2
             }
         },
         async created() {
@@ -276,6 +277,8 @@
                     {
                         this.form.document_type_id = '01'
                     }
+
+                    this.decimal = response.data.decimal;
                     
                     this.changeEstablishment()
                     this.changeDateOfIssue()
@@ -488,8 +491,8 @@
                     this.form.customer_id = customer_id
                 })
             },
-            formaterNumber(value){
-                return formaterNumber(value);
+            formaterNumber(value, decimal){
+                return formaterNumber(value, decimal);
             }
         }
     }

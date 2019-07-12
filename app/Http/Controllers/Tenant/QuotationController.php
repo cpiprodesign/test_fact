@@ -124,9 +124,10 @@ class QuotationController extends Controller
         $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $company = Company::active();
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
+        $decimal = Configuration::first()->decimal;
 
         return compact('customers', 'establishments', 'series', 'document_types_invoice', 'currency_types', 'operation_types',
-                       'discount_types', 'charge_types', 'company', 'document_type_03_filter');
+                       'discount_types', 'charge_types', 'company', 'document_type_03_filter', 'decimal');
     }
 
     public function item_tables()

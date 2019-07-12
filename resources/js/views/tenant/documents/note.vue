@@ -133,7 +133,7 @@
                                         <td>{{ row.item.description }}<br/><small>{{ row.affectation_igv_type.description }}</small></td>
                                         <td class="text-center">{{ row.item.unit_type_id }}</td>
                                         <td class="text-right">{{ row.quantity }}</td>
-                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price) }}</td>
+                                        <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
                                         <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_discount) }}</td>
                                         <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_charge) }}</td>
                                         <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
@@ -205,6 +205,7 @@
                 note_credit_types: [],
                 note_debit_types: [],
                 operation_types: [],
+                decimal: 2
             }
         },
         created() {
@@ -218,6 +219,8 @@
                     this.note_credit_types = response.data.note_credit_types
                     this.note_debit_types = response.data.note_debit_types
                     this.operation_types = response.data.operation_types
+
+                    this.decimal = response.data.decimal
 
                     this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
@@ -371,8 +374,8 @@
             close() {
                 location.href = '/documents'
             },
-            formaterNumber(value){
-                return formaterNumber(value);
+            formaterNumber(value, decimal){
+                return formaterNumber(value, decimal);
             }
         }
     }
