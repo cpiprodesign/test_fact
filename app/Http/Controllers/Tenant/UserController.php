@@ -45,7 +45,7 @@ class UserController extends Controller
             $user->api_token = str_random(50);
             $user->password = bcrypt($request->input('password'));
         }
-        elseif ($request->input('password') !== '')
+        elseif ($request->input('password') !== '' && !is_null($request->input('password')))
         {
             if (env('PASSWORD_CHANGE'))
             {
