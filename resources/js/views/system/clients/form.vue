@@ -58,12 +58,12 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group" :class="{'has-danger': errors.plan_id}">
+                        <div class="form-group" :class="{'has-danger': errors.soap_send_id}">
                             <label class="control-label">SOAP Envio</label>
                             <el-select v-model="form.soap_send_id">
                                 <el-option v-for="(option, index) in soap_sends" :key="index" :value="index" :label="option"></el-option>
                             </el-select>
-                            <small class="form-control-feedback" v-if="errors.plan_id" v-text="errors.plan_id[0]"></small>
+                            <small class="form-control-feedback" v-if="errors.soap_send_id" v-text="errors.soap_send_id[0]"></small>
                         </div>
                     </div>
                 </div>

@@ -37,6 +37,9 @@ class ClientRequest extends FormRequest
             'plan_id' => [
                 'required', 
             ],
+            'soap_send_id' => [
+                'required', 
+            ],
         ];
     }
 }
