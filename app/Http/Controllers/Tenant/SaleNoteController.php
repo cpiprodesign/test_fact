@@ -17,6 +17,7 @@ use App\Models\Tenant\Catalogs\PriceType;
 use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Company;
+use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Pos;
 use App\Models\Tenant\SaleNote;
 use App\Models\Tenant\SaleNoteItem;
@@ -104,8 +105,9 @@ class SaleNoteController extends Controller
         $company = Company::active();
         $payment_methods = PaymentMethod::whereActive()->get();
         $accounts = Account::all();
+        $decimal = Configuration::first()->decimal;
 
-        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'currency_types', 'company', 'document_type_03_filter', 'payment_methods', 'accounts');
+        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'currency_types', 'company', 'document_type_03_filter', 'payment_methods', 'accounts', 'decimal');
     }
 
     public function item_tables()

@@ -147,7 +147,7 @@
                                                 <td>{{ row.item.description }}<br/><small>{{ row.affectation_igv_type.description }}</small></td>
                                                 <td class="text-center">{{ row.item.unit_type_id }}</td>
                                                 <td class="text-right">{{ row.quantity }}</td>
-                                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price) }}</td>
+                                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
                                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_value) }}</td>
                                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
                                                 <td class="text-right">
@@ -241,7 +241,8 @@
                 all_series: [],
                 series: [],
                 currency_type: {},
-                documentNewId: null
+                documentNewId: null,
+                decimal: 2
             }
         },
         async created() {
@@ -258,6 +259,8 @@
                     this.document_type_03_filter = response.data.document_type_03_filter
                     this.payment_methods = response.data.payment_methods
                     this.accounts = response.data.accounts
+
+                    this.decimal = response.data.decimal;
 
                     this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
@@ -475,8 +478,8 @@
                     this.form.customer_id = customer_id
                 })
             },
-            formaterNumber(value){
-                return formaterNumber(value);
+            formaterNumber(value, decimal){
+                return formaterNumber(value, decimal);
             }
         }
     }

@@ -198,7 +198,7 @@
                                                 <td style="width: 300px">{{ row.item.description }}<br/><small>{{ row.affectation_igv_type.description }}</small></td>
                                                 <td class="text-center">{{ row.item.unit_type_id }}</td>
                                                 <td class="text-right">{{ row.quantity }}</td>
-                                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price) }}</td>
+                                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
                                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_value) }}</td>
                                                 <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
                                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
@@ -578,11 +578,8 @@
                     this.form.customer_id = customer_id
                 })
             },
-            formatPrice(value){
-                return value.toFixed(this.decimal);
-            },
-            formaterNumber(value){
-                return formaterNumber(value);
+            formaterNumber(value, decimal){
+                return formaterNumber(value, decimal);
             }
         }
     }

@@ -31,7 +31,7 @@
                                 <small>{{option.unit_type_id}}</small>
                                 <br>
                                 <span class="font-weight-bold text-primary">
-                                    {{option.currency_type_symbol}} {{ formaterNumber(option.sale_unit_price) }}
+                                    {{option.currency_type_symbol}} {{ formaterNumber(option.sale_unit_price, decimal) }}
                                 </span>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                                     </small>
                                 </td>
                                 <td class="text-right">{{ row.quantity }}</td>
-                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price) }}</td>
+                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_value) }}</td>
                                 <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
 
@@ -581,7 +581,8 @@
                 items: [],
                 tempItem: [],
                 tituloPago: "",
-                affectation_igv_types: {}
+                affectation_igv_types: {},
+                decimal: 2
             }
         },
         async created() {
@@ -600,6 +601,8 @@
                     this.charges_types = response.data.charges_types
                     this.company = response.data.company
                     this.document_type_03_filter = response.data.document_type_03_filter
+
+                    this.decimal = response.data.decimal;
 
                     this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
                     this.form.establishment_id = (this.establishments.length > 0) ? this.establishments[0].id : null
@@ -1011,8 +1014,8 @@
 
                 return price_array
             },
-            formaterNumber(value){
-                return formaterNumber(value);
+            formaterNumber(value, decimal){
+                return formaterNumber(value, decimal);
             }
         }
     }

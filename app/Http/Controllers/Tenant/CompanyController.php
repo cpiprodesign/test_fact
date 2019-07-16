@@ -31,6 +31,13 @@ class CompanyController extends Controller
         return $record;
     }
 
+    public function configuration()
+    {
+        $configuration = Configuration::first();
+
+        return $configuration;
+    }
+
     public function store(CompanyRequest $request)
     {
         $id = $request->input('id');
