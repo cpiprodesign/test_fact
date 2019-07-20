@@ -136,22 +136,27 @@ class DocumentInput
                     'unit_value' => $row['unit_value'],
                     'price_type_id' => $row['price_type_id'],
                     'unit_price' => $row['unit_price'],
+
                     'affectation_igv_type_id' => $row['affectation_igv_type_id'],
                     'total_base_igv' => $row['total_base_igv'],
                     'percentage_igv' => $row['percentage_igv'],
                     'total_igv' => $row['total_igv'],
+
                     'system_isc_type_id' => $row['system_isc_type_id'],
                     'total_base_isc' => Functions::valueKeyInArray($row, 'total_base_isc', 0),
                     'percentage_isc' => Functions::valueKeyInArray($row, 'percentage_isc', 0),
                     'total_isc' => Functions::valueKeyInArray($row, 'total_isc', 0),
+
                     'total_base_other_taxes' => Functions::valueKeyInArray($row, 'total_base_other_taxes', 0),
                     'percentage_other_taxes' => Functions::valueKeyInArray($row, 'percentage_other_taxes', 0),
                     'total_other_taxes' => Functions::valueKeyInArray($row, 'total_other_taxes', 0),
+
                     'total_taxes' => $row['total_taxes'],
                     'total_value' => $row['total_value'],
                     'total_charge' => Functions::valueKeyInArray($row, 'total_charge', 0),
                     'total_discount' => Functions::valueKeyInArray($row, 'total_discount', 0),
                     'total' => $row['total'],
+                    
                     'attributes' => self::attributes($row),
                     'discounts' => self::discounts($row),
                     'charges' => self::charges($row),
