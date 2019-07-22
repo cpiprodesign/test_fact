@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-Type" content="application/pdf; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
+        <title>Reporte de Ventas</title>
         <style>
             html {
                 font-family: sans-serif;
@@ -53,7 +53,7 @@
     </head>
     <body>
         <div>
-            <p align="center" class="title"><strong>Reporte Documentos</strong></p>
+            <p align="center" class="title"><strong>Reporte de Ventas</strong></p>
         </div>
         <div style="margin-top:20px; margin-bottom:20px;">
             <table>
@@ -86,6 +86,7 @@
                                 <th></th>
                                 <th>Tipo</th>
                                 <th>Número</th>
+                                <th>Fecha</th>
                                 <th>Cliente</th>
                                 <th>N° Documento</th>
                                 <th>Total</th>
@@ -108,6 +109,7 @@
                                     <td class="celda">{{$i}}</td>
                                     <td class="celda">{{$value->type}}</td>
                                     <td class="celda">{{$value->series}} - {{$value->number}}</td>
+                                    <td class="celda">{{$value->date_of_issue}}</td>
                                     <td class="celda">{{$value->name}}</td>
                                     <td class="celda">{{$value->document_number}}</td>
                                     <td class="celda">{{$value->total}}</td>
@@ -124,7 +126,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="4"></th>
+                                <th colspan="5"></th>
                                 <th class="font-weight-bold">Totales</th>
                                 <th class="font-weight-bold">{{number_format($total, 2)}}</th>
                                 <th class="font-weight-bold">{{number_format($total_paid, 2)}}</th>
