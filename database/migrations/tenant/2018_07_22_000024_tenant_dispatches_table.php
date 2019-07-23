@@ -15,7 +15,7 @@ class TenantDispatchesTable extends Migration
     {
         Schema::create('dispatches', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->uuid('external_id');
             $table->unsignedInteger('establishment_id');
             $table->json('establishment');

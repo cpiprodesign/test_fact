@@ -6,7 +6,7 @@ $hostname = app(Hyn\Tenancy\Contracts\CurrentHostname::class);
 
 if ($hostname) {
     Route::domain($hostname->fqdn)->group(function () {
-
+        Config::set('database.default', app(Hyn\Tenancy\Database\Connection::class)->tenantName());
         Auth::routes();
 
         Route::get('search', 'Tenant\SearchController@index')->name('search.index');
@@ -21,7 +21,7 @@ if ($hostname) {
         Route::get('download/{model}/{type}/{id}/{format?}', 'Tenant\DownloadController@downloadExternal2')->name('tenant.download.id');
         /*fin cotizacion*/
 
-        //Route::middleware(['auth', 'module'])->group(function() {
+//        Route::middleware(['auth', 'module'])->group(function() {
         Route::middleware(['auth'])->group(function () {
             Route::get('/', function () {
                 return redirect()->route('tenant.dashboard');
@@ -33,8 +33,8 @@ if ($hostname) {
             Route::get('dashboard/load_sells/{establishment_id}/{range}', 'Tenant\HomeController@load_sells');
             Route::get('dashboard/establishments', 'Tenant\HomeController@establishments');
             Route::get('dashboard/load/{establishment_id}', 'Tenant\HomeController@load');
-            Route::get('dashboard/chart_cash_flow/{establishment_id}', 'Tenant\HomeController@chart_cash_flow');
-            Route::get('dashboard/chart_pie_total/{establishment_id}', 'Tenant\HomeController@chart_pie_total');
+            Route::get('dashboard/chart_cash_flow/{establishment_id}', 'Tenant\HomeController@chart_cash_flow');            
+            Route::get('dashboard/chart_pie_total/{establishment_id}', 'Tenant\HomeController@chart_pie_total');            
 
             //alerts
             Route::get('alerts/documents', 'Tenant\AlertDocumentController@index')->name('tenant.alerts.documents.index');
@@ -144,13 +144,13 @@ if ($hostname) {
             Route::delete('payments/{payment}', 'Tenant\PaymentController@destroy');
 
             //Accounts
-            Route::get('accounts', 'Tenant\AccountController@index')->name('tenant.accounts.index');
+            Route::get('accounts', 'Tenant\AccountController@index')->name('tenant.accounts.index')->middleware('can:tenant.accounts.index');
             Route::get('accounts/columns', 'Tenant\AccountController@columns');
             Route::get('accounts/tables', 'Tenant\AccountController@tables');
             Route::get('accounts/record/{account}', 'Tenant\AccountController@record');
-            Route::post('accounts', 'Tenant\AccountController@store');
+            Route::post('accounts', 'Tenant\AccountController@store')->middleware('can:tenant.accounts.store');
             Route::get('accounts/records', 'Tenant\AccountController@records');
-            Route::delete('accounts/{account}', 'Tenant\AccountController@destroy');
+            Route::delete('accounts/{account}', 'Tenant\AccountController@destroy')->middleware('can:tenant.accounts.destroy');
 
             //Customers
 //            Route::get('customers', 'Tenant\CustomerController@index')->name('tenant.customers.index');
@@ -307,7 +307,7 @@ if ($hostname) {
 
             Route::get('dispatches/resend/{document}', 'Tenant\DispatchController@resend');
 
-            Route::get('reports', 'Tenant\ReportController@index')->name('tenant.reports.index');
+            Route::get('reports', 'Tenant\ReportController@index')->name('tenant.reports.index')->middleware('can:tenant.reports.index');
             Route::post('reports/search', 'Tenant\ReportController@search')->name('tenant.search');
             Route::post('reports/pdf', 'Tenant\ReportController@pdf')->name('tenant.report_pdf');
             Route::post('reports/excel', 'Tenant\ReportController@excel')->name('tenant.report_excel');
@@ -433,6 +433,27 @@ if ($hostname) {
             Route::get('purchases/item/tables', 'Tenant\PurchaseController@item_tables');
             Route::get('purchases/item/tables2/{purchase}', 'Tenant\PurchaseController@item_tables2');
 
+            
+            //ROLES
+            Route::get('roles', 'Tenant\RolesController@index')->name('tenant.roles.index');
+            Route::get('roles/datatable/', 'Tenant\RolesController@datatable')->name('tenant.roles.datatable');
+            Route::post('roles', 'Tenant\RolesController@store');
+            Route::get('roles/record/{role}', 'Tenant\RolesController@record');
+            Route::get('roles/records', 'Tenant\RolesController@records');
+            Route::delete('roles/{role}', 'Tenant\RolesController@destroy');
+            // Route::get('roles/create', 'Tenant\RolesController@create')->name('tenant.roles.create');
+            // Route::get('roles/tables', 'Tenant\RolesController@tables');
+            // Route::get('roles/record/{user}', 'Tenant\RolesController@record');
+            // Route::post('roles', 'Tenant\RolesController@store');
+            // Route::get('roles/records', 'Tenant\RolesController@records');
+            // Route::delete('roles/{user}', 'Tenant\RolesController@destroy');
+
+            //PERMISOS
+            Route::get('permisos/datatable/', 'Tenant\PermisosController@datatable')->name('tenant.permisos.datatable');
+            Route::post('permisos', 'Tenant\PermisosController@storex');
+            Route::get('permisos/record/{permiso}', 'Tenant\PermisosController@record');
+            Route::get('permisos/records', 'Tenant\PermisosController@records');
+            Route::delete('permisos/{permiso}', 'Tenant\PermisosController@destroy');
         });
     });
 } else {

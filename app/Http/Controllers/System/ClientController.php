@@ -196,12 +196,18 @@ class ClientController extends Controller
             ['establishment_id' => 1, 'document_type_id' => '100', 'number' => 'NV01'],
         ]);
 
-        DB::connection('tenant')->table('users')->insert([
+        $usuario_id = DB::connection('tenant')->table('users')->insertGetId([
             'name' => 'Administrador',
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'api_token' => $token,
             'establishment_id' => $establishment_id
+        ]);
+        DB::table('role_user')->insert([
+            'role_id' => 1, 
+            'user_id' => $usuario_id, 
+            'created_at' => DB::raw('now()'), 
+            'updated_at' => DB::raw('now()')
         ]);
 
         DB::connection('tenant')->table('inventory_configurations')->insert([

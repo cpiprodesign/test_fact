@@ -58,6 +58,10 @@ class UserController extends Controller
         $modules = collect($request->input('modules'))->where('checked', true)->pluck('id')->toArray();
         $user->modules()->sync($modules);
 
+        if ($request->has('target_roles')) {
+            $user->syncRoles($request->target_roles);
+        }
+        
         return [
             'success' => true,
             'message' => ($id)?'Usuario actualizado':'Usuario registrado'

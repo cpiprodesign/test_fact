@@ -15,7 +15,7 @@ class TenantPurchasesTable extends Migration
     {
         Schema::create('purchases', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->uuid('external_id');
             $table->unsignedInteger('establishment_id'); 
             $table->char('soap_type_id', 2);

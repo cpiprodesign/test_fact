@@ -18,7 +18,8 @@ class TenantPosTable extends Migration
             $table->increments('id');
 
             // unity
-            $table->integer('user_id')->unsigned();
+            // $table->integer('user_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->integer('establishment_id')->unsigned();
 //            $table->char('name', 50);
 

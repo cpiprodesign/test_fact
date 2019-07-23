@@ -185,6 +185,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <span>Contable </span><span class="label label-info"> Pronto</span>
                         </a>
                     </li>
+                    @can('tenant.accounts.index')    
                     <li class="
                         {{ ($path[0] === 'accounts')?'nav-active':'' }}
                         ">
@@ -193,8 +194,9 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <span>Bancos</span>
                         </a>
                     </li>
+                    @endcan
                     @if(in_array('configuration', $vc_modules))
-                    <li class="nav-parent {{ in_array($path[0], ['users', 'persons'])?'nav-active nav-expanded':'' }}">
+                    <li class="nav-parent {{ in_array($path[0], ['users', 'persons', 'roles'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-users" aria-hidden="true"></i>
                             <span>Contactos</span>
@@ -213,6 +215,11 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <li class="{{ ($path[0] === 'persons' && $path[1] === 'customers')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.persons.index', ['type' => 'customers'])}}">
                                     Clientes
+                                </a>
+                            </li>
+                            <li class="{{ ($path[0] === 'roles')?'nav-active':'' }}">
+                                <a class="nav-link" href="{{route('tenant.roles.index')}}">
+                                    Roles y permisos
                                 </a>
                             </li>
                         </ul>
@@ -253,6 +260,9 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                     </li>
                     @endif
                     @if(in_array('reports', $vc_modules))
+                        @can('tenant.reports.index')
+                            
+                        
                         <li class="nav-parent {{  (($path[0] === 'reports') && in_array($path[1], ['', 'purchases', 'sells', 'customers', 'expenses'])) ? 'nav-active nav-expanded' : ''}}">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-chart-area" aria-hidden="true"></i>
@@ -296,6 +306,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                 </li> --}}
                             </ul>
                         </li>
+                        @endcan
                     @endif @if(in_array('configuration', $vc_modules))
                     <li class="nav-parent {{ in_array($path[0], ['companies', 'catalogs', 'advanced', 'establishments', 'inventories'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">

@@ -35,7 +35,11 @@ class UserResource extends JsonResource
             'admin' => $this->admin,
             'api_token' => $this->api_token,
             'establishment_id' => $this->establishment_id,
-            'modules' => $modules
+            'modules' => $modules,
+            'target_roles' => $this->roles->map(function($role) {
+                    return $role->slug;
+                    
+            })
         ];
     }
 }

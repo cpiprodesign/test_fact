@@ -15,7 +15,7 @@ class TenantQuotationsTable extends Migration
     {
         Schema::create('quotations', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('establishment_id');
             $table->json('establishment');
             $table->char('state_type_id', 2);

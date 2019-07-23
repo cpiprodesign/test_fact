@@ -6,10 +6,11 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Caffeinated\Shinobi\Concerns\HasRolesAndPermissions;
 
 class User extends Authenticatable
 {
-    use Notifiable, UsesTenantConnection;
+    use Notifiable, UsesTenantConnection, HasRolesAndPermissions;
 
     protected $with = ['establishment'];
     /**
@@ -75,5 +76,22 @@ class User extends Authenticatable
     public function pos()
     {
         return $this->hasOne(Pos::class);
+    }
+
+    public function user_meta_format () {
+        $permissions = collect();
+        $roles = $this->roles->map(function($rol) use(&$permissions){
+            $permissions = $permissions->merge($rol->permissions);
+            return ['name' => $rol->name, 'slug' => $rol->slug, 'special' => $rol->special];
+        });
+        $permissions = $permissions->merge($this->permissions)->map(function($per) {
+            return ['name' => $per->name, 'slug' => $per->slug];
+        })->unique();
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+            'permissions' => $permissions,
+            'roles' => $roles
+        ];        
     }
 }
