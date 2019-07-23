@@ -16,7 +16,7 @@ class TenantModuleUserTable extends Migration
         Schema::create('module_user', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('module_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('user_id');
         });
     }
 

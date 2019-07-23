@@ -15,7 +15,7 @@ class TenantRetentionsTable extends Migration
     {
         Schema::create('retentions', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('user_id');
             $table->uuid('external_id');
             $table->unsignedInteger('establishment_id');
             $table->json('establishment');

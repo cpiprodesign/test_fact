@@ -15,7 +15,7 @@ class TenantExpensesTable extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('user_id');
             $table->unsignedInteger('establishment_id');
             $table->boolean('has_voucher')->default(false);
             $table->date('date_of_issue');

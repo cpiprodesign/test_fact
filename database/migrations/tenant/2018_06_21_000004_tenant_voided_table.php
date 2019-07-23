@@ -15,7 +15,7 @@ class TenantVoidedTable extends Migration
     {
         Schema::create('voided', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('user_id');
             $table->uuid('external_id');
             $table->char('soap_type_id', 2);
             $table->char('state_type_id', 2);

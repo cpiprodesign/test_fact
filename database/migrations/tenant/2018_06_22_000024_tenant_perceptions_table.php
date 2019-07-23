@@ -15,7 +15,7 @@ class TenantPerceptionsTable extends Migration
     {
         Schema::create('perceptions', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('user_id');
             $table->unsignedInteger('establishment_id');
             $table->uuid('external_id');
             $table->char('soap_type_id', 2);
