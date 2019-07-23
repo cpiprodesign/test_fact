@@ -45,6 +45,7 @@
                                                 <th class="">#</th>
                                                 <th class="">Tipo</th>
                                                 <th class="">Número</th>
+                                                <th class="">Fecha</th>
                                                 <th class="">Cliente</th>
                                                 <th class="">N° Documento</th>
                                                 <th class="">Total</th>
@@ -67,6 +68,7 @@
                                                     <td>{{$i}}</td>
                                                     <td>{{$value->type}}</td>
                                                     <td>{{$value->series}} - {{$value->number}}</td>
+                                                    <td>{{$value->date_of_issue}}</td>
                                                     <td>{{$value->name}}</td>
                                                     <td>{{$value->document_number}}</td>
                                                     <td>{{$value->total}}</td>
@@ -83,7 +85,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="4"></th>
+                                                <th colspan="5"></th>
                                                 <th class="font-weight-bold">Totales</th>
                                                 <th class="font-weight-bold">{{number_format($total, 2)}}</th>
                                                 <th class="font-weight-bold">{{number_format($total_paid, 2)}}</th>

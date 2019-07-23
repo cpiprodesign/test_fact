@@ -38,7 +38,7 @@ class ReportSellController extends Controller
     }
 
     public function pdf(Request $request)
-    {        
+    {
         $d = $request->d;
         $a = $request->a;
         $establishment_td = $request->establishment_td;
@@ -49,7 +49,7 @@ class ReportSellController extends Controller
         $records = $this->records($d, $a, $establishment_td);
         
         $pdf = PDF::loadView('tenant.reports.sells.report_pdf', compact("records", "company", "establishment"));
-        $filename = 'Reporte_Ventas_Cliente'.date('YmdHis');
+        $filename = 'Reporte_Ventas'.date('YmdHis');
         
         return $pdf->download($filename.'.pdf');
     }
@@ -58,7 +58,7 @@ class ReportSellController extends Controller
     {
         $d = $request->d;
         $a = $request->a;
-        $establishment_td = $request->establishment_td;      
+        $establishment_td = $request->establishment_td;
         
         $company = Company::first();
         $establishment = Establishment::where('id', $establishment_td)->first();
@@ -70,7 +70,7 @@ class ReportSellController extends Controller
                 ->records($records)
                 ->company($company)
                 ->establishment($establishment)
-                ->download('ReporteVentasCliente'.Carbon::now().'.xlsx');
+                ->download('ReporteVentas'.Carbon::now().'.xlsx');
     }
 
     public function records($d, $a, $establishment_id)
@@ -97,11 +97,11 @@ class ReportSellController extends Controller
                 AND (doc.`state_type_id` = '01' OR doc.`state_type_id` = '03' OR doc.`state_type_id` = '05' OR doc.`state_type_id` = '07')
                 $condition
                 UNION ALL
-                SELECT doc.customer_id, doc.`total`, doc.`total_paid`, 'Nota de Venta', doc.`date_of_issue`, doc.`series`, doc.`number`
+                SELECT doc.customer_id, doc.`total`, doc.`total_paid`, 'NOTA DE VENTA', doc.`date_of_issue`, doc.`series`, doc.`number`
                 FROM sale_notes doc
                 WHERE doc.`document_type_id` = '100' $condition) AS rep
                 INNER JOIN persons per ON per.id = rep.`customer_id`
-                ORDER BY rep.date_of_issue DESC";
+                ORDER BY rep.date_of_issue, rep.series, rep.number DESC";
         
         $records = DB::connection('tenant')->select($sql);
 
