@@ -15,7 +15,7 @@
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.number}">
                             <label class="control-label">Número <span class="text-danger">*</span></label>
-                            <el-input v-model="form.number" :maxlength="maxLength" dusk="number">
+                            <el-input v-model="form.number" :maxlength="maxLength" :minlength="maxLength" dusk="number">
                                 <template v-if="form.identity_document_type_id === '6' || form.identity_document_type_id === '1'">
                                     <el-button type="primary" slot="append" :loading="loading_search" icon="el-icon-search" @click.prevent="searchCustomer">
                                         <template v-if="form.identity_document_type_id === '6'">
@@ -208,30 +208,45 @@
             },
             submit() {
                 this.loading_submit = true
-                this.$http.post(`/${this.resource}`, this.form)
-                    .then(response => {
-                        if (response.data.success) {
-                            this.$message.success(response.data.message)
-                            if (this.external) {
-                                this.$eventHub.$emit('reloadDataPersons', response.data.id)
+
+                console.log("sdasd "+this.form.identity_document_type_id)
+                if (this.form.identity_document_type_id == 6) {
+                    length = 11
+                }
+                else{
+                    length = 8
+                }
+
+                if(this.form.number != length){
+                    this.$message.error("El número debe tener "+length+" dígitos")
+                    this.loading_submit = false
+                }
+                else{
+                    this.$http.post(`/${this.resource}`, this.form)
+                        .then(response => {
+                            if (response.data.success) {
+                                this.$message.success(response.data.message)
+                                if (this.external) {
+                                    this.$eventHub.$emit('reloadDataPersons', response.data.id)
+                                } else {
+                                    this.$eventHub.$emit('reloadData')
+                                }
+                                this.close()
                             } else {
-                                this.$eventHub.$emit('reloadData')
+                                this.$message.error(response.data.message)
                             }
-                            this.close()
-                        } else {
-                            this.$message.error(response.data.message)
-                        }
+                        })
+                        .catch(error => {
+                            if (error.response.status === 422) {
+                                this.errors = error.response.data
+                            } else {
+                                console.log(error)
+                            }
+                        })
+                        .then(() => {
+                            this.loading_submit = false
                     })
-                    .catch(error => {
-                        if (error.response.status === 422) {
-                            this.errors = error.response.data
-                        } else {
-                            console.log(error)
-                        }
-                    })
-                    .then(() => {
-                        this.loading_submit = false
-                    })
+                }                
             },
             close() {
                 this.$emit('update:showDialog', false)
