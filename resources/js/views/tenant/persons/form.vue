@@ -218,7 +218,7 @@
                 }
 
                 if(this.form.number != length){
-                    this.$message.error("La cantidad de caracteres debe ser "+length)
+                    this.$message.error("El número debe tener "+length+" dígitos")
                     this.loading_submit = false
                 }
                 else{
