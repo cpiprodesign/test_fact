@@ -16,9 +16,12 @@ class PersonRequest extends FormRequest
     {
         $id = $this->input('id');
         $type = $this->input('type');
+        
         return [
             'number' => [
+                'numeric',
                 'required',
+                "min:8",
                 Rule::unique('tenant.persons')->where(function ($query) use($id, $type) {
                     return $query->where('type', $type)
                                  ->where('id', '<>' ,$id);
