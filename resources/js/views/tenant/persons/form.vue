@@ -217,7 +217,7 @@
                     length = 8
                 }
 
-                if(this.form.number != length){
+                if(this.form.number.length != length){
                     this.$message.error("El número debe tener "+length+" dígitos")
                     this.loading_submit = false
                 }
