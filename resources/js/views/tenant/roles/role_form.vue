@@ -41,10 +41,15 @@
                     <div class="col-md-12" >
                         <div class="form-group ">
                             <label class="control-label">Permisos</label>
-                            <div class="row">
-                                <div class="col-4" v-for="permiso in form.permisos">
-                                    <el-checkbox v-model="permiso.checked">{{ permiso.name }}</el-checkbox>
+                            
+                            <div class="" v-for="mod in modules">
+                                <el-checkbox-group class="row"  v-model="form.target_permisos" >
+                                <div class="col-sm-12"><label style="font-size:14px;font-weight: 700;" :title="mod.value">{{ mod.description }}</label></div>
+                                <div class="col-4" v-for="permiso in mod.permisos">
+                                    <el-checkbox :label="permiso.slug" :title="permiso.name+'|'+permiso.slug" >{{ permiso.description }}</el-checkbox>
                                 </div>
+                                
+                                </el-checkbox-group>
                             </div>
                         </div>
                     </div>
@@ -70,17 +75,61 @@
                 loading_submit: false,
                 titleDialog: null,
                 resource: 'roles',
+                modules: [],
                 errors: {},
                 form: {},
+                // target_permisos: [],
                 permisos: []
             }
         },
         async created() {
-            await this.$http.get(`/permisos/records`)
-                .then(response => {
-                    this.permisos = response.data
-                    // this.establishments = response.data.establishments
+            await this.$http.get(`/permisos/records`).then(response => {
+                this.permisos = response.data
+                // this.establishments = response.data.establishments
+            })
+            await this.$http.get('/roles/tables').then(res => {
+                console.log(res.data.modules)
+                  res.data.modules.push({
+                        name: 'Otros', value: 'other', description: 'Otros', permisos: []
+                    })
+                  this.permisos.forEach(permiso => {
+                    let cath_module = res.data.modules.find(m => permiso.slug.indexOf(`tenant.${m.value}.`) != -1)
+                    //pertenece
+                    if (cath_module) {
+                        let mod = res.data.modules.find(m => m.value == cath_module.value)
+                        let per = {
+                            id: permiso.id,
+                            name: permiso.name,
+                            description: permiso.description,
+                            slug: permiso.slug,
+                            checked: false        
+                        }
+                        if (mod.permisos) {
+                            mod.permisos.push(per)
+                        } else {
+                            cath_module.permisos = [per]
+                        }
+                        // res.data.modules.push(cath_module)
+                    } else {
+                        let mod = res.data.modules.find(m => m.value == 'other')
+                        console.log(mod)
+                        if (mod) {
+                            mod.permisos.push({
+                                id: permiso.id,
+                                name: permiso.name,
+                                description: permiso.description,
+                                slug: permiso.slug,
+                                checked: false        
+                            })
+                        }
+                    }
+                    //agregar a otros
+
+                    
                 })
+                this.modules = res.data.modules
+              })
+            
             await this.initForm()
         },
         methods: {
@@ -95,35 +144,85 @@
                     description: null,
                     slug: null,
                     special: null,
-                    permisos: []
+                    permisos: [],
+                    target_permisos: [],
+                    modules: [{
+                        name: 'Otros', value: 'other', description: 'Otros', permisos: []
+                    }]
                 }
+                // this.permisos.forEach(permiso => {
+                //     let cath_module = this.modules.find(m => permiso.slug.indexOf(`.${m.value}.`) != -1)
+                //     //pertenece
+                //     if (cath_module) {
+                //         let mod = this.form.modules.find(m => m.value == cath_module.value)
+                //         if (mod) {
+                //             mod.permisos.push({
+                //                 id: permiso.id,
+                //                 name: permiso.name,
+                //                 description: permiso.description,
+                //                 slug: permiso.slug,
+                //                 checked: false        
+                //             })
+                //         } else {
+                //             cath_module.permisos = [{
+                //                 id: permiso.id,
+                //                 name: permiso.name,
+                //                 description: permiso.description,
+                //                 slug: permiso.slug,
+                //                 checked: false        
+                //             }]
+                //             this.form.modules.push(cath_module)
+                //         }
+                //     } else {
+                //         let mod = this.form.modules.find(m => m.value == 'other')
+                //         if (mod) {
+                //             mod.permisos.push({
+                //                 id: permiso.id,
+                //                 name: permiso.name,
+                //                 description: permiso.description,
+                //                 slug: permiso.slug,
+                //                 checked: false        
+                //             })
+                //         }
+                //     }
+                //     //agregar a otros
 
-                this.permisos.forEach(permiso => {
-                    this.form.permisos.push({
-                        id: permiso.id,
-                        name: permiso.name,
-                        description: permiso.description,
-                        slug: permiso.slug,
-                        checked: false
-                    })
-                })
+                    
+                // })
+                // this.modules.forEach(mod => {
+                //     mod.permisos = [];
+                //     let per = this.permisos.find(p => p.slug.indexOf(`.${mod.value}.`))
+                //     if (per != undefined) {
+                //         mod.permisos.push({
+                //             id: per.id,
+                //             name: per.name,
+                //             description: per.description,
+                //             slug: per.slug,
+                //             checked: false
+                //         })
+                //     } else {
+                        
+                //     }
+                    
+                // })
+                // this.permisos.forEach(permiso => {
+                //     this.form.permisos.push({
+                //         id: permiso.id,
+                //         name: permiso.name,
+                //         description: permiso.description,
+                //         slug: permiso.slug,
+                //         checked: false
+                //     })
+                // })
             },
             create() {
                 this.titleDialog = (this.recordId)? 'Editar Rol':'Nuevo Rol'
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
-                            this.form.permisos.forEach(permiso => {
-                                permiso.checked = false;
-                                for (let i = 0; i < response.data.permissions.length; i++) {
-                                    if (response.data.permissions[i].slug == permiso.slug) {
-                                        response.data.permissions.splice(i, 1);
-                                        console.log(response.data.permissions)
-                                        permiso.checked = true;
-                                        break;
-                                    }
-                                } 
-                                permiso
+                            
+                            response.data.permissions.forEach(permiso => {
+                                this.form.target_permisos.push(permiso.slug)    
                             })
                             this.form.id = response.data.id
                             this.form.name = response.data.name

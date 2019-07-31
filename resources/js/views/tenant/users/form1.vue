@@ -66,7 +66,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12" v-show="form.admin == false">
+                    <!-- <div class="col-md-12" v-show="form.admin == false">
                         <div class="form-group ">
                             <label class="control-label">Módulos</label>
                             <div class="row">
@@ -75,7 +75,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="form-actions text-right mt-4">
@@ -145,6 +145,7 @@
                 this.modules.forEach(module => {
                     this.form.modules.push({
                         id: module.id,
+                        slug: module.slug,
                         description: module.description,
                         checked: false
                     })

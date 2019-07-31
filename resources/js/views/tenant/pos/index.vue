@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="page-header pr-0">
-            <button class="btn btn-sm btn-primary pull-right mt-2 mr-2 "
+            <button v-show="hasPermissionTo('tenant.pos.store')" class="btn btn-sm btn-primary pull-right mt-2 mr-2 "
                     v-if="!posActive"
                     @click.prevent="showNewRegisterDialog = !showNewRegisterDialog">
                 <i class="fas fa-desktop mr-1"></i> Aperturar Caja
             </button>
-            <a v-else href="./pos/register" target="_blank"
+            <a v-show="hasPermissionTo('tenant.pos.store')" v-else href="./pos/register" target="_blank"
                class="btn btn-sm btn-success pull-right mt-2 mr-2 "
             >
                 <i class="fas fa-desktop mr-3"></i>
@@ -45,7 +45,7 @@
                         <td>{{ row.deleted_at }}</td>
                         <td>S/. {{ row.balance }}</td>
                         <td class="text-right">
-                            <a class="btn waves-effect waves-light btn-xs btn-danger" :href="`pos/report/pdf/${row.id}`"
+                            <a v-show="hasPermissionTo('tenant.pos.report')" class="btn waves-effect waves-light btn-xs btn-danger" :href="`pos/report/pdf/${row.id}`"
                                title="Descargar Reporte"
                             >
                                 <i class="far fa-file-pdf"></i> Reporte

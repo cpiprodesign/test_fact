@@ -37,23 +37,23 @@ if ($hostname) {
             Route::get('dashboard/chart_pie_total/{establishment_id}', 'Tenant\HomeController@chart_pie_total');            
 
             //alerts
-            Route::get('alerts/documents', 'Tenant\AlertDocumentController@index')->name('tenant.alerts.documents.index');
+            Route::get('alerts/documents', 'Tenant\AlertDocumentController@index')->name('tenant.alerts.documents.index')->middleware('can:tenant.alerts.documents.index');
             Route::get('alerts/documents/records', 'Tenant\AlertDocumentController@records');
 
-            Route::get('catalogs', 'Tenant\CatalogController@index')->name('tenant.catalogs.index');
-            Route::get('advanced', 'Tenant\AdvancedController@index')->name('tenant.advanced.index');
+            Route::get('catalogs', 'Tenant\CatalogController@index')->name('tenant.catalogs.index')->middleware('can:tenant.configuration.catalogs.index');
+            Route::get('advanced', 'Tenant\AdvancedController@index')->name('tenant.advanced.index')->middleware('can:tenant.configuration.advanced.index');
 
             //Company
-            Route::get('companies/create', 'Tenant\CompanyController@create')->name('tenant.companies.create');
+            Route::get('companies/create', 'Tenant\CompanyController@create')->name('tenant.companies.create')->middleware('can:tenant.configuration.companies.store');
             Route::get('companies/tables', 'Tenant\CompanyController@tables');
             Route::get('companies/record', 'Tenant\CompanyController@record');
-            Route::post('companies', 'Tenant\CompanyController@store');
+            Route::post('companies', 'Tenant\CompanyController@store')->middleware('can:tenant.configuration.companies.store');
             Route::post('companies/uploads', 'Tenant\CompanyController@uploadFile');
 
             //Configurations
             Route::get('configurations/create', 'Tenant\ConfigurationController@create')->name('tenant.configurations.create');
             Route::get('configurations/record', 'Tenant\ConfigurationController@record');
-            Route::post('configurations', 'Tenant\ConfigurationController@store');
+            Route::post('configurations', 'Tenant\ConfigurationController@store')->middleware('can:tenant.configurations.store');
 
             //Certificates
             Route::get('certificates/record', 'Tenant\CertificateController@record');
@@ -61,13 +61,13 @@ if ($hostname) {
             Route::delete('certificates', 'Tenant\CertificateController@destroy');
 
             //Establishments
-            Route::get('establishments', 'Tenant\EstablishmentController@index')->name('tenant.establishments.index');
-            Route::get('establishments/create', 'Tenant\EstablishmentController@create');
+            Route::get('establishments', 'Tenant\EstablishmentController@index')->name('tenant.establishments.index')->middleware('can:tenant.configuration.establishments.index');
+            Route::get('establishments/create', 'Tenant\EstablishmentController@create')->middleware('can:tenant.configuration.establishments.store');
             Route::get('establishments/tables', 'Tenant\EstablishmentController@tables');
             Route::get('establishments/record/{establishment}', 'Tenant\EstablishmentController@record');
-            Route::post('establishments', 'Tenant\EstablishmentController@store');
+            Route::post('establishments', 'Tenant\EstablishmentController@store')->middleware('can:tenant.configuration.establishments.store,tenant.configuration.establishments.update');
             Route::get('establishments/records', 'Tenant\EstablishmentController@records');
-            Route::delete('establishments/{establishment}', 'Tenant\EstablishmentController@destroy');
+            Route::delete('establishments/{establishment}', 'Tenant\EstablishmentController@destroy')->middleware('can:tenant.configuration.establishments.destroy');
 
             //Bank Accounts
             Route::get('bank_accounts', 'Tenant\BankAccountController@index')->name('tenant.bank_accounts.index');
@@ -80,19 +80,19 @@ if ($hostname) {
 
             //Series
             Route::get('series/records/{establishment}', 'Tenant\SeriesController@records');
-            Route::get('series/create', 'Tenant\SeriesController@create');
+            Route::get('series/create', 'Tenant\SeriesController@create')->middleware('can:tenant.inventory.series.store');
             Route::get('series/tables', 'Tenant\SeriesController@tables');
-            Route::post('series', 'Tenant\SeriesController@store');
-            Route::delete('series/{series}', 'Tenant\SeriesController@destroy');
+            Route::post('series', 'Tenant\SeriesController@store')->middleware('can:tenant.inventory.series.create');
+            Route::delete('series/{series}', 'Tenant\SeriesController@destroy')->middleware('can:tenant.inventory.series.destroy');
 
             //Users
-            Route::get('users', 'Tenant\UserController@index')->name('tenant.users.index');
-            Route::get('users/create', 'Tenant\UserController@create')->name('tenant.users.create');
+            Route::get('users', 'Tenant\UserController@index')->name('tenant.users.index')->middleware('can:tenant.users.index');
+            Route::get('users/create', 'Tenant\UserController@create')->name('tenant.users.create')->middleware('can:tenant.users.store');
             Route::get('users/tables', 'Tenant\UserController@tables');
             Route::get('users/record/{user}', 'Tenant\UserController@record');
-            Route::post('users', 'Tenant\UserController@store');
+            Route::post('users', 'Tenant\UserController@store')->middleware('can:tenant.users.store,tenant.user.update');
             Route::get('users/records', 'Tenant\UserController@records');
-            Route::delete('users/{user}', 'Tenant\UserController@destroy');
+            Route::delete('users/{user}', 'Tenant\UserController@destroy')->middleware('can:tenant.users.destroy');
 
             //ChargeDiscounts
             Route::get('charge_discounts', 'Tenant\ChargeDiscountController@index')->name('tenant.charge_discounts.index');
@@ -104,44 +104,44 @@ if ($hostname) {
             Route::delete('charge_discounts/{charge}', 'Tenant\ChargeDiscountController@destroy');
 
             //Items
-            Route::get('items', 'Tenant\ItemController@index')->name('tenant.items.index');
+            Route::get('items', 'Tenant\ItemController@index')->name('tenant.items.index')->middleware('can:tenant.items.index');
             Route::get('items/columns', 'Tenant\ItemController@columns');
             Route::get('items/records', 'Tenant\ItemController@records');
             Route::get('items/tables', 'Tenant\ItemController@tables');
             Route::get('items/record/{item}', 'Tenant\ItemController@record');
             Route::get('items/stocks/{item}', 'Tenant\ItemController@stocks');
-            Route::post('items', 'Tenant\ItemController@store');
-            Route::delete('items/{item}', 'Tenant\ItemController@destroy');
-            Route::post('items/import', 'Tenant\ItemController@import');
+            Route::post('items', 'Tenant\ItemController@store')->middleware('can:tenant.items.store,tenant.items.update');
+            Route::delete('items/{item}', 'Tenant\ItemController@destroy')->middleware('can:tenant.items.destroy');
+            Route::post('items/import', 'Tenant\ItemController@import')->middleware('can:tenant.items.import');
             Route::get('items/stock_details/{item}', 'Tenant\ItemController@stock_details');
 
             //Price List
-            Route::get('price-list', 'Tenant\PriceListController@index')->name('tenant.price_list.index');
+            Route::get('price-list', 'Tenant\PriceListController@index')->name('tenant.price_list.index')->middleware('can:tenant.price-list.index');
             Route::get('price-list/columns', 'Tenant\PriceListController@columns');
             //Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
             Route::get('price-list/record/{price_list}', 'Tenant\PriceListController@record');
-            Route::post('price-list', 'Tenant\PriceListController@store');
+            Route::post('price-list', 'Tenant\PriceListController@store')->middleware('can:tenant.price-list.store,tenant.price-list.update');
             Route::get('price-list/records', 'Tenant\PriceListController@records');
-            Route::delete('price-list/{price_list}', 'Tenant\PriceListController@destroy');
+            Route::delete('price-list/{price_list}', 'Tenant\PriceListController@destroy')->middleware('can:tenant.price-list.destroy');
 
             //Expenses
-            Route::get('expenses', 'Tenant\ExpenseController@index')->name('tenant.expenses.index');
+            Route::get('expenses', 'Tenant\ExpenseController@index')->name('tenant.expenses.index')->middleware('can:tenant.expenses.index');
             Route::get('expenses/columns', 'Tenant\ExpenseController@columns');
             Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
             Route::get('expenses/record/{expense}', 'Tenant\ExpenseController@record');
-            Route::post('expenses', 'Tenant\ExpenseController@store');
+            Route::post('expenses', 'Tenant\ExpenseController@store')->middleware('can:tenant.expenses.store,tenant.expenses.update');
             Route::get('expenses/records', 'Tenant\ExpenseController@records');
             Route::get('expenses/totals', 'Tenant\ExpenseController@totals');
-            Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy');
+            Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy')->middleware('can:tenant.expenses.destroy');
 
             //Payments
-            Route::get('payments', 'Tenant\PaymentController@index')->name('tenant.payments.index');
+            Route::get('payments', 'Tenant\PaymentController@index')->name('tenant.payments.index')->middleware('can:tenant.payments.index');
             Route::get('payments/columns', 'Tenant\PaymentController@columns');
             Route::get('payments/tables', 'Tenant\PaymentController@tables');
             Route::get('payments/records', 'Tenant\PaymentController@records');
             Route::get('payments/totals', 'Tenant\PaymentController@totals');
-            Route::post('payments/', 'Tenant\PaymentController@store');
-            Route::delete('payments/{payment}', 'Tenant\PaymentController@destroy');
+            Route::post('payments/', 'Tenant\PaymentController@store')->middleware('can:tenant.payments.store,tenant.payments.update');
+            Route::delete('payments/{payment}', 'Tenant\PaymentController@destroy')->middleware('can:tenant.payments.destroy');
 
             //Accounts
             Route::get('accounts', 'Tenant\AccountController@index')->name('tenant.accounts.index')->middleware('can:tenant.accounts.index');
@@ -173,7 +173,7 @@ if ($hostname) {
             //Persons
             Route::get('persons/columns', 'Tenant\PersonController@columns');
             Route::get('persons/tables', 'Tenant\PersonController@tables');
-            Route::get('persons/{type}', 'Tenant\PersonController@index')->name('tenant.persons.index');
+            Route::get('persons/{type}', 'Tenant\PersonController@index')->name('tenant.persons.index')->middleware('can:tenant.persons.suppliers.index,tenant.persons.customers.index');
             Route::get('persons/{type}/view/{person}', 'Tenant\PersonController@view')->name('tenant.persons.view');
             Route::get('persons/{type}/records', 'Tenant\PersonController@records');
             Route::get('persons/record/{person}', 'Tenant\PersonController@record');
@@ -182,26 +182,26 @@ if ($hostname) {
             Route::get('persons/{type}/view/{person}/payments/columns', 'Tenant\PersonController@payments_columns');
             Route::get('persons/{type}/view/{person}/payments', 'Tenant\PersonController@payments');
 
-            Route::post('persons', 'Tenant\PersonController@store');
-            Route::delete('persons/{person}', 'Tenant\PersonController@destroy');
-            Route::post('persons/import', 'Tenant\PersonController@import');
+            Route::post('persons', 'Tenant\PersonController@store')->middleware('can:tenant.persons.suppliers.store,tenant.persons.suppliers.update,tenant.persons.customers.store,tenant.persons.customers.update');
+            Route::delete('persons/{person}', 'Tenant\PersonController@destroy')->middleware('can:tenant.persons.suppliers.destroy,tenant.persons.customers.destroy');
+            Route::post('persons/import', 'Tenant\PersonController@import')->middleware('can:tenant.persons.suppliers.import,tenant.persons.customers.import');
 
             //POS - Punto de Venta
             // juliocapuano@gmail.com
 
             Route::post('pos', 'Tenant\PosController@store');
-            Route::post('pos/destroy', 'Tenant\PosController@destroy');
+            Route::post('pos/destroy', 'Tenant\PosController@destroy')->middleware('can:tenant.pos.destroy');
             Route::get('pos/{id}/details', 'Tenant\PosController@details');
-            Route::get('pos', 'Tenant\PosController@index')->name('tenant.pos.index');
+            Route::get('pos', 'Tenant\PosController@index')->name('tenant.pos.index')->middleware('can:tenant.pos.index');
             Route::get('pos/columns', 'Tenant\PosController@columns');
             Route::get('pos/records', 'Tenant\PosController@records');
             Route::get('pos/tables', 'Tenant\PosController@tables');
             Route::post('pos/{id}/operations', 'Tenant\PosController@operations');
-            Route::get('pos/register', 'Tenant\PosController@register')->name('tenant.pos.register');
-            Route::get('pos/report/pdf/{id}', 'Tenant\PosController@pdf');
+            Route::get('pos/register', 'Tenant\PosController@register')->name('tenant.pos.register')->middleware('can:tenant.pos.store');
+            Route::get('pos/report/pdf/{id}', 'Tenant\PosController@pdf')->middleware('can:tenant.pos.report');
 
             //Documents
-            Route::get('documents', 'Tenant\DocumentController@index')->name('tenant.documents.index');
+            Route::get('documents', 'Tenant\DocumentController@index')->name('tenant.documents.index')->middleware('can:tenant.documents.index');
             Route::get('documents/view/{document}', 'Tenant\DocumentController@view')->name('tenant.documents.view');
             Route::get('documents/columns', 'Tenant\DocumentController@columns');
             Route::get('documents/records', 'Tenant\DocumentController@records');
@@ -211,7 +211,7 @@ if ($hostname) {
             Route::get('documents/tables', 'Tenant\DocumentController@tables');
             Route::get('documents/tables2/{document}', 'Tenant\DocumentController@tables2');
             Route::get('documents/record/{document}', 'Tenant\DocumentController@record');
-            Route::post('documents', 'Tenant\DocumentController@store');
+            Route::post('documents', 'Tenant\DocumentController@store')->middleware('can:tenant.documents.index,tenant.documents.update');
             //Route::post('documents/{document}', 'Tenant\DocumentController@store2');
             Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
             Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
@@ -221,108 +221,108 @@ if ($hostname) {
             Route::get('documents/item/tables2/{document}', 'Tenant\DocumentController@item_tables2');
             Route::get('documents/table/{table}', 'Tenant\DocumentController@table');
             Route::get('documents/cambiar_estado_pago/{document}', 'Tenant\DocumentController@cambiar_estado_pago');
-            Route::get('configuration/documents', 'Tenant\DocumentController@configuration')->name('tenant.documents.configuarion');
+            Route::get('configuration/documents', 'Tenant\DocumentController@configuration')->name('tenant.documents.configuarion')->middleware('can:tenant.documents.configuracion');
             Route::get('configuration/documents/record', 'Tenant\DocumentController@configuration_record');
-            Route::post('configuration/documents', 'Tenant\DocumentController@configuration_store');
+            Route::post('configuration/documents', 'Tenant\DocumentController@configuration_store')->middleware('can:tenant.documents.configuracion');
 
             //Credit Notes
-            Route::get('credit-notes', 'Tenant\CreditNoteController@index')->name('tenant.credit_notes.index');
+            Route::get('credit-notes', 'Tenant\CreditNoteController@index')->name('tenant.credit_notes.index')->middleware('can:tenant.credit-notes.index');
             Route::get('credit-notes/columns', 'Tenant\CreditNoteController@columns');
             Route::get('credit-notes/records', 'Tenant\CreditNoteController@records');
             Route::get('credit-notes/totals', 'Tenant\CreditNoteController@totals');
 
             //Caja
-            Route::get('box', 'Tenant\PosController@index')->name('tenant.box.index');
+            Route::get('box', 'Tenant\PosController@index')->name('tenant.box.index')->middleware('can:tenant.pos.index');
 
             //Quotations
-            Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index');
+            Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index')->middleware('can:tenant.quotations.index');
             Route::get('quotations/columns', 'Tenant\QuotationController@columns');
             Route::get('quotations/records', 'Tenant\QuotationController@records');
             Route::get('quotations/totals', 'Tenant\QuotationController@totals');
-            Route::get('quotations/create', 'Tenant\QuotationController@create')->name('tenant.quotations.create');
-            Route::get('quotations/edit/{quotation}', 'Tenant\QuotationController@edit')->name('tenant.quotations.edit');
+            Route::get('quotations/create', 'Tenant\QuotationController@create')->name('tenant.quotations.create')->middleware('can:tenant.quotations.store');
+            Route::get('quotations/edit/{quotation}', 'Tenant\QuotationController@edit')->name('tenant.quotations.edit')->middleware('can:tenant.quotations.update');
             Route::get('quotations/tables', 'Tenant\QuotationController@tables');
             Route::get('quotations/record/{quotation}', 'Tenant\QuotationController@record');
-            Route::post('quotations', 'Tenant\QuotationController@store');
-            Route::post('quotations/update/{quotation}', 'Tenant\QuotationController@update');
+            Route::post('quotations', 'Tenant\QuotationController@store')->middleware('can:tenant.quotations.store,tenant.quotations.update');
+            Route::post('quotations/update/{quotation}', 'Tenant\QuotationController@update')->middleware('can:tenant.quotations.update');
             Route::get('quotations/send/{quotation}', 'Tenant\QuotationController@send');
             Route::post('quotations/email', 'Tenant\QuotationController@email');
             Route::get('quotations/item/tables', 'Tenant\QuotationController@item_tables');
             Route::get('quotations/table/{table}', 'Tenant\QuotationController@table');
 
             //NoteSales
-            Route::get('sale-notes', 'Tenant\SaleNoteController@index')->name('tenant.sale_notes.index');
+            Route::get('sale-notes', 'Tenant\SaleNoteController@index')->name('tenant.sale_notes.index')->middleware('can:tenant.sale-notes.index');
             Route::get('sale-notes/columns', 'Tenant\SaleNoteController@columns');
             Route::get('sale-notes/records', 'Tenant\SaleNoteController@records');
             Route::get('sale-notes/totals', 'Tenant\SaleNoteController@totals');
-            Route::get('sale-notes/create', 'Tenant\SaleNoteController@create')->name('tenant.sale_notes.create');
+            Route::get('sale-notes/create', 'Tenant\SaleNoteController@create')->name('tenant.sale_notes.create')->middleware('can:tenant.sale-notes.store');
             // Route::get('sale-notes/edit/{quotation}', 'Tenant\SaleNoteController@edit')->name('tenant.quotations.edit');
             Route::get('sale-notes/tables', 'Tenant\SaleNoteController@tables');
             Route::get('sale-notes/record/{id}', 'Tenant\SaleNoteController@record');
-            Route::post('sale-notes', 'Tenant\SaleNoteController@store');
+            Route::post('sale-notes', 'Tenant\SaleNoteController@store')->middleware('can:tenant.sale-notes.store,tenant.sale-notes.update');
             // Route::post('sale-notes/update/{quotation}', 'Tenant\SaleNotesController@update');
             // Route::get('sale-notes/send/{quotation}', 'Tenant\SaleNotesController@send');
             Route::post('sale-notes/email', 'Tenant\SaleNoteController@email');
-            Route::delete('sale-notes/{salenote}', 'Tenant\SaleNoteController@destroy');
+            Route::delete('sale-notes/{salenote}', 'Tenant\SaleNoteController@destroy')->middleware('can:tenant.sale-notes.destroy');
             // Route::get('sale-notes/item/tables', 'Tenant\SaleNotesController@item_tables');
             // Route::get('sale-notes/table/{table}', 'Tenant\SaleNotesController@table');
 
             //Summaries
-            Route::get('summaries', 'Tenant\SummaryController@index')->name('tenant.summaries.index');
+            Route::get('summaries', 'Tenant\SummaryController@index')->name('tenant.summaries.index')->middleware('can:tenant.summaries.index');
             Route::get('summaries/records', 'Tenant\SummaryController@records');
             Route::post('summaries/documents', 'Tenant\SummaryController@documents');
-            Route::post('summaries', 'Tenant\SummaryController@store');
+            Route::post('summaries', 'Tenant\SummaryController@store')->middleware('can:tenant.summaries.store');
             Route::get('summaries/status/{summary}', 'Tenant\SummaryController@status');
 
             //Voided
-            Route::get('voided', 'Tenant\VoidedController@index')->name('tenant.voided.index');
+            Route::get('voided', 'Tenant\VoidedController@index')->name('tenant.voided.index')->middleware('can:tenant.voided.index');
             Route::get('voided/columns', 'Tenant\VoidedController@columns');
             Route::get('voided/records', 'Tenant\VoidedController@records');
-            Route::post('voided', 'Tenant\VoidedController@store');
+            Route::post('voided', 'Tenant\VoidedController@store')->middleware('can:tenant.voided.store');
 //            Route::get('voided/download/{type}/{voided}', 'Tenant\VoidedController@download')->name('tenant.voided.download');
             Route::get('voided/status/{voided}', 'Tenant\VoidedController@status');
 //            Route::get('voided/ticket/{voided_id}/{group_id}', 'Tenant\VoidedController@ticket');
 
             //Retentions
-            Route::get('retentions', 'Tenant\RetentionController@index')->name('tenant.retentions.index');
+            Route::get('retentions', 'Tenant\RetentionController@index')->name('tenant.retentions.index')->middleware('can:tenant.retentions.index');
             Route::get('retentions/columns', 'Tenant\RetentionController@columns');
             Route::get('retentions/records', 'Tenant\RetentionController@records');
-            Route::get('retentions/create', 'Tenant\RetentionController@create')->name('tenant.retentions.create');
+            Route::get('retentions/create', 'Tenant\RetentionController@create')->name('tenant.retentions.create')->middleware('can:tenant.retentions.store');
             Route::get('retentions/tables', 'Tenant\RetentionController@tables');
             Route::get('retentions/record/{retention}', 'Tenant\RetentionController@record');
-            Route::post('retentions', 'Tenant\RetentionController@store');
-            Route::delete('retentions/{retention}', 'Tenant\RetentionController@destroy');
+            Route::post('retentions', 'Tenant\RetentionController@store')->middleware('can:tenant.retentions.store,tenant.retentions.update');
+            Route::delete('retentions/{retention}', 'Tenant\RetentionController@destroy')->middleware('can:tenant.retentions.destroy');
             Route::get('retentions/document/tables', 'Tenant\RetentionController@document_tables');
             Route::get('retentions/table/{table}', 'Tenant\RetentionController@table');
 
             //Dispatches
-            Route::get('dispatches', 'Tenant\DispatchController@index')->name('tenant.dispatches.index');
+            Route::get('dispatches', 'Tenant\DispatchController@index')->name('tenant.dispatches.index')->middleware('can:tenant.dispatches.index');
             Route::get('dispatches/columns', 'Tenant\DispatchController@columns');
             Route::get('dispatches/records', 'Tenant\DispatchController@records');
-            Route::get('dispatches/create', 'Tenant\DispatchController@create');
+            Route::get('dispatches/create', 'Tenant\DispatchController@create')->middleware('can:tenant.dispatches.store');
             Route::get('dispatches/create2/{dispatche}', 'Tenant\DispatchController@create2');
             Route::get('dispatches/datos/{dispatche}', 'Tenant\DispatchController@datos');
             Route::post('dispatches/tables', 'Tenant\DispatchController@tables');
-            Route::post('dispatches', 'Tenant\DispatchController@store');
+            Route::post('dispatches', 'Tenant\DispatchController@store')->middleware('can:tenant.dispatches.store,tenant.dispatches.update');
 
-            Route::get('dispatches/resend/{document}', 'Tenant\DispatchController@resend');
+            Route::get('dispatches/resend/{document}', 'Tenant\DispatchController@resend')->middleware('can:tenant.dispatches.resend');
 
             Route::get('reports', 'Tenant\ReportController@index')->name('tenant.reports.index')->middleware('can:tenant.reports.index');
             Route::post('reports/search', 'Tenant\ReportController@search')->name('tenant.search');
             Route::post('reports/pdf', 'Tenant\ReportController@pdf')->name('tenant.report_pdf');
             Route::post('reports/excel', 'Tenant\ReportController@excel')->name('tenant.report_excel');
 
-            Route::get('reports/purchases', 'Tenant\ReportPurchaseController@index')->name('tenant.reports.purchases.index');
+            Route::get('reports/purchases', 'Tenant\ReportPurchaseController@index')->name('tenant.reports.purchases.index')->middleware('can:tenant.reports.purchases.index');
             Route::post('reports/purchases/search', 'Tenant\ReportPurchaseController@search')->name('tenant.reports.purchases.search');
             Route::post('reports/purchases/pdf', 'Tenant\ReportPurchaseController@pdf')->name('tenant.report.purchases.pdf');
             Route::post('reports/purchases/excel', 'Tenant\ReportPurchaseController@excel')->name('tenant.report.purchases.report_excel');
 
-            Route::get('reports/inventories', 'Tenant\ReportInventoryController@index')->name('tenant.reports.inventories.index');
+            Route::get('reports/inventories', 'Tenant\ReportInventoryController@index')->name('tenant.reports.inventories.index')->middleware('can:tenant.reports.inventories.index');
             Route::post('reports/inventories/search', 'Tenant\ReportInventoryController@search')->name('tenant.reports.inventories.search');
             Route::post('reports/inventories/pdf', 'Tenant\ReportInventoryController@pdf')->name('tenant.report.inventories.pdf');
             Route::post('reports/inventories/excel', 'Tenant\ReportInventoryController@excel')->name('tenant.report.inventories.report_excel');
 
-            Route::get('reports/sells', 'Tenant\ReportSellController@index')->name('tenant.reports.sells.index');
+            Route::get('reports/sells', 'Tenant\ReportSellController@index')->name('tenant.reports.sells.index')->middleware('can:tenant.reports.sells.index');
             Route::post('reports/sells/search', 'Tenant\ReportSellController@search')->name('tenant.reports.sells.search');
             Route::post('reports/sells/pdf', 'Tenant\ReportSellController@pdf')->name('tenant.report.sells.pdf');
             Route::post('reports/sells/excel', 'Tenant\ReportSellController@excel')->name('tenant.report.sells.excel');
@@ -388,14 +388,14 @@ if ($hostname) {
             Route::delete('currency_types/{currency_type}', 'Tenant\CurrencyTypeController@destroy');
 
             //Perceptions
-            Route::get('perceptions', 'Tenant\PerceptionController@index')->name('tenant.perceptions.index');
+            Route::get('perceptions', 'Tenant\PerceptionController@index')->name('tenant.perceptions.index')->middleware('can:tenant.perceptions.index');
             Route::get('perceptions/columns', 'Tenant\PerceptionController@columns');
             Route::get('perceptions/records', 'Tenant\PerceptionController@records');
-            Route::get('perceptions/create', 'Tenant\PerceptionController@create')->name('tenant.perceptions.create');
+            Route::get('perceptions/create', 'Tenant\PerceptionController@create')->name('tenant.perceptions.create')->middleware('can:tenant.perceptions.store');
             Route::get('perceptions/tables', 'Tenant\PerceptionController@tables');
             Route::get('perceptions/record/{perception}', 'Tenant\PerceptionController@record');
-            Route::post('perceptions', 'Tenant\PerceptionController@store');
-            Route::delete('perceptions/{perception}', 'Tenant\PerceptionController@destroy');
+            Route::post('perceptions', 'Tenant\PerceptionController@store')->middleware('can:tenant.perceptions.store,tenant.perceptions.update');
+            Route::delete('perceptions/{perception}', 'Tenant\PerceptionController@destroy')->middleware('can:tenant.perceptions.destroy');
             Route::get('perceptions/item/tables', 'Tenant\PerceptionController@item_tables');
 
             //Tribute Concept Type
@@ -418,31 +418,31 @@ if ($hostname) {
             Route::delete('item_category/{id}', 'Tenant\ItemCategoryController@destroy');
 
             //purchases
-            Route::get('purchases', 'Tenant\PurchaseController@index')->name('tenant.purchases.index');
+            Route::get('purchases', 'Tenant\PurchaseController@index')->name('tenant.purchases.index')->middleware('can:tenant.purchases.index');
             Route::get('purchases/columns', 'Tenant\PurchaseController@columns');
             Route::get('purchases/records', 'Tenant\PurchaseController@records');
             Route::get('purchases/totals', 'Tenant\PurchaseController@totals');
             Route::get('purchases/create', 'Tenant\PurchaseController@create')->name('tenant.purchases.create');
             Route::get('purchases/edit/{purchase}', 'Tenant\PurchaseController@edit')->name('tenant.purchases.edit');
-            Route::post('purchases/update/{purchase}', 'Tenant\PurchaseController@update');
+            Route::post('purchases/update/{purchase}', 'Tenant\PurchaseController@update')->middleware('can:tenant.purchases.update');
             Route::get('purchases/tables2/{purchase}', 'Tenant\PurchaseController@tables2');
             Route::get('purchases/tables', 'Tenant\PurchaseController@tables');
             Route::get('purchases/table/{table}', 'Tenant\PurchaseController@table');
-            Route::post('purchases', 'Tenant\PurchaseController@store');
+            Route::post('purchases', 'Tenant\PurchaseController@store')->middleware('can:tenant.purchases.store,tenant.purchases.update');
             Route::get('purchases/record/{document}', 'Tenant\PurchaseController@record');
             Route::get('purchases/item/tables', 'Tenant\PurchaseController@item_tables');
             Route::get('purchases/item/tables2/{purchase}', 'Tenant\PurchaseController@item_tables2');
 
             
             //ROLES
-            Route::get('roles', 'Tenant\RolesController@index')->name('tenant.roles.index');
+            Route::get('roles', 'Tenant\RolesController@index')->name('tenant.roles.index')->middleware('can:tenant.roles.index');
             Route::get('roles/datatable/', 'Tenant\RolesController@datatable')->name('tenant.roles.datatable');
-            Route::post('roles', 'Tenant\RolesController@store');
+            Route::post('roles', 'Tenant\RolesController@store')->middleware('can:tenant.roles.store,tenant.roles.update');
             Route::get('roles/record/{role}', 'Tenant\RolesController@record');
             Route::get('roles/records', 'Tenant\RolesController@records');
-            Route::delete('roles/{role}', 'Tenant\RolesController@destroy');
+            Route::delete('roles/{role}', 'Tenant\RolesController@destroy')->middleware('can:tenant.roles.destroy');
             // Route::get('roles/create', 'Tenant\RolesController@create')->name('tenant.roles.create');
-            // Route::get('roles/tables', 'Tenant\RolesController@tables');
+            Route::get('roles/tables', 'Tenant\RolesController@tables');
             // Route::get('roles/record/{user}', 'Tenant\RolesController@record');
             // Route::post('roles', 'Tenant\RolesController@store');
             // Route::get('roles/records', 'Tenant\RolesController@records');

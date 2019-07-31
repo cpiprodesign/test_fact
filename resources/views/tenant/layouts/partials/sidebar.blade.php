@@ -15,16 +15,15 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
         <div class="nano-content">
             <nav id="menu" class="nav-main" role="navigation">
                 <ul class="nav nav-main">
-                    @if(in_array('dashboard', $vc_modules))
-                        <li class="
-                            {{ ($path[0] === 'dashboard')?'nav-active':'' }}
-                            ">
-                            <a class="nav-link" href="{{route('tenant.dashboard')}}">
-                                <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                    @endif
+                    
+                    <li class="
+                        {{ ($path[0] === 'dashboard')?'nav-active':'' }}
+                        ">
+                        <a class="nav-link" href="{{route('tenant.dashboard')}}">
+                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
                     <li class="nav-parent {{ in_array($path[0], ['alerts'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-bell" aria-hidden="true"></i>
@@ -38,7 +37,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </li>
                         </ul>
                     </li>
-                    @if(in_array('documents', $vc_modules))
+                    
                     <li class="
                         nav-parent
                         {{ ($path[0] === 'documents')?'nav-active nav-expanded':'' }}
@@ -66,26 +65,35 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     Listados
                                 </a>
                             </li>
+                            @can('tenant.credit-notes.index')      
                             <li class="{{ ($path[0] === 'credit-notes')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.credit_notes.index')}}">
                                     Notas de Crédito
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.payments.index')
                             <li class="{{ ($path[0] === 'payments')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.payments.index')}}">
                                     Pagos Recibidos
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.pos.index')
                             <li class="{{ ($path[0] === 'pos')?'nav-active':'' }}">
                                 <a class="nav-link" target="_blank" href="{{route('tenant.pos.register')}}">
                                     Punto de Venta
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.sale-notes.index')
                             <li class="{{ ($path[0] === 'sale-notes')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.sale_notes.index')}}">
                                     Nota de Venta
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.sale-notes.index')
                             <li class="
                                 {{ ($path[0] === 'summaries')?'nav-active':'' }}
                                 ">
@@ -93,16 +101,18 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                                     <span>Resúmenes</span>
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.quotations.index')    
                             <li class="{{ ($path[0] === 'quotations' && $path[1] != 'create')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.quotations.index')}}">
                                         Cotizaciones
                                 </a>
                             </li>
+                            @endcan
                         </ul>
                     </li>
                     
-                    @endif
-                    @if(in_array('purchases', $vc_modules))
+                    
                     <li class="
                         nav-parent
                         {{ ($path[0] === 'purchases')?'nav-active nav-expanded':'' }}
@@ -113,24 +123,30 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <span>Gastos</span>
                         </a>
                         <ul class="nav nav-children" style="">
+                            @can('tenant.purchases.store')
                             <li class="{{ ($path[0] === 'purchases' && $path[1] === 'create')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.purchases.create')}}">
                                     Nueva compra
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.purchases.index')
                             <li class="{{ ($path[0] === 'purchases' && $path[1] != 'create')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.purchases.index')}}">
                                     Listado de compras
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.expenses.index')
                             <li class="{{ ($path[0] === 'expenses')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.expenses.index')}}">
                                     Gastos
                                 </a>
                             </li>
+                            @endcan
                         </ul>
                     </li>
-                    @endif
+                    
                     <li class="nav-parent {{ (in_array($path[0], ['inventory', 'warehouses', 'items', 'price-list']) ||
                                                 ($path[0] === 'reports' && in_array($path[1], ['kardex', 'inventory'])))?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
@@ -138,16 +154,20 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <span>Inventario</span>
                         </a>
                         <ul class="nav nav-children" style="">
+                            @can('tenant.items.index')
                             <li class="{{ ($path[0] === 'items')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.items.index')}}">
                                     Productos
                                 </a>
-                            </li>
+                            </li>    
+                            @endcan
+                            @can('tenant.price-list.index')
                             <li class="{{ ($path[0] === 'price-list')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.price_list.index')}}">
                                     Lista de Precios
                                 </a>
                             </li>
+                            @endcan
                             <li>
                                 <a class="nav-link" href="#">
                                     Atributos/Variantes <span class="label label-info"> Pronto</span>
@@ -195,36 +215,45 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                         </a>
                     </li>
                     @endcan
-                    @if(in_array('configuration', $vc_modules))
+                    
                     <li class="nav-parent {{ in_array($path[0], ['users', 'persons', 'roles'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-users" aria-hidden="true"></i>
                             <span>Contactos</span>
                         </a>
                         <ul class="nav nav-children" style="">
+                            @can('tenant.user.index')
                             <li class="{{ ($path[0] === 'users')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.users.index')}}">
                                     Usuarios
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.persons.suppliers.index')
                             <li class="{{ ($path[0] === 'persons' && $path[1] === 'suppliers')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.persons.index', ['type' => 'suppliers'])}}">
                                     Proveedores
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.persons.customers.index')
                             <li class="{{ ($path[0] === 'persons' && $path[1] === 'customers')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.persons.index', ['type' => 'customers'])}}">
                                     Clientes
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.roles.index')
                             <li class="{{ ($path[0] === 'roles')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.roles.index')}}">
                                     Roles y permisos
                                 </a>
                             </li>
+                            @endcan
                         </ul>
                     </li>
-                    @endif @if(in_array('advanced', $vc_modules))
+                     
+                    
                     <li class="
                         nav-parent
                         {{ ($path[0] === 'retentions')?'nav-active nav-expanded':'' }}
@@ -236,21 +265,27 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <span>Otros comprobantes</span>
                         </a>
                         <ul class="nav nav-children" style="">
+                            @can('tenant.voided.index')
                             <li class="{{ ($path[0] === 'voided')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.voided.index')}}">
                                     Anulaciones
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.dispatches.index')
                             <li class="{{ ($path[0] === 'dispatches')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.dispatches.index')}}">
                                     Guías de remisión
                                 </a>
                             </li>
+                            @endcan
+                            @can('tenant.retentions.index')
                             <li class="{{ ($path[0] === 'retentions')?'nav-active':'' }}">
                                 <a class="nav-link" href="#">
                                     Retenciones <span class="label label-info"> Pronto</span>
                                 </a>
                             </li>
+                            @endcan
                             <li class="#">
                                 <a class="nav-link" href="#">
                                     Percepciones <span class="label label-info"> Pronto</span>
@@ -258,56 +293,65 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </li>
                         </ul>
                     </li>
-                    @endif
-                    @if(in_array('reports', $vc_modules))
-                        @can('tenant.reports.index')
-                            
-                        
+                    
+                    
                         <li class="nav-parent {{  (($path[0] === 'reports') && in_array($path[1], ['', 'purchases', 'sells', 'customers', 'expenses'])) ? 'nav-active nav-expanded' : ''}}">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-chart-area" aria-hidden="true"></i>
                                 <span>Reportes</span>
                             </a>
                             <ul class="nav nav-children" style="">
+                                @can('tenant.reports.index')
                                 <li class="{{(($path[0] === 'reports') && ($path[1] === '')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.index')}}">
                                         Documentos
                                     </a>
                                 </li>
+                                @endcan
+                                @can('tenant.reports.sells.index')
                                 <li class="{{(($path[0] === 'reports') && ($path[1] === 'sells')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.sells.index')}}">
                                         Ventas
                                     </a>
                                 </li>
+                                @endcan
+                                @can('tenant.reports.customers.index')
                                 <li class="{{(($path[0] === 'reports') && ($path[1] === 'customers')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.customers.index')}}">
                                         Ventas por Cliente
                                     </a>
                                 </li>
+                                @endcan
+                                @can('tenant.reports.purchases.index')
                                 <li class="{{(($path[0] === 'reports') && ($path[1] === 'purchases')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.purchases.index')}}">
                                         Compras
                                     </a>
                                 </li>
+                                @endcan
+                                @can('tenant.reports.expenses.index')
                                 <li class="{{(($path[0] === 'reports') && ($path[1] === 'expenses')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.expenses.index')}}">
                                         Gastos
                                     </a>
-                                </li>                                
+                                </li>
+                                @endcan                             
                                 {{-- <li class="{{(($path[0] === 'reports') && ($path[1] === 'kardex')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.kardex.index')}}">
                                         Kardex
                                     </a>
                                 </li> --}}
-                                {{-- <li class="{{(($path[0] === 'reports') && ($path[1] == 'inventories')) ? 'nav-active' : ''}}">
+                                {{-- @can('tenant.reports.inventories.index')
+                                <li class="{{(($path[0] === 'reports') && ($path[1] == 'inventories')) ? 'nav-active' : ''}}">
                                     <a class="nav-link" href="{{route('tenant.reports.inventories.index')}}">
                                         Inventarios
                                     </a>
-                                </li> --}}
+                                </li>
+                                @endcan --}}
                             </ul>
                         </li>
-                        @endcan
-                    @endif @if(in_array('configuration', $vc_modules))
+                    
+                    
                     <li class="nav-parent {{ in_array($path[0], ['companies', 'catalogs', 'advanced', 'establishments', 'inventories'])?'nav-active nav-expanded':'' }}">
                         <a class="nav-link" href="#">
                             <i class="fas fa-cogs" aria-hidden="true"></i>
@@ -352,9 +396,11 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             <li class="{{($path[0] === 'inventories' && $path[1] === 'configuration') ? 'nav-active': ''}}">
                                 <a class="nav-link" href="{{route('tenant.inventories.configuration.index')}}">Inventarios</a>
                             </li>
+                            @can('tenant.documents.configuracion')    
                             <li class="{{($path[0] === 'configuration' && $path[1] === 'documents') ? 'nav-active': ''}}">
                                 <a class="nav-link" href="{{route('tenant.documents.configuarion')}}">Documentos</a>
                             </li>
+                            @endcan
                             <li class="{{ ($path[0] === 'advanced')?'nav-active':'' }}">
                                 <a class="nav-link" href="{{route('tenant.advanced.index')}}">
                                     Avanzado
@@ -362,7 +408,7 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                             </li>
                         </ul>
                     </li>
-                    @endif
+                    
                 </ul>
             </nav>
         </div>

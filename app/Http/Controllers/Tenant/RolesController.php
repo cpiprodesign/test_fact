@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant;
 use Illuminate\Http\Request;
+use App\Models\Tenant\Module;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Caffeinated\Shinobi\Models\Role;
@@ -33,6 +34,10 @@ class RolesController extends Controller
         
     }
 
+    public function tables () {
+        $modules = Module::orderBy('description')->get();
+        return compact('modules'); 
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -41,9 +46,9 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        
+        // dd($request);
         $res = ['success' => false];
-        if ($request->has(['name', 'description', 'slug', 'permisos', 'special'])) {
+        if ($request->has(['name', 'description', 'slug', 'permisos', 'special', 'target_permisos'])) {
             // dd($request);
             DB::beginTransaction();
             $role = Role::firstOrNew(['id' => $request->id]);
@@ -53,11 +58,12 @@ class RolesController extends Controller
             if ($request->special != 'custom')
                 $role->special = $request->special;
             if ($role->save()) {
-                $role->syncPermissions(collect($request->permisos)->filter(function($permiso) {
-                   return $permiso['checked'] == true;
-                })->map(function($permiso) {
-                    return $permiso['slug'];
-                }));
+                $role->syncPermissions($request->target_permisos);
+                // $role->syncPermissions(collect($request->permisos)->filter(function($permiso) {
+                //    return $permiso['checked'] == true;
+                // })->map(function($permiso) {
+                //     return $permiso['slug'];
+                // }));
                 $res['success'] = true;
                 DB::commit();
             }

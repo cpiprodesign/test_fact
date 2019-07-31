@@ -30,13 +30,13 @@
                         <td>{{ row.ticket }}</td>
                         <td>{{ row.state_type_description }}</td>
                         <td class="text-center">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                            <button v-show="hasPermissiontTo('tenant.voided.report')" type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickDownload(row.download_xml)"
                                     v-if="row.has_xml">XML</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                            <button v-show="hasPermissiontTo('tenant.voided.report')" type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickDownload(row.download_pdf)"
                                     v-if="row.has_pdf">PDF</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                            <button v-show="hasPermissiontTo('tenant.voided.report')" type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickDownload(row.download_cdr)"
                                     v-if="row.has_cdr">CDR</button>
                         </td>

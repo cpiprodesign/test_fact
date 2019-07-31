@@ -80,10 +80,13 @@ class User extends Authenticatable
 
     public function user_meta_format () {
         $permissions = collect();
-        $roles = $this->roles->map(function($rol) use(&$permissions){
+        $special = [];
+        $roles = $this->roles->map(function($rol) use(&$permissions, &$special){
             $permissions = $permissions->merge($rol->permissions);
+            array_push($special, $rol->special);
             return ['name' => $rol->name, 'slug' => $rol->slug, 'special' => $rol->special];
         });
+        $special = array_unique($special);
         $permissions = $permissions->merge($this->permissions)->map(function($per) {
             return ['name' => $per->name, 'slug' => $per->slug];
         })->unique();
@@ -91,6 +94,7 @@ class User extends Authenticatable
             'name' => $this->name,
             'email' => $this->email,
             'permissions' => $permissions,
+            'special' => in_array('no-access', $special) ? 'no-access' : (in_array('all-access', $special) ? 'all-access' : 'custom'),
             'roles' => $roles
         ];        
     }

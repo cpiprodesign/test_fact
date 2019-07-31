@@ -19,8 +19,10 @@
     </style>
 @endpush
 
-@section('content')    
+@section('content')
+@can('tenant.documents.store')
     <tenant-documents-invoice></tenant-documents-invoice>   
+@endcan
 @endsection
 
 @push('scripts')
