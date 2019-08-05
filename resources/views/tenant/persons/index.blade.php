@@ -1,7 +1,7 @@
 @extends('tenant.layouts.app')
 
 @section('content')
-    @can('tenant.persons.suppliers.index', 'tenant.persons.suppliers.index')
+    @canany(['tenant.suppliers.index', 'tenant.customers.index'])
     <tenant-persons-index :type="{{ json_encode($type) }}"></tenant-persons-index>
-    @endcan
+    @endcanany
 @endsection

@@ -81,7 +81,7 @@
                             <el-tooltip class="item" effect="dark" v-if="row.document_type_id == '03'" content="Boletas se envian como Resúmenes" placement="top-end">
                                 <button type="button" class="btn btn-xs"><i class="fa fa-file-export i-icon text-disabled"></i></button>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" v-else="" content="Enviar a SUNAT/OSE" placement="top-end">
+                            <el-tooltip v-show="hasPermissionTo('tenant.documents.enviar-sunat')" class="item" effect="dark" v-else="" content="Enviar a SUNAT/OSE" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickResend(row.id)" v-if="row.btn_resend"><i class="fa fa-file-export i-icon text-danger"></i></button>
                                 <button type="button" class="btn btn-xs" v-else=""><i class="fa fa-file-export i-icon text-disabled"></i></button>
                             </el-tooltip>
@@ -100,11 +100,11 @@
                                 <a :href="`/dispatches/create2/${row.id}`" class="btn btn-xs" v-if="row.btn_note"><i class="fa fa-clipboard-check i-icon text-success"></i></a>
                                 <a class="btn btn-xs" v-else=""><i class="fa fa-clipboard-check i-icon text-disabled"></i></a>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="Agregar pago" placement="top-end">
+                            <el-tooltip v-show="hasPermissionTo('tenant.documents.agregar-pago')" class="item" effect="dark" content="Agregar pago" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickPay(row.id)" v-if="row.total_to_pay > 0"><i class="fa fa-money-bill-wave i-icon text-warning"></i></button>
                                 <button type="button" class="btn btn-xs" v-else="" disabled><i class="fa fa-money-bill-wave i-icon text-disabled"></i></button>
                             </el-tooltip>
-                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <div v-show="hasPermissionTo('tenant.documents.report')" class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 <div class="btn-group" role="group">
                                     <button id="btnGroupDrop1" type="button" class="btn waves-effect waves-light btn-xs btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Descargar
@@ -116,7 +116,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2" @click.prevent="clickOptions(row.id)">Opciones</button>
+                            <button v-show="hasPermissionTo(['tenant.documents.imprimir, tenant.documents.email'])" type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2" @click.prevent="clickOptions(row.id)">Opciones</button>
                         </td>
                     </tr>
                     <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">

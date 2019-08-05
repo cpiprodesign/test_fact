@@ -1,6 +1,6 @@
 <template>
     <el-dialog :title="titleDialog" :visible="showDialog" @open="create" width="30%" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
-        <div class="row mt-4">
+        <div v-show="hasPermissionTo('tenant.documents.imprimir')" class="row mt-4">
             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold">
                 <p>Imprimir A4</p>
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('a4')">
@@ -26,7 +26,7 @@
                 </button>
             </div>
         </div> -->
-        <div class="row mt-4">
+        <div v-show="hasPermissionTo('tenant.documents.email')" class="row mt-4">
             <div class="col-md-12">
                 <el-input v-model="form.customer_email">
                     <el-button slot="append" icon="el-icon-message" @click="clickSendEmail" :loading="loading">Enviar</el-button>

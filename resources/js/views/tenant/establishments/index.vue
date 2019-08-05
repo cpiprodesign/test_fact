@@ -20,16 +20,16 @@
                         <td>{{ row.description }}</td>
                         <td class="text-right">{{ row.code }}</td>
                         <td class="text-right">
-                            <button v-show="hasPermissionTo('tenant.configuration.establishments.update')" type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
-                            <button v-show="hasPermissionTo('tenant.configuration.establishments.destroy')" type="button" class="btn waves-effect waves-light btn-xs btn-danger"  @click.prevent="clickDelete(row.id)">Eliminar</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-warning"
+                            <button v-show="hasPermissionTo('tenant.establishments.update')" type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
+                            <button v-show="hasPermissionTo('tenant.establishments.destroy')" type="button" class="btn waves-effect waves-light btn-xs btn-danger"  @click.prevent="clickDelete(row.id)">Eliminar</button>
+                            <button v-show="hasPermissionTo('tenant.establishments.series')" type="button" class="btn waves-effect waves-light btn-xs btn-warning"
                               @click.prevent="clickSeries(row.id)">Series</button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="row" v-show="hasPermissionTo('tenant.configuration.establishments.store')">
+            <div class="row" v-show="hasPermissionTo('tenant.establishments.store')">
                 <div class="col">
                     <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickCreate()"><i class="fa fa-plus-circle"></i> Nuevo</button>
                 </div>

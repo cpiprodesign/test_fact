@@ -4,5 +4,4 @@
     @can('tenant.voided.index')
     <tenant-voided-index></tenant-voided-index>
     @endcan
-
 @endsection

@@ -41,7 +41,7 @@
                                     v-if="row.has_cdr">CDR</button>
                         </td>
                         <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-warning"
+                            <button v-show="hasPermissionTo('tenant.voided.enviar-sunat')" type="button" class="btn waves-effect waves-light btn-xs btn-warning"
                                     @click.prevent="clickTicket(row.type, row.id)"
                                     dusk="consult-voided"
                                     v-if="row.btn_ticket">Enviar a SUNAT/OSE</button>

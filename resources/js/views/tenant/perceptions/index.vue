@@ -5,7 +5,7 @@
             <ol class="breadcrumbs">
                 <li class="active"><span>Percepciones</span></li>
             </ol>
-            <div v-show="hasPermissionTo('tenant.perceptions.store')" class="right-wrapper pull-right">
+            <div  class="right-wrapper pull-right">
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
         </div>
@@ -33,8 +33,8 @@
                         <td class="text-right">{{ row.total_perception }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-right">
-                            <button v-show="hasPermissionTo('tenant.perceptions.update')" type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
-                            <button v-show="hasPermissionTo('tenant.perceptions.destroy')" type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
+                            <button  type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
+                            <button  type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                         </td>
                     </tr>
                 </data-table>
