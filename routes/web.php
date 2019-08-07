@@ -28,7 +28,7 @@ if ($hostname) {
             });
 
             //dashboard
-            Route::get('dashboard', 'Tenant\HomeController@index')->name('tenant.dashboard')->middleware('can:tenant.dashboard.index');
+            Route::get('dashboard', 'Tenant\HomeController@index')->name('tenant.dashboard');
             Route::get('dashboard/sells', 'Tenant\HomeController@sells')->name('tenant.dashboard.sells')->middleware('can:tenant.dashboard.index');
             Route::get('dashboard/load_sells/{establishment_id}/{range}', 'Tenant\HomeController@load_sells');
             Route::get('dashboard/establishments', 'Tenant\HomeController@establishments');
