@@ -23,7 +23,6 @@ class CreatePermissionsTable extends Migration
             $table->timestamps();
         });
 
-
         DB::table('permissions')->insert([
             ['id' => 1, 'name' => 'Comprobantes pendientes de envío', 'slug' => 'tenant.alerts.documents.pendientes-sunat', 'description' => 'Pendientes SUNAT', 'created_at' => DB::raw('NOW()'), 'updated_at' => DB::raw('NOW()')],
             ['id' => 2, 'name' => 'Listar/Ver catálogo', 'slug' => 'tenant.catalogs.index', 'description' => 'Listar/Ver', 'created_at' => DB::raw('NOW()'), 'updated_at' => DB::raw('NOW()')],
@@ -148,9 +147,6 @@ class CreatePermissionsTable extends Migration
             ['id' => 121, 'name' => 'Inventarios configuración', 'slug' => 'tenant.configuration.inventories', 'description' => 'Inventarios', 'created_at' => DB::raw('NOW()'), 'updated_at' => DB::raw('NOW()')],
 
         ]);
-        
-        
-
     }
 
     /**

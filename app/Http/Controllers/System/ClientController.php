@@ -203,6 +203,7 @@ class ClientController extends Controller
             'api_token' => $token,
             'establishment_id' => $establishment_id
         ]);
+        
         DB::table('role_user')->insert([
             'role_id' => 1, 
             'user_id' => $usuario_id, 
