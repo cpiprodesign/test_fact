@@ -120,6 +120,15 @@ class ClientController extends Controller
         try
         {
             $website->uuid = $uuid;
+
+            if (Website::where('uuid', '=', $uuid)->exists())
+            {
+                return [
+                    'success' => false,
+                    'message' => 'Nombre de subdominio ya esta en uso, ingrese nuevamente'
+                ];
+            }
+
             app(WebsiteRepository::class)->create($website);
             $hostname->fqdn = $fqdn;
             app(HostnameRepository::class)->attach($hostname, $website);
