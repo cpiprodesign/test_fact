@@ -9,6 +9,7 @@ use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Warehouse;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tenant\Module;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -28,17 +29,8 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $modules = $this->permission_modules();
-
-        if(in_array('dashboard', $modules))
-        {
-            return view('tenant.dashboard.index');
-        }
-        else
-        {
-            return view('tenant.documents.form');
-        }
+    {        
+        return view('tenant.dashboard.index');
     }
 
     public function sells()

@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <div class="form-actions text-right pt-2">
-                    <el-button type="primary" native-type="submit" :loading="loading_submit">Guardar</el-button>
+                    <el-button v-show="hasPermissionTo('tenant.companies.update')" type="primary" native-type="submit" :loading="loading_submit">Guardar</el-button>
                 </div>
             </form>
         </div>

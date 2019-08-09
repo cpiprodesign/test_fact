@@ -47,14 +47,26 @@
                             <small class="form-control-feedback" v-if="errors.password_confirmation" v-text="errors.password_confirmation[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <!-- <div class="col-md-12">
                         <div class="form-group" :class="{'has-danger': errors.admin}">
                             <label class="control-label d-block text-success">Rol Administrador</label>
                             <el-checkbox v-model="form.admin" class="d-block text-success"></el-checkbox>
                             <small class="form-control-feedback d-block" v-if="errors.admin" v-text="errors.admin[0]"></small>
                         </div>
+                    </div> -->
+                    <div class="col-md-12">
+                        <div class="form-group ">
+                            <label class="control-label">Roles</label>
+                            <div class="">
+                                <el-checkbox-group class="row" v-model="form.target_roles" >
+                                    <div class="col-4" v-for="role in roles" v-show="role.visible">
+                                        <el-checkbox @change="onChange_boxRole" :label="role.slug">{{ role.name }}</el-checkbox>
+                                    </div>
+                                </el-checkbox-group>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-12" v-show="form.admin == false">
+                    <!-- <div class="col-md-12" v-show="form.admin == false">
                         <div class="form-group ">
                             <label class="control-label">Módulos</label>
                             <div class="row">
@@ -63,7 +75,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="form-actions text-right mt-4">
@@ -89,7 +101,8 @@
                 errors: {},
                 form: {},
                 modules: [],
-                establishments: []
+                establishments: [],
+                roles: [],
             }
         },
         async created() {
@@ -98,7 +111,20 @@
                     this.modules = response.data.modules
                     this.establishments = response.data.establishments
                 })
+            await this.$http.get(`/roles/records`)
+                .then(response => {
+                    this.roles = response.data.map(r => {
+                        r.visible = true,
+                        r.checked = false
+                        return r
+                    })
+                })
             await this.initForm()
+        },
+        watch: {
+            'form.admin'(ov, nv) {
+                // console.log
+            }
         },
         methods: {
             initForm() {
@@ -112,16 +138,37 @@
                     password: null,
                     admin: false,
                     password_confirmation: null,
-                    modules: []
+                    modules: [],
+                    target_roles: []
                 }
 
                 this.modules.forEach(module => {
                     this.form.modules.push({
                         id: module.id,
+                        slug: module.slug,
                         description: module.description,
                         checked: false
                     })
                 })
+                this.roles.forEach(role => {
+                    role.visible = true,
+                    role.checked = false
+                })
+            },
+            onChange_boxRole (e,v) {
+                if (v.target.value == 'administrador') {
+                    this.form.admin = e
+                    if (e) {
+                        this.form.target_roles = ['administrador']
+                        this.roles.forEach(r => {
+                            if (r.slug != 'administrador') r.visible = false
+                        })
+                    } else {
+                        this.roles.forEach(r => {
+                            r.visible = true
+                        })
+                    }
+                }
             },
             create() {
                 this.titleDialog = (this.recordId)? 'Editar Usuario':'Nuevo Usuario'

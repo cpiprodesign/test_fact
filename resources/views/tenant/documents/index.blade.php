@@ -1,8 +1,9 @@
 @extends('tenant.layouts.app')
 
 @section('content')
-
+    @can('tenant.documents.index')
     <tenant-documents-index></tenant-documents-index>
+    @endcan
 
 @endsection
 

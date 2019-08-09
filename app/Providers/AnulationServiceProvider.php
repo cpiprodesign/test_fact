@@ -41,7 +41,7 @@ class AnulationServiceProvider extends ServiceProvider
                         $update->quantity += $detail['quantity'];
                         $update->save();
  
-                        $this->saveKardex('sale', $item->id, $document['id'], -$detail['quantity']);
+                        $this->saveKardex('sale', $detail['item_id'], $document['id'], -$detail['quantity'],'document');
                          
                     }
 

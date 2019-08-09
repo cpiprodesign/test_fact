@@ -5,12 +5,14 @@
  */
 
 require('./bootstrap');
+require('./tools')
 
 // window.Vue = require('vue');
 import Vue from 'vue';
 import ElementUI from 'element-ui';
 import Axios from 'axios';
-
+// const user_mixin = require('./mixins/user_mixins')
+import user_mixin from './mixins/user_mixins'
 import lang from 'element-ui/lib/locale/lang/es';
 import locale from 'element-ui/lib/locale';
 
@@ -20,7 +22,7 @@ locale.use(lang);
 Vue.use(ElementUI, {size: 'small'});
 Vue.prototype.$eventHub = new Vue();
 Vue.prototype.$http = Axios;
-
+Vue.mixin(user_mixin);
 // import VueCharts from 'vue-charts'
 // Vue.use(VueCharts);
 // import { TableComponent, TableColumn } from 'vue-table-component';
@@ -31,10 +33,6 @@ Vue.prototype.$http = Axios;
 //dashboard
 Vue.component('tenant-dashboard-index', require('./views/tenant/dashboard/index.vue'));
 Vue.component('tenant-dashboard-sells', require('./views/tenant/dashboard/sells.vue'));
-
-//alerts
-Vue.component('tenant-alerts-documents-index', require('./views/tenant/alerts/documents/index.vue'));
-Vue.component('tenant-alerts-notifications', require('./views/tenant/alerts/notifications.vue'));
 
 //pos
 Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));
@@ -117,6 +115,9 @@ Vue.component('tenant-calendar', require('./views/tenant/components/calendar.vue
 Vue.component('tenant-calendar2', require('./views/tenant/components/calendar2.vue'));
 Vue.component('tenant-calendar3', require('./views/tenant/components/calendar3.vue'));
 
+//ROLES
+Vue.component('tenant-roles-index', require('./views/tenant/roles/index.vue'));
+
 //reports
 Vue.component('tenant-reports-customers-index', require('./views/tenant/reports/customers/index.vue'));
 
@@ -133,6 +134,8 @@ Vue.component('system-users-form', require('./views/system/users/form.vue'));
 
 Vue.component('system-plans-index', require('./views/system/plans/index.vue'));
 Vue.component('system-plans-form', require('./views/system/plans/form.vue'));
+
+
 
 const app = new Vue({
     el: '#main-wrapper'

@@ -27,3 +27,7 @@ error_log
 debug.log
 phpunit.dusk.xml
 vendor/mpdf/mpdf/tmp/
+NOTAS.txt
+RR1.txt
+RR2.txt
+RR3.txt

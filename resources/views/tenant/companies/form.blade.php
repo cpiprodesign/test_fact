@@ -3,12 +3,16 @@
 @section('content')
 
     <div class="row">
+        @can('tenant.companies.index')
         <div class="col-lg-6 col-md-12 pt-2 pt-md-0">
             <tenant-companies-form></tenant-companies-form>
         </div>
+        @endcan
+        @can('tenant.companies.subir-certificado')
         <div class="col-lg-6 col-md-12">
             <tenant-certificates-index></tenant-certificates-index>
         </div>
+        @endcan
     </div>
     {{--<div class="row">--}}
         {{--<div class="col-lg-6 col-md-12">--}}

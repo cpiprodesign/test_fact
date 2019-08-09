@@ -9,14 +9,18 @@
 
     {{--    <title>{{ config('app.name', 'Facturación Electrónica') }}</title>--}}
     <title>Facturación Electrónica</title>
-
+    
+    @auth
+      {{-- <meta name="user_data" content="{{Session::get('usuario_data')->format_data()}}"> --}}
+      <meta name="user_data" content="{{json_encode(auth()->user()->user_meta_format())}}">
+    @endauth
     <!-- Scripts -->
 
     <!-- Fonts -->
     {{--<link rel="dns-prefetch" href="https://fonts.gstatic.com">--}}
     {{--<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">--}}
 
-    <link href="{{ asset('css/app.css?v=20190617_02') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css?v=20190618_2') }}" rel="stylesheet">
 
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
@@ -139,7 +143,7 @@
 
     @stack('scripts')
 
-    <script src="{{ asset('js/app.js?v=20190617_02') }}"></script>
+    <script src="{{ asset('js/app.js?v=20190712') }}"></script>
     <!-- Theme Base, Components and Settings -->
     <script src="{{asset('porto-light/js/theme.js')}}"></script>
     <script src="//code.tidio.co/8txsjuzw2uthkcsbyrwynuffhsdzpbwi.js"></script>

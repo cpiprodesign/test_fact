@@ -1,10 +1,10 @@
 <template>
-    <div class="card mb-0 pt-2 pt-md-0">
+    <div class="card mb-0 pt-2 pt-md-0" >
         <!-- <div class="card-header bg-info">
             <h3 class="my-0">Nuevo Comprobante</h3>
         </div> -->
         <div class="tab-content" v-if="loading_form">
-            <div class="invoice">
+            <div class="invoice" v-show="hasPermissionTo('tenant.documents.store')">
                 <header class="clearfix">
                     <div class="row">
                         <div class="col-sm-2 text-center mt-3 mb-0">
@@ -229,7 +229,7 @@
                     </div>
                     <div class="form-actions text-right mt-4">
                         <el-button @click.prevent="close()">Cancelar</el-button>
-                        <el-button class="submit" type="primary" native-type="submit" :loading="loading_submit" v-if="form.items.length > 0">Generar</el-button>
+                        <el-button v-show="hasPermissionTo('tenant.documents.store')" class="submit" type="primary" native-type="submit" :loading="loading_submit" v-if="form.items.length > 0">Generar</el-button>
                     </div>
                 </form>
             </div>
