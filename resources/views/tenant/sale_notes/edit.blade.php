@@ -20,8 +20,9 @@
 @endpush
 
 @section('content')
-
+    @can('tenant.sale-notes.update')
     <tenant-quotations-edit :quotation_id="{{ json_encode($quotation_id) }}"></tenant-quotations-edit>
+    @endcan
 
 @endsection
 

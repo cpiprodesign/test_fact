@@ -20,5 +20,10 @@
 @endpush
 
 @section('content')
+@can('tenant.dashboard.index')
     <tenant-dashboard-index></tenant-dashboard-index>
+@endcan
+@can('tenant.documents.store')
+    <tenant-documents-invoice></tenant-documents-invoice> 
+@endcan
 @endsection

@@ -5,7 +5,7 @@
             <ol class="breadcrumbs">
                 <li class="active"><span>Cotizaciones</span></li>
             </ol>
-            <div class="right-wrapper pull-right">
+            <div v-show="hasPermissionTo('tenant.quotations.store')" class="right-wrapper pull-right">
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
         </div>
@@ -59,9 +59,9 @@
                                     Opciones
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                        <a v-if="row.state_type_id==1" class="dropdown-item" :href="`/documents/create2/`+row.id">Crear venta</a>
-                                        <a v-if="row.state_type_id==1" class="dropdown-item" :href="`/quotations/edit/`+row.id">Editar</a>
-                                        <a class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
+                                        <a v-show="hasPermissionTo('tenant.documents.store')" v-if="row.state_type_id==1" class="dropdown-item" :href="`/documents/create2/`+row.id">Crear venta</a>
+                                        <a v-show="hasPermissionTo('tenant.quotations.update')" v-if="row.state_type_id==1" class="dropdown-item" :href="`/quotations/edit/`+row.id">Editar</a>
+                                        <a v-show="hasPermissionTo('tenant.quotations.reporte')" class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
                                     </div>
                                 </div>
                             </div>

@@ -5,7 +5,7 @@
             <ol class="breadcrumbs">
                 <li class="active"><span>Lista de Precios</span></li>
             </ol>
-            <div class="right-wrapper pull-right">
+            <div v-show="hasPermissionTo('tenant.price-list.store')" class="right-wrapper pull-right">
                 <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickCreate()"><i class="fa fa-plus-circle"></i> Nuevo</button>
             </div>
         </div>
@@ -28,8 +28,8 @@
                         <td class="text-right">{{ (row.principal) ? "Si" : "No" }}</td>
                         <td class="text-right">{{ (row.type == 1) ? "Porcentaje ("+row.value+"%)" : "Valor" }}</td>
                         <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
+                            <button v-show="hasPermissionTo('tenant.price-list.update')" type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
+                            <button v-show="hasPermissionTo('tenant.price-list.destroy')" type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                         </td>
                     </tr>
                 </data-table>

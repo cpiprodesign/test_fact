@@ -29,9 +29,9 @@
                         <td>{{ row.warehouse_description }}</td>
                         <td class="text-right">{{ formaterDecimal(row.stock) }}</td>
                         <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                            <button v-show="hasPermissionTo('tenant.inventory.trasladar')" type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickMove(row.id)">Trasladar</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-warning"
+                            <button v-show="hasPermissionTo('tenant.inventory.ajustar')" type="button" class="btn waves-effect waves-light btn-xs btn-warning"
                                     @click.prevent="clickRemove(row.id)">Ajustar</button>
                         </td>
                     </tr>

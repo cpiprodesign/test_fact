@@ -29,11 +29,11 @@
                         <td class="text-right">{{ row.total_retention }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-center">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                            <button v-show="hasPermissionTo('tenant.retentions.report')" type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickDownload(row.download_external_xml)">XML</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                            <button v-show="hasPermissionTo('tenant.retentions.report')" type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickDownload(row.download_external_pdf)">PDF</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                            <button v-show="hasPermissionTo('tenant.retentions.report')" type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickDownload(row.download_external_cdr)">CDR</button>
                         </td>
                     </tr>

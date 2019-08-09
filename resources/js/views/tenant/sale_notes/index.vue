@@ -5,7 +5,7 @@
             <ol class="breadcrumbs">
                 <li class="active"><span>Notas de Venta</span></li>
             </ol>
-            <div class="right-wrapper pull-right">
+            <div v-show="hasPermissionTo('tenant.sale-notes.store')" class="right-wrapper pull-right">
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
         </div>
@@ -44,10 +44,10 @@
                                 <button type="button" class="btn btn-xs" @click.prevent="clickPay(row.id)" v-if="row.total_to_pay > 0"><i class="fa fa-money-bill-wave i-icon text-warning"></i></button>
                                 <button type="button" class="btn btn-xs" v-else="" disabled><i class="fa fa-money-bill-wave i-icon text-disabled"></i></button>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="Descargar Pdf" placement="top-end">
+                            <el-tooltip v-show="hasPermissionTo('tenant.sale-notes.report')" class="item" effect="dark" content="Descargar Pdf" placement="top-end">
                                 <a :href="`/download/salenote/pdf/`+row.id" class="btn btn-xs"><i class="fa fa-file-pdf i-icon text-info"></i></a>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="Eliminar" placement="top-end">
+                            <el-tooltip v-show="hasPermissionTo('tenant.sale-notes.destroy')" class="item" effect="dark" content="Eliminar" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickDelete(row.id)" v-if="row.has_delete"><i class="fa fa-trash-alt i-icon text-danger"></i></button>
                                 <button type="button" class="btn btn-xs" v-else><i class="fa fa-trash-alt i-icon text-disabled"></i></button>
                             </el-tooltip>

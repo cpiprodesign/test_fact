@@ -5,7 +5,7 @@
             <ol class="breadcrumbs">
                 <li class="active"><span>Compras</span></li>
             </ol>
-            <div class="right-wrapper pull-right">
+            <div v-show="hasPermissionTo('tenant.purchases.store')" class="right-wrapper pull-right">
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
         </div>
@@ -45,7 +45,7 @@
                         <td class="text-right">{{ row.total_igv }}</td>
                         <td class="text-right">{{ row.total }}</td>
                         <td class="text-center">
-                            <el-tooltip class="item" effect="dark" content="Editar" placement="top-end">
+                            <el-tooltip v-show="hasPermissionTo('tenant.purchases.update')" class="item" effect="dark" content="Editar" placement="top-end">
                                 <a :href="`/${resource}/edit/${row.id}`" class="btn btn-xs" ><i class="fa fa-file-signature i-icon text-danger"></i></a>
                             </el-tooltip>
                         </td>
