@@ -1,7 +1,8 @@
 @extends('tenant.layouts.app')
 
 @section('content')
-
-    <tenant-users-index></tenant-users-index>
+    @can('tenant.user.index')
+        <tenant-users-index></tenant-users-index>
+    @endcan
 
 @endsection

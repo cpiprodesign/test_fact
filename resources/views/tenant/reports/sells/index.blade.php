@@ -20,6 +20,7 @@
                     <div class="box">
                         <div class="box-body no-padding">
                             <div style="margin-bottom: 10px">
+                                @can('tenant.reports.descargar')
                                 @if(isset($records))
                                     <form action="{{route('tenant.report.sells.pdf')}}" class="d-inline" method="POST">
                                         {{csrf_field()}}
@@ -36,6 +37,7 @@
                                     <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
                                 </form>
                                 @endif
+                                @endcan
                             </div>
                             <div class="row">
                                 <div class="table-responsive">

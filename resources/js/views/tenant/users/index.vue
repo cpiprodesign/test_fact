@@ -23,8 +23,8 @@
                         <td>{{ row.api_token }}</td>
                         <td>{{ row.establishment_description }}</td>
                         <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"  @click.prevent="clickDelete(row.id)" v-show="row.id!=1">Eliminar</button>
+                            <button v-show="hasPermissionTo('tenant.user.update')" type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
+                            <button v-show="hasPermissionTo('tenant.user.destroy') & row.id!=1" type="button" class="btn waves-effect waves-light btn-xs btn-danger"  @click.prevent="clickDelete(row.id)">Eliminar</button>
                         </td>
                     </tr>
                     </tbody>
@@ -32,7 +32,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickCreate()"><i class="fa fa-plus-circle"></i> Nuevo</button>
+                    <button v-show="hasPermissionTo('tenant.user.store')" type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickCreate()"><i class="fa fa-plus-circle"></i> Nuevo</button>
                 </div>
             </div>
         </div>

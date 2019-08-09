@@ -5,7 +5,7 @@
             <ol class="breadcrumbs">
                 <li class="active"><span>Guias de remisión</span></li>
             </ol>
-            <div class="right-wrapper pull-right">
+            <div v-show="hasPermissionTo('tenant.dispatches.store')" class="right-wrapper pull-right">
                 <a :href="`/${resource}/create`" class="btn btn-custom btn-sm  mt-2 mr-2"><i
                         class="fa fa-plus-circle"></i> Nuevo</a>
             </div>
@@ -40,19 +40,19 @@
                         <td>{{ row.number }}</td>
                         <td class="text-center">{{ row.date_of_shipping }}</td>
                         <td class="text-center">
-                            <button type="button" :disabled="row.has_xml*1!==1"
+                            <button v-show="hasPermissionTo('tenant.dispatches.report')" type="button" :disabled="row.has_xml*1!==1"
                                     class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickDownload(row.download_external_xml)">XML
                             </button>
-                            <button type="button" :disabled="row.has_pdf*1!==1"
+                            <button v-show="hasPermissionTo('tenant.dispatches.report')" type="button" :disabled="row.has_pdf*1!==1"
                                     class="btn waves-effect waves-light btn-xs btn-info"
                                     @click.prevent="clickDownload(row.download_external_pdf)">PDF
                             </button>
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
+                            <button v-show="hasPermissionTo('tenant.dispatches.report')" type="button" class="btn waves-effect waves-light btn-xs btn-info"
                                     v-if="row.has_cdr * 1 >= 1" :disabled="row.has_cdr*1!==1"
                                     @click.prevent="clickDownload(row.download_external_cdr)">CDR
                             </button>
-                            <button v-else type="button" class="btn waves-effect waves-light btn-xs btn-success"
+                            <button v-show="hasPermissionTo('tenant.dispatches.resend')" v-else type="button" class="btn waves-effect waves-light btn-xs btn-success"
                                     @click.prevent="sendDocument(row)">Reenviar Documento
                             </button>
                         </td>

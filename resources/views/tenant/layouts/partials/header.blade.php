@@ -51,17 +51,21 @@
                 $pos = \App\Models\Tenant\Pos::active();
             @endphp
             @if(is_null($pos))
-                @if($path[0] != 'box')
-                    <a class="btn btn-sm btn-warning mt-2 mr-2 text-white" href="{{route('tenant.box.index')}}">
-                        <i class="fas fa-cash-register mr-1"></i> ¡Aperturar Caja!
-                    </a>
-                @endif
+                @can('tenant.pos.store')    
+                    @if($path[0] != 'box')
+                        <a class="btn btn-sm btn-warning mt-2 mr-2 text-white" href="{{route('tenant.box.index')}}">
+                            <i class="fas fa-cash-register mr-1"></i> ¡Aperturar Caja!
+                        </a>
+                    @endif
+                @endcan
             @else
-                @if(date("H:i:s") > '17:00:00')
-                    <a class="btn btn-sm btn-warning mt-2 mr-2 text-white" href="{{route('tenant.box.index')}}">
-                        <i class="fas fa-cash-register mr-1"></i> ¡No se olvidé cerrar su caja al finalizar el día!
-                    </a>
-                @endif
+                @can('tenant.pos.destroy')    
+                    @if(date("H:i:s") > '17:00:00')
+                        <a class="btn btn-sm btn-warning mt-2 mr-2 text-white" href="{{route('tenant.box.index')}}">
+                            <i class="fas fa-cash-register mr-1"></i> ¡No se olvidé cerrar su caja al finalizar el día!
+                        </a>
+                    @endif
+                @endcan
             @endif
             <a href="#" data-toggle="dropdown">
                 <figure class="profile-picture">

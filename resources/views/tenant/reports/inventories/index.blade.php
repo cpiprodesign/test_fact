@@ -32,6 +32,7 @@
                         <div class="box-body no-padding">
                             <div style="margin-bottom: 10px">
                                 <div class="row">
+                                    @can('tenant.reports.descargar')
                                     @if(isset($reports))
                                         <div class="col-md-2">
                                             <form action="{{route('tenant.report.inventories.pdf')}}" class="d-inline" method="POST">
@@ -49,7 +50,8 @@
                                                 {{-- <label class="pull-right">Se encontraron {{$reports->count()}} registros.</label> --}}
                                             </form>
                                         </div>
-                                    @endif                                    
+                                    @endif 
+                                    @endcan                                   
                                 </div>
                             </div>
                             <table width="100%" class="table table-striped table-responsive-xl table-bordered table-hover">

@@ -134,27 +134,30 @@
                     })
             },
             submit() {
-                this.loading_submit = true
-                this.$http.post(`/payments`, this.form)
-                    .then(response => {
-                        if (response.data.success) {
-                            this.$message.success(response.data.message)
-                            this.$eventHub.$emit('reloadData')
-                            this.close()
-                        } else {
-                            this.$message.error(response.data.message)
-                        }
-                    })
-                    .catch(error => {
-                        if (error.response.status === 422) {
-                            this.errors = error.response.data
-                        } else {
-                            console.log(error)
-                        }
-                    })
-                    .then(() => {
-                        this.loading_submit = false
-                    })
+                
+                if (this.hasPermissionTo('tenant.documents.agregar-pago')) {     
+                    this.loading_submit = true
+                    this.$http.post(`/payments`, this.form)
+                        .then(response => {
+                            if (response.data.success) {
+                                this.$message.success(response.data.message)
+                                this.$eventHub.$emit('reloadData')
+                                this.close()
+                            } else {
+                                this.$message.error(response.data.message)
+                            }
+                        })
+                        .catch(error => {
+                            if (error.response.status === 422) {
+                                this.errors = error.response.data
+                            } else {
+                                console.log(error)
+                            }
+                        })
+                        .then(() => {
+                            this.loading_submit = false
+                        })
+                }
             },
             close() {
                 this.$emit('update:showDialog', false)

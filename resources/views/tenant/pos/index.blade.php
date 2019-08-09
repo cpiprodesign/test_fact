@@ -1,8 +1,9 @@
 @extends('tenant.layouts.app')
 
 @section('content')
-
-    <tenant-pos-index></tenant-pos-index>
+    @canany(['tenant.documents.pos','tenant.pos.index'])
+        <tenant-pos-index></tenant-pos-index>
+    @endcanany
 
 @endsection
 

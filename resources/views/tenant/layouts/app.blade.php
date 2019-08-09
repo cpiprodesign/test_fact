@@ -9,7 +9,11 @@
 
     {{--    <title>{{ config('app.name', 'Facturación Electrónica') }}</title>--}}
     <title>Facturación Electrónica</title>
-
+    
+    @auth
+      {{-- <meta name="user_data" content="{{Session::get('usuario_data')->format_data()}}"> --}}
+      <meta name="user_data" content="{{json_encode(auth()->user()->user_meta_format())}}">
+    @endauth
     <!-- Scripts -->
 
     <!-- Fonts -->

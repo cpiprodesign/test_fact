@@ -20,6 +20,7 @@
                     <div class="box">
                         <div class="box-body no-padding">
                             <div style="margin-bottom: 10px">
+                                @can('tenant.reports.descargar')
                                 @if(isset($records))
                                     <form action="{{route('tenant.report.customers.pdf')}}" class="d-inline" method="POST">
                                         {{csrf_field()}}
@@ -38,6 +39,7 @@
                                     {{-- <label class="pull-right">Se encontraron {{$records->count()}} registros.</label> --}}
                                 </form>
                                 @endif
+                                @endcan
                             </div>
                             <div class="row">
                                 <div class="table-responsive">

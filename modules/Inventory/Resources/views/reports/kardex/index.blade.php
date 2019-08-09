@@ -3,6 +3,7 @@
     use App\Helpers\Functions;
 @endphp
 @section('content')
+    @can('tenant.inventory.report.kardex.index')
     <div class="row">
         <div class="col-md-12">
             <div class="card card-primary">
@@ -187,6 +188,7 @@
             </div>
         </div>
     </div>
+    @endcan
 @endsection
 
 @push('scripts')

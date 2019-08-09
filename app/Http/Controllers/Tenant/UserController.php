@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers\Tenant;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Tenant\UserRequest;
-use App\Http\Resources\Tenant\UserResource;
-use App\Models\Tenant\Establishment;
-use App\Models\Tenant\Module;
 use App\Models\Tenant\User;
+use App\Models\Tenant\Module;
+use App\Http\Controllers\Controller;
+use App\Models\Tenant\Establishment;
+use App\Http\Requests\Tenant\UserRequest;
+use Caffeinated\Shinobi\Models\Permission;
+use App\Http\Resources\Tenant\UserResource;
 use App\Http\Resources\Tenant\UserCollection;
 
 class UserController extends Controller
@@ -25,7 +26,8 @@ class UserController extends Controller
 
     public function tables()
     {
-        $modules = Module::orderBy('description')->get();
+        // $modules = Module::orderBy('description')->get();
+        $modules = Permission::where('slug', 'like', 'tenant.module.%')->orderBy('slug')->get();
         $establishments = Establishment::orderBy('description')->get();
 
         return compact('modules', 'establishments');
@@ -33,6 +35,7 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
+        
         $id = $request->input('id');
         $user = User::firstOrNew(['id' => $id]);
         $user->name = $request->input('name');
@@ -55,9 +58,13 @@ class UserController extends Controller
         
         $user->save();
 
-        $modules = collect($request->input('modules'))->where('checked', true)->pluck('id')->toArray();
-        $user->modules()->sync($modules);
+        $modules = collect($request->input('modules'))->where('checked', true)->pluck('slug')->toArray();
+        $user->syncPermissions($modules);
 
+        if ($request->has('target_roles')) {
+            $user->syncRoles($request->target_roles);
+        }
+        
         return [
             'success' => true,
             'message' => ($id)?'Usuario actualizado':'Usuario registrado'
