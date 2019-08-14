@@ -1,6 +1,6 @@
 <template>
     <el-dialog :title="titleDialog" :visible="showDialog" @open="create" width="30%" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
-        <div v-show="hasPermission('tenant.sale-notes.imprimir')" class="row mt-4">
+        <div v-show="hasPermissionTo('tenant.sale-notes.imprimir')" class="row mt-4">
             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold">
                 <p>Imprimir PDF</p>
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('a4')">
