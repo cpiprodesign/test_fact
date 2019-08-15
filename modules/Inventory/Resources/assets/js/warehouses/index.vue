@@ -5,7 +5,7 @@
             <ol class="breadcrumbs">
                 <li class="active"><span>{{ title }}</span></li>
             </ol>
-            <div v-show="hasPermission('tenant.establishments.store') && hasPermission('tenant.warehouses.store')" class="right-wrapper pull-right">
+            <div v-show="hasPermissionTo('tenant.establishments.store') && hasPermissionTo('tenant.warehouses.store')" class="right-wrapper pull-right">
                 <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickCreate()"><i class="fa fa-plus-circle"></i> Nuevo</button>
             </div>
         </div>
@@ -26,7 +26,7 @@
                         <td>{{ row.description }}</td>
                         <td>{{ row.establishment_description }}</td>
                         <td class="text-right">
-                            <button v-show="hasPermissiontTo('tenant.warehouses.update')" type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
+                            <button v-show="hasPermissionTo('tenant.warehouses.update')" type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
                         </td>
                     </tr>
                 </data-table>
