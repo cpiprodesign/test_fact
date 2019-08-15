@@ -31,6 +31,10 @@ class WarehouseController extends Controller
         return new WarehouseCollection($records->paginate(config('tenant.items_per_page')));
     }
 
+    public function totals(Request $request)
+    {
+    }
+
     public function record($id)
     {
         $record = new WarehouseResource(Warehouse::findOrFail($id));

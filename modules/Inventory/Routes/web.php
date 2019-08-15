@@ -12,6 +12,7 @@ if($hostname) {
                 Route::get('records', 'WarehouseController@records');
                 Route::get('columns', 'WarehouseController@columns');
                 Route::get('tables', 'WarehouseController@tables');
+                Route::get('totals', 'WarehouseController@totals');
                 Route::get('record/{warehouse}', 'WarehouseController@record');
                 Route::post('/', 'WarehouseController@store')->middleware('can:tenant.warehouses.store,tenant.warehouses.update');
                 Route::get('initialize', 'WarehouseController@initialize');
