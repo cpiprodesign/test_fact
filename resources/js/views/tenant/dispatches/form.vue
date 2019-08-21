@@ -428,7 +428,7 @@
                 this.$set(this.form.delivery, 'location_id', null);
             },
             addItem(form) {
-                let exist = this.form.items.find((item) => item.internal_id == form.item.internal_id);
+                let exist = this.form.items.find((item) => item.id == form.item.id);
                 
                 if (exist) {
                     exist.quantity += form.quantity;
