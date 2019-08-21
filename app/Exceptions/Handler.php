@@ -79,6 +79,10 @@ class Handler extends ExceptionHandler
             return $this->errorResponse('', 500, $exception);
         }
 
+        if ($exception){
+            return $this->errorResponse('', 500, $exception);
+        }
+
         return parent::render($request, $exception);
     }
 
