@@ -63,6 +63,6 @@ class Kernel extends HttpKernel
         'input.request' => \App\CoreFacturalo\InputRequest::class,
 //        'module' => \App\Http\Middleware\CheckModule::class,
         'has.role' => \Caffeinated\Shinobi\Middleware\UserHasRole::class,
-        // 'has.permission' => \Caffeinated\Shinobi\Middleware\UserHasPermission::class,
+        'hasAnyPermission' => \Caffeinated\Shinobi\Middleware\UserHasAnyPermission::class,
     ];
 }

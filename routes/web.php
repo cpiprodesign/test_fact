@@ -33,8 +33,8 @@ if ($hostname) {
             Route::get('dashboard/load_sells/{establishment_id}/{range}', 'Tenant\HomeController@load_sells');
             Route::get('dashboard/establishments', 'Tenant\HomeController@establishments');
             Route::get('dashboard/load/{establishment_id}', 'Tenant\HomeController@load');
-            Route::get('dashboard/chart_cash_flow/{establishment_id}', 'Tenant\HomeController@chart_cash_flow');            
-            Route::get('dashboard/chart_pie_total/{establishment_id}', 'Tenant\HomeController@chart_pie_total');            
+            Route::get('dashboard/chart_cash_flow/{establishment_id}', 'Tenant\HomeController@chart_cash_flow');
+            Route::get('dashboard/chart_pie_total/{establishment_id}', 'Tenant\HomeController@chart_pie_total');
 
             //alerts
             Route::get('alerts/documents', 'Tenant\AlertDocumentController@index')->name('tenant.alerts.documents.index')->middleware('can:tenant.alerts.documents.pendientes-sunat');
@@ -47,7 +47,7 @@ if ($hostname) {
             Route::get('companies/create', 'Tenant\CompanyController@create')->name('tenant.companies.create')->middleware('can:tenant.companies.index');
             Route::get('companies/tables', 'Tenant\CompanyController@tables');
             Route::get('companies/record', 'Tenant\CompanyController@record');
-            Route::post('companies', 'Tenant\CompanyController@store')->middleware('can:tenant.companies.store,tenant.companies.update');
+            Route::post('companies', 'Tenant\CompanyController@store')->middleware('hasAnyPermission:tenant.companies.store,tenant.companies.update');
             Route::post('companies/uploads', 'Tenant\CompanyController@uploadFile')->middleware('can:tenant.companies.subir-certificado');
 
             //Configurations
@@ -65,7 +65,7 @@ if ($hostname) {
             Route::get('establishments/create', 'Tenant\EstablishmentController@create')->middleware('can:tenant.establishments.store');
             Route::get('establishments/tables', 'Tenant\EstablishmentController@tables');
             Route::get('establishments/record/{establishment}', 'Tenant\EstablishmentController@record');
-            Route::post('establishments', 'Tenant\EstablishmentController@store')->middleware('can:tenant.establishments.store,tenant.establishments.update');
+            Route::post('establishments', 'Tenant\EstablishmentController@store')->middleware('hasAnyPermission:tenant.establishments.store,tenant.establishments.update');
             Route::get('establishments/records', 'Tenant\EstablishmentController@records');
             Route::delete('establishments/{establishment}', 'Tenant\EstablishmentController@destroy')->middleware('can:tenant.establishments.destroy');
 
@@ -90,7 +90,7 @@ if ($hostname) {
             Route::get('users/create', 'Tenant\UserController@create')->name('tenant.users.create')->middleware('can:tenant.users.store');
             Route::get('users/tables', 'Tenant\UserController@tables');
             Route::get('users/record/{user}', 'Tenant\UserController@record');
-            Route::post('users', 'Tenant\UserController@store')->middleware('can:tenant.users.store,tenant.user.update');
+            Route::post('users', 'Tenant\UserController@store')->middleware('hasAnyPermission:tenant.users.store,tenant.user.update');
             Route::get('users/records', 'Tenant\UserController@records');
             Route::delete('users/{user}', 'Tenant\UserController@destroy')->middleware('can:tenant.users.destroy');
 
@@ -110,7 +110,7 @@ if ($hostname) {
             Route::get('items/tables', 'Tenant\ItemController@tables');
             Route::get('items/record/{item}', 'Tenant\ItemController@record');
             Route::get('items/stocks/{item}', 'Tenant\ItemController@stocks');
-            Route::post('items', 'Tenant\ItemController@store')->middleware('can:tenant.items.store,tenant.items.update');
+            Route::post('items', 'Tenant\ItemController@store')->middleware('hasAnyPermission:tenant.items.store,tenant.items.update');
             Route::delete('items/{item}', 'Tenant\ItemController@destroy')->middleware('can:tenant.items.destroy');
             Route::post('items/import', 'Tenant\ItemController@import')->middleware('can:tenant.items.import');
             Route::get('items/stock_details/{item}', 'Tenant\ItemController@stock_details');
@@ -120,7 +120,7 @@ if ($hostname) {
             Route::get('price-list/columns', 'Tenant\PriceListController@columns');
             //Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
             Route::get('price-list/record/{price_list}', 'Tenant\PriceListController@record');
-            Route::post('price-list', 'Tenant\PriceListController@store')->middleware('can:tenant.price-list.store,tenant.price-list.update');
+            Route::post('price-list', 'Tenant\PriceListController@store')->middleware('hasAnyPermission:tenant.price-list.store,tenant.price-list.update');
             Route::get('price-list/records', 'Tenant\PriceListController@records');
             Route::delete('price-list/{price_list}', 'Tenant\PriceListController@destroy')->middleware('can:tenant.price-list.destroy');
 
@@ -129,7 +129,7 @@ if ($hostname) {
             Route::get('expenses/columns', 'Tenant\ExpenseController@columns');
             Route::get('expenses/tables', 'Tenant\ExpenseController@tables');
             Route::get('expenses/record/{expense}', 'Tenant\ExpenseController@record');
-            Route::post('expenses', 'Tenant\ExpenseController@store')->middleware('can:tenant.expenses.store,tenant.expenses.update');
+            Route::post('expenses', 'Tenant\ExpenseController@store')->middleware('hasAnyPermission:tenant.expenses.store,tenant.expenses.update');
             Route::get('expenses/records', 'Tenant\ExpenseController@records');
             Route::get('expenses/totals', 'Tenant\ExpenseController@totals');
             Route::delete('expenses/{expense}', 'Tenant\ExpenseController@destroy')->middleware('can:tenant.expenses.destroy');
@@ -173,7 +173,7 @@ if ($hostname) {
             //Persons
             Route::get('persons/columns', 'Tenant\PersonController@columns');
             Route::get('persons/tables', 'Tenant\PersonController@tables');
-            Route::get('persons/{type}', 'Tenant\PersonController@index')->name('tenant.persons.index')->middleware('can:tenant.suppliers.index,tenant.persons.customers.index');
+            Route::get('persons/{type}', 'Tenant\PersonController@index')->name('tenant.persons.index')->middleware('hasAnyPermission:tenant.suppliers.index,tenant.customers.index');
             Route::get('persons/{type}/view/{person}', 'Tenant\PersonController@view')->name('tenant.persons.view');
             Route::get('persons/{type}/records', 'Tenant\PersonController@records');
             Route::get('persons/record/{person}', 'Tenant\PersonController@record');
@@ -182,23 +182,23 @@ if ($hostname) {
             Route::get('persons/{type}/view/{person}/payments/columns', 'Tenant\PersonController@payments_columns');
             Route::get('persons/{type}/view/{person}/payments', 'Tenant\PersonController@payments');
 
-            Route::post('persons', 'Tenant\PersonController@store')->middleware('can:tenant.suppliers.store,tenant.suppliers.update,tenant.customers.store,tenant.customers.update');
-            Route::delete('persons/{person}', 'Tenant\PersonController@destroy')->middleware('can:tenant.suppliers.destroy,tenant.customers.destroy');
-            Route::post('persons/import', 'Tenant\PersonController@import')->middleware('can:tenant.suppliers.import,tenant.customers.import');
+            Route::post('persons', 'Tenant\PersonController@store')->middleware('hasAnyPermission:tenant.suppliers.store,tenant.suppliers.update,tenant.customers.store,tenant.customers.update');
+            Route::delete('persons/{person}', 'Tenant\PersonController@destroy')->middleware('hasAnyPermission:tenant.suppliers.destroy,tenant.customers.destroy');
+            Route::post('persons/import', 'Tenant\PersonController@import')->middleware('hasAnyPermission:tenant.suppliers.import,tenant.customers.import');
 
             //POS - Punto de Venta
             // juliocapuano@gmail.com
 
-            Route::post('pos', 'Tenant\PosController@store')->middleware('can:tenant.pos.store,tenant.documents.pos,tenant.documents.pos');
-            Route::post('pos/destroy', 'Tenant\PosController@destroy')->middleware('can:tenant.pos.destroy,tenant.documents.pos');
+            Route::post('pos', 'Tenant\PosController@store')->middleware('hasAnyPermission:tenant.pos.store,tenant.documents.pos,tenant.documents.pos');
+            Route::post('pos/destroy', 'Tenant\PosController@destroy')->middleware('hasAnyPermission:tenant.pos.destroy,tenant.documents.pos');
             Route::get('pos/{id}/details', 'Tenant\PosController@details');
-            Route::get('pos', 'Tenant\PosController@index')->name('tenant.pos.index')->middleware('can:tenant.pos.index,tenant.documents.pos');
+            Route::get('pos', 'Tenant\PosController@index')->name('tenant.pos.index')->middleware('hasAnyPermission:tenant.pos.index,tenant.documents.pos');
             Route::get('pos/columns', 'Tenant\PosController@columns');
             Route::get('pos/records', 'Tenant\PosController@records');
             Route::get('pos/tables', 'Tenant\PosController@tables');
             Route::post('pos/{id}/operations', 'Tenant\PosController@operations');
-            Route::get('pos/register', 'Tenant\PosController@register')->name('tenant.pos.register')->middleware('can:tenant.pos.store,tenant.documents.pos');
-            Route::get('pos/report/pdf/{id}', 'Tenant\PosController@pdf')->middleware('can:tenant.pos.report,tenant.documents.pos');
+            Route::get('pos/register', 'Tenant\PosController@register')->name('tenant.pos.register')->middleware('hasAnyPermission:tenant.pos.store,tenant.documents.pos');
+            Route::get('pos/report/pdf/{id}', 'Tenant\PosController@pdf')->middleware('hasAnyPermission:tenant.pos.report,tenant.documents.pos');
 
             //Documents
             Route::get('documents', 'Tenant\DocumentController@index')->name('tenant.documents.index')->middleware('can:tenant.documents.index');
@@ -211,7 +211,7 @@ if ($hostname) {
             Route::get('documents/tables', 'Tenant\DocumentController@tables');
             Route::get('documents/tables2/{document}', 'Tenant\DocumentController@tables2');
             Route::get('documents/record/{document}', 'Tenant\DocumentController@record');
-            Route::post('documents', 'Tenant\DocumentController@store')->middleware('can:tenant.documents.store,tenant.documents.update');
+            Route::post('documents', 'Tenant\DocumentController@store')->middleware('hasAnyPermission:tenant.documents.store,tenant.documents.update');
             //Route::post('documents/{document}', 'Tenant\DocumentController@store2');
             Route::get('documents/send/{document}', 'Tenant\DocumentController@send')->middleware('can:tenant.documents.enviar-sunat');
             Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
@@ -243,7 +243,7 @@ if ($hostname) {
             Route::get('quotations/edit/{quotation}', 'Tenant\QuotationController@edit')->name('tenant.quotations.edit')->middleware('can:tenant.quotations.update');
             Route::get('quotations/tables', 'Tenant\QuotationController@tables');
             Route::get('quotations/record/{quotation}', 'Tenant\QuotationController@record');
-            Route::post('quotations', 'Tenant\QuotationController@store')->middleware('can:tenant.quotations.store,tenant.quotations.update');
+            Route::post('quotations', 'Tenant\QuotationController@store')->middleware('hasAnyPermission:tenant.quotations.store,tenant.quotations.update');
             Route::post('quotations/update/{quotation}', 'Tenant\QuotationController@update')->middleware('can:tenant.quotations.update');
             Route::get('quotations/send/{quotation}', 'Tenant\QuotationController@send');
             Route::post('quotations/email', 'Tenant\QuotationController@email');
@@ -290,7 +290,7 @@ if ($hostname) {
             Route::get('retentions/create', 'Tenant\RetentionController@create')->name('tenant.retentions.create')->middleware('can:tenant.retentions.store');
             Route::get('retentions/tables', 'Tenant\RetentionController@tables');
             Route::get('retentions/record/{retention}', 'Tenant\RetentionController@record');
-            Route::post('retentions', 'Tenant\RetentionController@store')->middleware('can:tenant.retentions.store,tenant.retentions.update');
+            Route::post('retentions', 'Tenant\RetentionController@store')->middleware('hasAnyPermission:tenant.retentions.store,tenant.retentions.update');
             Route::delete('retentions/{retention}', 'Tenant\RetentionController@destroy')->middleware('can:tenant.retentions.destroy');
             Route::get('retentions/document/tables', 'Tenant\RetentionController@document_tables');
             Route::get('retentions/table/{table}', 'Tenant\RetentionController@table');
@@ -303,7 +303,7 @@ if ($hostname) {
             Route::get('dispatches/create2/{dispatche}', 'Tenant\DispatchController@create2');
             Route::get('dispatches/datos/{dispatche}', 'Tenant\DispatchController@datos');
             Route::post('dispatches/tables', 'Tenant\DispatchController@tables');
-            Route::post('dispatches', 'Tenant\DispatchController@store')->middleware('can:tenant.dispatches.store,tenant.dispatches.update');
+            Route::post('dispatches', 'Tenant\DispatchController@store')->middleware('hasAnyPermission:tenant.dispatches.store,tenant.dispatches.update');
 
             Route::get('dispatches/resend/{document}', 'Tenant\DispatchController@resend')->middleware('can:tenant.dispatches.resend');
 
@@ -332,12 +332,12 @@ if ($hostname) {
             Route::post('reports/customers/pdf', 'Tenant\ReportCustomerController@pdf')->name('tenant.report.customers.pdf');
             Route::post('reports/customers/excel', 'Tenant\ReportCustomerController@excel')->name('tenant.report.customers.excel');
 
-            // Route::get('reports/customers/{person}', 'Tenant\ReportCustomerController@detail')->name('tenant.reports.customer.detail');            
+            // Route::get('reports/customers/{person}', 'Tenant\ReportCustomerController@detail')->name('tenant.reports.customer.detail');
             // Route::get('reports-customers/columns', 'Tenant\ReportCustomerController@columns');
             // Route::get('reports-customers/records', 'Tenant\ReportCustomerController@records');
             // Route::get('reports-customers/{person}/sells/columns', 'Tenant\ReportCustomerController@sell_columns');
             // Route::get('reports-customers/{person}/sells', 'Tenant\ReportCustomerController@sells');
-            
+
             Route::get('documents/view/{document}', 'Tenant\DocumentController@view')->name('tenant.documents.view');
 
             //report expense
@@ -428,16 +428,16 @@ if ($hostname) {
             Route::get('purchases/tables2/{purchase}', 'Tenant\PurchaseController@tables2');
             Route::get('purchases/tables', 'Tenant\PurchaseController@tables');
             Route::get('purchases/table/{table}', 'Tenant\PurchaseController@table');
-            Route::post('purchases', 'Tenant\PurchaseController@store')->middleware('can:tenant.purchases.store,tenant.purchases.update');
+            Route::post('purchases', 'Tenant\PurchaseController@store')->middleware('hasAnyPermission:tenant.purchases.store,tenant.purchases.update');
             Route::get('purchases/record/{document}', 'Tenant\PurchaseController@record');
             Route::get('purchases/item/tables', 'Tenant\PurchaseController@item_tables');
             Route::get('purchases/item/tables2/{purchase}', 'Tenant\PurchaseController@item_tables2');
 
-            
+
             //ROLES
             Route::get('roles', 'Tenant\RolesController@index')->name('tenant.roles.index')->middleware('can:tenant.roles.index');
             Route::get('roles/datatable/', 'Tenant\RolesController@datatable')->name('tenant.roles.datatable');
-            Route::post('roles', 'Tenant\RolesController@store')->middleware('can:tenant.roles.store,tenant.roles.update');
+            Route::post('roles', 'Tenant\RolesController@store')->middleware('hasAnyPermission:tenant.roles.store,tenant.roles.update');
             Route::get('roles/record/{role}', 'Tenant\RolesController@record');
             Route::get('roles/records', 'Tenant\RolesController@records');
             Route::delete('roles/{role}', 'Tenant\RolesController@destroy')->middleware('can:tenant.roles.destroy');
