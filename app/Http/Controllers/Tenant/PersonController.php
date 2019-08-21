@@ -9,6 +9,7 @@ use App\Models\Tenant\Document;
 use App\Http\Resources\Tenant\DocumentCollection;
 use App\Models\Tenant\Payment;
 use App\Http\Resources\Tenant\PaymentCollection;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Tenant\Catalogs\Country;
 use App\Models\Tenant\Catalogs\Department;
 use App\Models\Tenant\Catalogs\District;
@@ -26,7 +27,11 @@ class PersonController extends Controller
 {
     public function index($type)
     {
-        return view('tenant.persons.index', compact('type'));
+        if (Auth::user()->hasPermissionTo('tenant.customers.index') && $type == 'customers')
+            return view('tenant.persons.index', compact('type'));
+        if (Auth::user()->hasPermissionTo('tenant.suppliers.index') && $type == 'suppliers')
+            return view('tenant.persons.index', compact('type'));
+        return abort(401);
     }
 
     public function view($type, Person $person)
@@ -41,19 +46,19 @@ class PersonController extends Controller
             ->first();
 
         $condition = "AND doc.customer_id = $person->id";
-        
+
         $sql = "SELECT doc.customer_id, doc.`total`, doc.`total_paid`, cdt.description AS `type`, doc.`date_of_issue`, doc.`series`, doc.`number`
                 FROM documents doc
                 INNER JOIN cat_document_types cdt ON cdt.id = doc.document_type_id
                 WHERE (doc.`document_type_id` = '01' OR doc.`document_type_id` = '03')
-                AND (doc.`state_type_id` = '01' OR doc.`state_type_id` = '03' OR doc.`state_type_id` = '05' 
+                AND (doc.`state_type_id` = '01' OR doc.`state_type_id` = '03' OR doc.`state_type_id` = '05'
                 OR doc.`state_type_id` = '07') $condition
                 UNION ALL
                 SELECT doc.customer_id, doc.`total`, doc.`total_paid`, 'NOTA DE VENTA', doc.`date_of_issue`, doc.`series`, doc.`number`
                 FROM sale_notes doc
                 WHERE doc.`document_type_id` = '100' $condition
                 ORDER BY `date_of_issue` DESC";
-    
+
         $sells = DB::connection('tenant')->select($sql);
 
         $sql = "SELECT tab.id, tab.`date_of_issue`, tab.series, tab.number, tab.`currency_type_id`, tab.total, 'Venta' AS operation_type, NULL AS detail
