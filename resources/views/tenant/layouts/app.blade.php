@@ -143,7 +143,7 @@
 
     @stack('scripts')
 
-    <script src="{{ asset('js/app.js?v=20190815') }}"></script>
+    <script src="{{ asset('js/app.js?v=20190820') }}"></script>
     <!-- Theme Base, Components and Settings -->
     <script src="{{asset('porto-light/js/theme.js')}}"></script>
     <script src="//code.tidio.co/8txsjuzw2uthkcsbyrwynuffhsdzpbwi.js"></script>
