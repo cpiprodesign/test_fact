@@ -79,6 +79,22 @@
                     </tr>
                 @endif
             </table>
+            @if ($document->guides)
+                <br/>
+                <table>
+                    @foreach($document->guides as $guide)
+                        <tr>
+                            @if(isset($guide->document_type_description))
+                            <td>{{ $guide->document_type_description }}</td>
+                            @else
+                            <td>{{ $guide->document_type_id }}</td>
+                            @endif
+                            <td>:</td>
+                            <td>{{ $guide->number }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            @endif
         </div>
         <div class="border-no-top py-4 px-1">
             <table class="full-width mt-12 mb-10">
@@ -149,15 +165,7 @@
                         <td width="25%"><strong>Orden de Compra:</strong> </td>
                         <td class="text-left">{{ $document->purchase_order }}</td>
                     </tr>
-                @endif
-                @if ($document->guides)
-                    @foreach($document->guides as $guide)
-                        <tr>
-                            <td>{{ $guide->document_type_id }}</td>
-                            <td>{{ $guide->number }}</td>
-                        </tr>
-                    @endforeach
-                @endif
+                @endif                
             </table>
             <table>
                 <tr>

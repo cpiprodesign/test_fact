@@ -84,15 +84,22 @@
             <td><p class="desc">{{ $document->purchase_order }}</p></td>
         </tr>
     @endif
-    @if ($document->guides)
+</table>
+@if ($document->guides)
+    <table>
         @foreach($document->guides as $guide)
             <tr>
-                <td><p class="desc">{{ $guide->document_type_id }}</p></td>
-                <td><p class="desc">{{ $guide->number }}</p></td>
+                @if(isset($guide->document_type_description))
+                    <td>{{ $guide->document_type_description }}</td>
+                @else
+                    <td>{{ $guide->document_type_id }}</td>
+                @endif
+                <td>:</td>
+                <td>{{ $guide->number }}</td>
             </tr>
         @endforeach
-    @endif
-</table>
+    </table>
+@endif
 <table class="full-width mt-10 mb-10">
     <thead class="">
     <tr>
