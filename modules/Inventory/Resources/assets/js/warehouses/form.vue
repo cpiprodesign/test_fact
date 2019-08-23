@@ -10,6 +10,15 @@
                             <small class="form-control-feedback" v-if="errors.description" v-text="errors.description[0]"></small>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-group" :class="{'has-danger': errors.establishment_id}">
+                            <label class="control-label">Esblecimiento <span class="text-danger">*</span></label>
+                            <el-select v-model="form.establishment_id">
+                                <el-option v-for="option in establishments" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                            </el-select>
+                            <small class="form-control-feedback" v-if="errors.establishment_id" v-text="errors.establishment_id[0]"></small>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-actions text-right mt-4">
@@ -42,8 +51,15 @@
                 this.errors = {}
                 this.form = {
                     id: null,
-                    description: null
+                    description: null,
+                    establishment_id: null
                 }
+
+                this.$http.get(`/${this.resource}/tables`)
+                .then(response => {
+                        this.establishments = response.data.establishments
+                    }
+                )
             },
             create() {
                 this.titleDialog = (this.recordId)? 'Editar Almacén':'Nuevo Almacén'

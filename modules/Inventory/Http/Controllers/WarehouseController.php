@@ -3,6 +3,7 @@
 namespace Modules\Inventory\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant\Establishment;
 use Illuminate\Http\Request;
 use Modules\Inventory\Http\Resources\WarehouseCollection;
 use Modules\Inventory\Http\Resources\WarehouseResource;
@@ -31,6 +32,13 @@ class WarehouseController extends Controller
         return new WarehouseCollection($records->paginate(config('tenant.items_per_page')));
     }
 
+    public function tables()
+    {
+        $establishments = Establishment::get();
+
+        return compact('establishments');
+    }
+    
     public function totals(Request $request)
     {
     }
@@ -45,22 +53,8 @@ class WarehouseController extends Controller
     public function store(WarehouseRequest $request)
     {
         $id = $request->input('id');
-        if(!$id) {
-            $establishment_id = auth()->user()->establishment_id;
-            $warehouse = Warehouse::where('establishment_id', $establishment_id)->first();
-            if($warehouse) {
-                return [
-                    'success' => false,
-                    'message' => 'Solo es posible registrar un almacén por establecimiento.'
-                ];
-            }
-        }
-
         $record = Warehouse::firstOrNew(['id' => $id]);
         $record->fill($request->all());
-        if(!$id) {
-            $record->establishment_id = auth()->user()->establishment_id;
-        }
         $record->save();
 
         return [

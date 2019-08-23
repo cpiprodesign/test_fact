@@ -48,13 +48,6 @@ class EstablishmentController extends Controller
         $establishment->fill($request->all());
         $establishment->save();
 
-        if(!$id) {
-            $warehouse = new Warehouse();
-            $warehouse->establishment_id = $establishment->id;
-            $warehouse->description = 'Almacén - '.$establishment->description;
-            $warehouse->save();
-        }
-
         return [
             'success' => true,
             'message' => ($id)?'Establecimiento actualizado':'Establecimiento registrado'
