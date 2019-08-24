@@ -17,7 +17,7 @@ class DispatchInput
     public static function set($inputs)
     {
         $document_type_id = $inputs['document_type_id'];
-        $series = $inputs['series'];
+        $series = (is_null($inputs['series']))?'0':$inputs['series'];
         $number = $inputs['number'];
 
         $company = Company::active();

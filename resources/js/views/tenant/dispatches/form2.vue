@@ -502,6 +502,8 @@
                     origin: {
                         country_id: 'PE'
                     },
+                    port_code: null,
+                    container_number: null,
                     number: '#',
                     items: [],
                     total_weight: null,
