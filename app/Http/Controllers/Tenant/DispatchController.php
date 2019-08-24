@@ -66,7 +66,9 @@ class DispatchController extends Controller
 
     public function create2($document_id = false)
     {
-        return view('tenant.dispatches.form2', compact('document_id'));
+        $document = Document::select('id','series', 'number')->find($document_id);
+        
+        return view('tenant.dispatches.form2', compact('document'));
     }
 
     public function store(Request $request)
@@ -88,7 +90,6 @@ class DispatchController extends Controller
         try {
 
             $fact->senderXmlSignedBill();
-//            $response = $fact->getResponse();
             $document->has_cdr = 1;
             $document->save();
 

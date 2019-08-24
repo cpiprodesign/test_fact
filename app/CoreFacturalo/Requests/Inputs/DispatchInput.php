@@ -8,6 +8,7 @@ use App\CoreFacturalo\Requests\Inputs\Common\LegendInput;
 use App\CoreFacturalo\Requests\Inputs\Common\PersonInput;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Dispatch;
+use App\Models\Tenant\Document;
 use App\Models\Tenant\Item;
 use Illuminate\Support\Str;
 
@@ -65,6 +66,7 @@ class DispatchInput
             'driver' => self::driver($inputs),
             'items' => self::items($inputs),
             'legends' => LegendInput::set($inputs),
+            'invoices' => self::invoices($inputs),
             'actions' => ActionInput::set($inputs),
         ];
     }
@@ -96,6 +98,25 @@ class DispatchInput
                 'address' => $address,
             ];
         }
+        return null;
+    }
+
+    private static function invoices($inputs)
+    {
+        if($inputs['document_id'])
+        {
+            $document = Document::select('series', 'number')->find($inputs['document_id']);
+            
+            $invoices = [];
+            
+            $invoices[] = [
+                'series' => $document['series'],
+                'number' => $document['number']
+            ];
+            
+            return $invoices;
+        }
+        
         return null;
     }
 

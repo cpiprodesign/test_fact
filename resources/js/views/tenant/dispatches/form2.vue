@@ -1,7 +1,7 @@
 <template>
     <div class="card mb-0 pt-2 pt-md-0">
         <div class="card-header bg-info">
-            <h3 class="my-0">Nueva Guía de Remisión</h3>
+            <h3 class="my-0">Nueva Guía de Remisión: {{document.series}} - {{document.number}}</h3>
         </div>
         <div class="card-body">
             <form autocomplete="off" @submit.prevent="submit">
@@ -334,7 +334,7 @@
     
     export default {
         components: {PersonForm, Items},
-        props: ['document_id'],
+        props: ['document'],
         data() {
             return {
                 showDialogNewPerson: false,
@@ -368,12 +368,15 @@
         created() {
             this.clean();
 
-            this.$http.get(`/${this.resource}/datos/${this.document_id}`)
+            // this.form.invoices[0].series = 
+            // this.form.invoices[0].number = 
+
+            this.$http.get(`/${this.resource}/datos/${this.document.id}`)
                 .then(response => {
                     this.form.establishment_id = response.data.document.establishment_id;
                     this.form.customer_id = response.data.document.customer_id;
-                    this.series = response.data.series;                 
-                    this.form.items = response.data.items;                 
+                    this.series = response.data.series;
+                    this.form.items = response.data.items;
                 })
             
             this.$http.post(`/${this.resource}/tables`).then(response => {
@@ -387,7 +390,7 @@
                 this.unitTypes = response.data.unitTypes;
                 this.customers = response.data.customers;
                 this.countries = response.data.countries;
-                this.seriesAll = response.data.series;                
+                this.seriesAll = response.data.series;
             });
             this.changeEstablishment()
         },
@@ -458,6 +461,8 @@
             },
             submit() {
                 this.loading_submit = true;
+                
+                this.form.document_id = this.document.id;
                 
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
                         if (response.data.success) {
