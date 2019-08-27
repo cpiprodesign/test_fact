@@ -25,6 +25,7 @@ use App\Models\Tenant\Company;
 use App\Http\Requests\Tenant\PurchaseRequest;
 use Illuminate\Support\Str;
 use App\CoreFacturalo\Requests\Inputs\Common\PersonInput;
+use Modules\Inventory\Models\Warehouse;
 
 class PurchaseController extends Controller
 {
@@ -106,6 +107,8 @@ class PurchaseController extends Controller
             $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
         }
 
+        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
+        $warehouses = Warehouse::get();
         $currency_types = CurrencyType::whereActive()->get();
         $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
         $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
@@ -113,7 +116,7 @@ class PurchaseController extends Controller
         $company = Company::active();
         $decimal = Configuration::first()->decimal;
 
-        return compact('suppliers', 'establishment','currency_types', 'discount_types', 'charge_types', 'document_types_invoice','company', 'establishments', 'decimal');
+        return compact('suppliers', 'establishment', 'warehouse_id', 'warehouses', 'currency_types', 'discount_types', 'charge_types', 'document_types_invoice','company', 'establishments', 'decimal');
     }
 
     public function tables2(Purchase $purchase)
@@ -243,7 +246,6 @@ class PurchaseController extends Controller
     public function update(PurchaseRequest $request, $purchase_id)
     {
         $inputs = $request;
-        
 
         $array = [$inputs, $purchase_id];
 
@@ -262,7 +264,7 @@ class PurchaseController extends Controller
 
             foreach($purchase_items as $purchase_item)
             {   
-                $item_warehouse = \App\Models\Tenant\ItemWarehouse::where('warehouse_id', $purchase->establishment_id)
+                $item_warehouse = \App\Models\Tenant\ItemWarehouse::where('warehouse_id', $purchase->warehouse_id)
                 ->where('item_id', $purchase_item->item_id)->first();
                 $item_warehouse->stock -= $purchase_item->quantity;
                 $item_warehouse->save();

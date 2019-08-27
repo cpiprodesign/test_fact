@@ -87,9 +87,18 @@
                             </div>
                         </div>
                          <div class="row mt-1">
+                            <div class="col-lg-3">
+                                <div class="form-group" :class="{'has-danger': errors.warehouse_id}">
+                                    <label class="control-label">Almacén</label>
+                                    <el-select v-model="form.warehouse_id">
+                                        <el-option v-for="option in warehouses" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.warehouse_id" v-text="errors.warehouse_id[0]"></small>
+                                </div>
+                            </div>
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.status_paid}">
-                                    <label class="control-label font-weight-bold text-info">Estado de pago</label>
+                                    <label class="control-label">Estado de pago</label>
                                     <el-select v-model="form.status_paid">
                                         <el-option v-for="option in status_paid" :key="option.id" :value="option.id" :label="option.nombre"></el-option>
                                     </el-select>
@@ -237,6 +246,7 @@
                 ], 
                 company: null,
                 establishments: [],
+                warehouses: [],
                 establishment: null,
                 all_series: [],
                 series: [],
@@ -249,6 +259,7 @@
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
+                    this.warehouses = response.data.warehouses
                     this.document_types = response.data.document_types_invoice
                     this.currency_types = response.data.currency_types
                     this.establishments = response.data.establishments
@@ -259,9 +270,8 @@
                     this.document_type_03_filter = response.data.document_type_03_filter
                     this.payment_methods = response.data.payment_methods
                     this.accounts = response.data.accounts
-
                     this.decimal = response.data.decimal;
-
+                    this.form.warehouse_id = response.data.warehouse_id
                     this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
@@ -272,9 +282,6 @@
                     this.changeCurrencyType()
                 })
             this.loading_form = true
-            // this.$eventHub.$on('reloadDataPersons', (customer_id) => {
-            //     this.reloadDataCustomers(customer_id)
-            // })
         },
         methods: {
             initForm() {
@@ -282,6 +289,7 @@
                 this.form = {
                     sale_note_id: null,
                     establishment_id: null,
+                    warehouse_id: null,
                     document_type_id: null,
                     series_id: null,
                     number: '#',

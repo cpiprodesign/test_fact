@@ -66,6 +66,7 @@ class DocumentInput
             'user_id' => auth()->id(),
             'external_id' => Str::uuid()->toString(),
             'establishment_id' => $inputs['establishment_id'],
+            'warehouse_id' => $inputs['warehouse_id'],
             'establishment' => $establishment,
             'quotation_id' => $quotation_id,
             'soap_type_id' => $soap_type_id,

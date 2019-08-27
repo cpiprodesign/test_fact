@@ -28,6 +28,7 @@ use App\Models\Tenant\Account;
 use App\Models\Tenant\Kardex;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Series;
+use App\Models\Tenant\Warehouse;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -99,6 +100,9 @@ class SaleNoteController extends Controller
         {
             $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
         }
+
+        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();    
+        $warehouses = Warehouse::get();
         $series = Series::all();
         $document_types_invoice = DocumentType::whereIn('id', ['100'])->get();
         $currency_types = CurrencyType::whereActive()->get();
@@ -107,7 +111,7 @@ class SaleNoteController extends Controller
         $accounts = Account::all();
         $decimal = Configuration::first()->decimal;
 
-        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'currency_types', 'company', 'document_type_03_filter', 'payment_methods', 'accounts', 'decimal');
+        return compact('customers', 'establishments', 'warehouse_id', 'warehouses', 'series', 'document_types_invoice', 'currency_types', 'company', 'document_type_03_filter', 'payment_methods', 'accounts', 'decimal');
     }
 
     public function item_tables()

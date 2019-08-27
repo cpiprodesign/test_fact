@@ -22,8 +22,6 @@ class TenantAddSaleNoteKardex extends Migration
             $table->foreign('sale_note_id')->references('id')->on('sale_notes')->onDelete('cascade');
 
             DB::statement("ALTER TABLE kardex MODIFY COLUMN type ENUM('sale', 'purchase', 'sale-note')");
-
-            
         });
     }
 

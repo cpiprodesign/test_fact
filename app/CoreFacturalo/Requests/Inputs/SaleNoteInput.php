@@ -41,10 +41,9 @@ class SaleNoteInput
 
         return [
             'type' => $inputs['type'],
-            //'group_id' => $inputs['group_id'],
             'user_id' => auth()->id(),
-            //'external_id' => Str::uuid()->toString(),
             'establishment_id' => $inputs['establishment_id'],
+            'warehouse_id' => $inputs['warehouse_id'],
             'establishment' => $establishment,
             //'state_type_id' => '01',
             //'ubl_version' => '2.1',

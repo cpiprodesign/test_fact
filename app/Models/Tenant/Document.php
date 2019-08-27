@@ -14,6 +14,7 @@ class Document extends ModelTenant
         'user_id',
         'external_id',
         'establishment_id',
+        'warehouse_id',
         'establishment',
         'soap_type_id',
         'state_type_id',
