@@ -90,6 +90,9 @@
                         <th class="border-top text-center py-1">CANT.</th>
                         <th class="border-top text-center py-2">UNIDAD</th>
                         <th class="border-top text-right py-2">P.UNIT</th>
+                        @if($document->total_plastic_bag_taxes > 0)
+                            <th class="border-top text-right py-2">ICBPER</th>
+                        @endif
                         <th class="border-top text-right py-2">DTO.</th>
                         <th class="border-top text-right py-2">TOTAL</th>
                     </tr>
@@ -124,6 +127,9 @@
                             <td class="align-top">{{ number_format($row->quantity, $decimal) }}</td>
                             <td class="text-center align-top">{{ $row->item->unit_type_id }}</td>
                             <td class="text-right align-top">{{ number_format($row->unit_price, $configuration->decimal) }}</td>
+                            @if($document->total_plastic_bag_taxes > 0)
+                                <td class="text-right align-top">{{ $row->total_plastic_bag_taxes }}</td>
+                            @endif
                             <td class="text-right align-top">
                                 @if($row->discounts)
                                     @php
@@ -222,13 +228,18 @@
                                     <td colspan="5" class="text-right font-bold">IGV: {{ $document->currency_type->symbol }}</td>
                                     <td class="text-right font-bold">{{ number_format($document->total_igv, 2) }}</td>
                                 </tr>
+                                @if($document->total_plastic_bag_taxes > 0)
+                                    <tr>
+                                        <td colspan="5" class="text-right font-bold">ICBPER: {{ $document->currency_type->symbol }}</td>
+                                        <td class="text-right font-bold">{{ number_format($document->total_plastic_bag_taxes, 2) }}</td>
+                                    </tr>
+                                @endif
                                 <tr>
                                     <td colspan="5" class="text-right font-bold">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
                                     <td class="text-right font-bold">{{ number_format($document->total, 2) }}</td>
                                 </tr>
-            
                             </tbody>
-                            <tfoot>            
+                            <tfoot>
                             </tfoot>
                         </table>
                     </td>

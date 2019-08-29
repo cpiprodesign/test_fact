@@ -316,16 +316,16 @@
             </cac:TaxSubtotal>
         @endif
         @if($document->total_plastic_bag_taxes > 0) 
-        <cac:TaxSubtotal>
-            <cbc:TaxAmount currencyID="{{ $document->currency_type_id }}">{{ $document->total_plastic_bag_taxes }}</cbc:TaxAmount>
-            <cac:TaxCategory>
-                <cac:TaxScheme>
-                    <cbc:ID schemeAgencyName="PE:SUNAT" schemeName="Codigo de tributos" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">7152</cbc:ID>
-                    <cbc:Name>ICBPER</cbc:Name>
-                    <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
-                </cac:TaxScheme>
-            </cac:TaxCategory>
-        </cac:TaxSubtotal>
+            <cac:TaxSubtotal>
+                <cbc:TaxAmount currencyID="{{ $document->currency_type_id }}">{{ $document->total_plastic_bag_taxes }}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cac:TaxScheme>
+                        <cbc:ID>7152</cbc:ID>
+                        <cbc:Name>ICBPER</cbc:Name>
+                        <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
         @endif
     </cac:TaxTotal>
     <cac:LegalMonetaryTotal>
@@ -382,20 +382,6 @@
                     </cac:AllowanceCharge>
                 @endforeach
             @endif
-            @if($row->total_plastic_bag_taxes > 0)
-                <cac:TaxSubtotal>
-                    <cbc:TaxAmount currencyID="{{ $document->currency_type_id }}">1.00</cbc:TaxAmount>
-                    <cbc:BaseUnitMeasure unitCode="NIU">{{ round($row->quantity,0) }}</cbc:BaseUnitMeasure>
-                    <cac:TaxCategory>
-                        <cbc:PerUnitAmount currencyID="{{ $document->currency_type_id }}">{{$row->item->amount_plastic_bag_taxes}}</cbc:PerUnitAmount>
-                        <cac:TaxScheme>
-                            <cbc:ID schemeAgencyName="PE:SUNAT" schemeName="Codigo de tributos" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">7152</cbc:ID>
-                            <cbc:Name>ICBPER</cbc:Name>
-                            <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
-                        </cac:TaxScheme>
-                    </cac:TaxCategory>
-                </cac:TaxSubtotal>
-            @endif
             <cac:TaxTotal>
                 <cbc:TaxAmount currencyID="{{ $document->currency_type_id }}">{{ $row->total_taxes }}</cbc:TaxAmount>
                 @if($row->total_isc > 0)
@@ -441,6 +427,20 @@
                             <cac:TaxScheme>
                                 <cbc:ID>9999</cbc:ID>
                                 <cbc:Name>OTROS</cbc:Name>
+                                <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
+                            </cac:TaxScheme>
+                        </cac:TaxCategory>
+                    </cac:TaxSubtotal>
+                @endif
+                @if($row->total_plastic_bag_taxes > 0)
+                    <cac:TaxSubtotal>
+                        <cbc:TaxAmount currencyID="{{ $document->currency_type_id }}">{{$row->total_plastic_bag_taxes}}</cbc:TaxAmount>
+                        <cbc:BaseUnitMeasure unitCode="NIU">{{ round($row->quantity,0) }}</cbc:BaseUnitMeasure>
+                        <cac:TaxCategory>
+                            <cbc:PerUnitAmount currencyID="{{ $document->currency_type_id }}">{{$row->item->amount_plastic_bag_taxes}}</cbc:PerUnitAmount>
+                            <cac:TaxScheme>
+                                <cbc:ID>7152</cbc:ID>
+                                <cbc:Name>ICBPER</cbc:Name>
                                 <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
                             </cac:TaxScheme>
                         </cac:TaxCategory>
