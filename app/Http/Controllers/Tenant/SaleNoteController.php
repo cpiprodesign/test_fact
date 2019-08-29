@@ -101,7 +101,7 @@ class SaleNoteController extends Controller
             $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
         }
 
-        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();    
+        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first()->id;    
         $warehouses = Warehouse::get();
         $series = Series::all();
         $document_types_invoice = DocumentType::whereIn('id', ['100'])->get();

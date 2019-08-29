@@ -107,7 +107,7 @@ class PurchaseController extends Controller
             $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
         }
 
-        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first();
+        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first()->id;
         $warehouses = Warehouse::get();
         $currency_types = CurrencyType::whereActive()->get();
         $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
