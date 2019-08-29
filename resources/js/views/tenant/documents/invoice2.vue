@@ -180,6 +180,7 @@
                                 <p class="text-right" v-if="form.total_exonerated > 0">OP.EXONERADAS: {{ currency_type.symbol }} {{ form.total_exonerated }}</p>
                                 <p class="text-right" v-if="form.total_taxed > 0">OP.GRAVADA: {{ currency_type.symbol }} {{ form.total_taxed }}</p>
                                 <p class="text-right" v-if="form.total_igv > 0">IGV: {{ currency_type.symbol }} {{ form.total_igv }}</p>
+                                <p class="text-right" v-if="form.total_plastic_bag_taxes > 0">ICBPER: {{ currency_type.symbol }} {{ form.total_plastic_bag_taxes }}</p>
                                 <h3 class="text-right" v-if="form.total > 0"><b>TOTAL A PAGAR: </b>{{ currency_type.symbol }} {{ form.total }}</h3>
                             </div>
                         </div>
@@ -340,6 +341,7 @@
                     total_unaffected: 0,
                     total_exonerated: 0,
                     total_igv: 0,
+                    total_plastic_bag_taxes: 0,
                     total_base_isc: 0,
                     total_isc: 0,
                     total_base_other_taxes: 0,
@@ -433,6 +435,7 @@
                 let total_igv = 0
                 let total_value = 0
                 let total = 0
+                let total_plastic_bag_taxes = 0
                 this.form.items.forEach((row) => {
                     total_discount += parseFloat(row.total_discount)
                     total_charge += parseFloat(row.total_charge)
@@ -472,8 +475,7 @@
             submit() {
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
-                    console.log(response);
-
+                    
                     if (response.data.success) {
                         this.resetForm();
 

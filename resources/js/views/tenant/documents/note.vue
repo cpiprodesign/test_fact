@@ -152,6 +152,7 @@
                             <p class="text-right" v-if="form.total_exonerated > 0">OP.EXONERADAS: {{ currency_type.symbol }} {{ form.total_exonerated }}</p>
                             <p class="text-right" v-if="form.total_taxed > 0">OP.GRAVADA: {{ currency_type.symbol }} {{ form.total_taxed }}</p>
                             <p class="text-right" v-if="form.total_igv > 0">IGV: {{ currency_type.symbol }} {{ form.total_igv }}</p>
+                            <p class="text-right" v-if="form.total_plastic_bag_taxes > 0">ICBPER: {{ currency_type.symbol }} {{ form.total_plastic_bag_taxes }}</p>
                             <h3 class="text-right" v-if="form.total > 0"><b>TOTAL A PAGAR: </b>{{ currency_type.symbol }} {{ form.total }}</h3>
                         </div>
                     </div>
@@ -239,6 +240,7 @@
                 this.errors = {}
                 this.form = {
                     establishment_id: this.document.establishment_id,
+                    warehouse_id: this.document.warehouse_id,
                     document_type_id: null,
                     series_id: null,
                     number: '#',
@@ -352,9 +354,9 @@
                 this.form.total_igv = _.round(total_igv, 2)
                 this.form.total_value = _.round(total_value, 2)
                 this.form.total_taxes = _.round(total_igv, 2)
-                this.form.total_plastic_bag_taxes = _.round(total_plastic_bag_taxes, 2)
-                // this.form.total = _.round(total, 2)
-                this.form.total = _.round(total, 2) + this.form.total_plastic_bag_taxes
+                this.form.total_plastic_bag_taxes = formaterNumber(total_plastic_bag_taxes)
+                total = total + parseFloat(this.form.total_plastic_bag_taxes)
+                this.form.total = formaterNumber(total)
 
             },
             submit() {

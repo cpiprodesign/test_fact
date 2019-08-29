@@ -33,6 +33,7 @@ class ItemResource extends JsonResource
             'currency_type_id' => $this->currency_type_id,
             'sale_unit_price' => $this->formatNumber($this->sale_unit_price),
             'purchase_unit_price' => $this->formatNumber($this->purchase_unit_price),
+            'icbper' => (bool) $this->icbper,
             'included_igv' => (bool) $this->included_igv,
             'unit_type_id' => $this->unit_type_id,
             'has_isc' => (bool) $this->has_isc,

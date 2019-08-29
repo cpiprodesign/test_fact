@@ -535,8 +535,7 @@
                 this.form.total_plastic_bag_taxes = formaterNumber(total_plastic_bag_taxes)
                 total = total + parseFloat(this.form.total_plastic_bag_taxes)
                 this.form.total = formaterNumber(total)
-
-             },
+            },
             submit() {
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form)

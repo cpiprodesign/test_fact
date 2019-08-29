@@ -323,6 +323,7 @@
                 }
 
                 this.form.affectation_igv_type_id = this.form.item.sale_affectation_igv_type_id
+                this.form.has_plastic_bag_taxes = (this.form.item.has_plastic_bag_taxes)?true:false
             },
             clickAddItem() {
                 this.form.item.unit_price = this.form.unit_price

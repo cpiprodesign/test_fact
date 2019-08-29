@@ -91,7 +91,7 @@
                             <small class="form-control-feedback d-block" v-if="errors.included_igv" v-text="errors.included_igv[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.purchase_unit_price}">
                             <label class="control-label">Costo Unidad</label>
                             <el-input v-model="form.purchase_unit_price" dusk="purchase_unit_price"></el-input>
@@ -99,7 +99,7 @@
                                    v-text="errors.purchase_unit_price[0]"></small>
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.purchase_affectation_igv_type_id}">
                             <label class="control-label">Tipo de afectación (Compra)</label>
                             <el-select v-model="form.purchase_affectation_igv_type_id">
@@ -108,6 +108,13 @@
                             </el-select>
                             <small class="form-control-feedback" v-if="errors.purchase_affectation_igv_type_id"
                                    v-text="errors.purchase_affectation_igv_type_id[0]"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" :class="{'has-danger': errors.icbper}">
+                            <label class="control-label d-block">ICBPER (Impuesto a la bolsa)</label>
+                            <el-checkbox v-model="form.icbper" class="d-block"></el-checkbox>
+                            <small class="form-control-feedback d-block" v-if="errors.icbper" v-text="errors.icbper[0]"></small>
                         </div>
                     </div>
                 </div>
