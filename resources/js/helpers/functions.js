@@ -31,6 +31,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
         total_base_other_taxes: 0,
         percentage_other_taxes: 0,
         total_other_taxes: 0,
+        total_plastic_bag_taxes: 0,
         total_taxes: 0,
         price_type_id: '01',
         unit_price: unit_price,
@@ -128,6 +129,12 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale) {
         row.total = 0
     }
 
+    //impuesto bolsa
+    if(row_old.has_plastic_bag_taxes){
+        row.total_plastic_bag_taxes = _.round(row.quantity * row.item.amount_plastic_bag_taxes, 1)
+    }
+    
+    // console.log(row)
     return row
 }
 

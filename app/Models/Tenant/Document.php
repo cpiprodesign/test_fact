@@ -65,6 +65,9 @@ class Document extends ModelTenant
         'has_pdf',
         'has_cdr',
 
+        'query_status',
+        'total_plastic_bag_taxes',
+
         'status_paid'
     ];
 

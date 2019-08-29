@@ -398,6 +398,7 @@
                     total_isc: 0,
                     total_base_other_taxes: 0,
                     total_other_taxes: 0,
+                    total_plastic_bag_taxes: 0,
                     total_taxes: 0,
                     total_value: 0,
                     total: 0,
@@ -494,6 +495,7 @@
                 let total_igv = 0
                 let total_value = 0
                 let total = 0
+                let total_plastic_bag_taxes = 0
                 this.form.items.forEach((row) => {
                     total_discount += parseFloat(row.total_discount)
                     total_charge += parseFloat(row.total_charge)
@@ -518,6 +520,7 @@
                         total += parseFloat(row.total)
                     }
                     total_value += parseFloat(row.total_value)
+                    total_plastic_bag_taxes += parseFloat(row.total_plastic_bag_taxes)
                 });
 
                 this.form.total_exportation = formaterNumber(total_exportation)
@@ -528,7 +531,9 @@
                 this.form.total_igv = formaterNumber(total_igv)
                 this.form.total_value = formaterNumber(total_value)
                 this.form.total_taxes = formaterNumber(total_igv)
-                this.form.total = formaterNumber(total)
+                this.form.total_plastic_bag_taxes = _.round(total_plastic_bag_taxes, 2)
+                this.form.total = _.formaterNumber(total) + this.form.total_plastic_bag_taxes
+
              },
             submit() {
                 this.loading_submit = true

@@ -294,7 +294,8 @@ class DocumentController extends Controller
                 'purchase_unit_price' => $this->formatNumber($row->purchase_unit_price),
                 'unit_type_id' => $row->unit_type_id,
                 'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
+                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                'amount_plastic_bag_taxes' => $row->amount_plastic_bag_taxes,
             ];
         }
 

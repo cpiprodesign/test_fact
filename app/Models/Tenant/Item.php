@@ -32,6 +32,8 @@ class Item extends ModelTenant
         'stock',
         'stock_min',
 
+        'amount_plastic_bag_taxes',
+
         'trademark_id',
         'item_category_id',
 
