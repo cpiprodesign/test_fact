@@ -23,7 +23,7 @@ class TenantAddWarehouseIdToTables extends Migration
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
         });
 
-        Schema::table('sale-notes', function (Blueprint $table) {
+        Schema::table('sale_notes', function (Blueprint $table) {
             $table->unsignedInteger('warehouse_id')->after('establishment_id');
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
         });
