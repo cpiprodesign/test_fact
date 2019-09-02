@@ -38,6 +38,8 @@ Vue.component('tenant-dashboard-sells', require('./views/tenant/dashboard/sells.
 Vue.component('tenant-pos-index', require('./views/tenant/pos/index.vue'));
 Vue.component('tenant-pos-register', require('./views/tenant/pos/register.vue'));
 
+Vue.component('tenant-alerts-documents-index', require('./views/tenant/alerts/documents/index.vue'));
+
 Vue.component('tenant-companies-form', require('./views/tenant/companies/form.vue'));
 Vue.component('tenant-companies-logo', require('./views/tenant/companies/logo.vue'));
 Vue.component('tenant-certificates-index', require('./views/tenant/certificates/index.vue'));
