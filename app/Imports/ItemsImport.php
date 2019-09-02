@@ -69,18 +69,22 @@ class ItemsImport implements ToCollection
 
                     $warehouses = Warehouse::all();
 
-                    //$item_warehouse = [];
-
                     foreach($warehouses as $key => $warehouse)
                     {
-                        if(!empty($array_stock[$key]))
+                        if(empty($array_stock[$key]))
                         {
-                            $item_warehouse = new ItemWarehouse();
-                            $item_warehouse->item_id = $register->id;
-                            $item_warehouse->warehouse_id = $warehouse->id;
-                            $item_warehouse->stock = $array_stock[$key];
-                            $item_warehouse->save();
+                            $stock = 0;
                         }
+                        else
+                        {
+                            $stock = $array_stock[$key];
+                        }
+
+                        $item_warehouse = new ItemWarehouse();
+                        $item_warehouse->item_id = $register->id;
+                        $item_warehouse->warehouse_id = $warehouse->id;
+                        $item_warehouse->stock = $stock;
+                        $item_warehouse->save();
                     }
 
                     $registered += 1;

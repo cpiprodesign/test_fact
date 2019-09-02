@@ -144,6 +144,29 @@
                                     <small class="form-control-feedback" v-if="errors.additional_information" v-text="errors.additional_information[0]"></small>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">
+                                        Guias
+                                        <a href="#" @click.prevent="clickAddGuide">[+ Agregar]</a>
+                                    </label>
+                                    <table style="width: 100%">
+                                        <tr v-for="guide in form.guides">
+                                            <td>
+                                                <el-select v-model="guide.document_type_id">
+                                                    <el-option v-for="option in document_types_guide" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                                </el-select>
+                                            </td>
+                                            <td>
+                                                <el-input v-model="guide.number"></el-input>
+                                            </td>
+                                            <td align="right">
+                                                <a href="#" @click.prevent="clickRemoveGuide" style="color:red">Remover</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                         <div class="row mt-1">
                             <div class="col-lg-3">
@@ -296,7 +319,8 @@
                 status_paid: [
                     {"id": "1", "nombre": "Pagado"}, 
                     {"id": "0", "nombre": "Pendiente"}
-                ], 
+                ],
+                document_types_guide: [],
                 customers: [],
                 company: null,
                 document_type_03_filter: null,
@@ -317,6 +341,7 @@
                 .then(response => {
                     this.warehouses = response.data.warehouses
                     this.document_types = response.data.document_types_invoice
+                    this.document_types_guide = response.data.document_types_guide;
                     this.currency_types = response.data.currency_types
                     this.establishments = response.data.establishments
                     this.operation_types = response.data.operation_types
@@ -467,6 +492,15 @@
                         this.customers = this.all_customers
                     }
                 }
+            },
+            clickAddGuide() {
+                this.form.guides.push({
+                    document_type_id: null,
+                    number: null
+                })
+            },
+            clickRemoveGuide(index) {
+                this.form.guides.splice(index, 1)
             },
             addRow(row) {
                 this.form.items.push(row)

@@ -10,6 +10,7 @@ use App\Models\Tenant\Company;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Item;
 use Illuminate\Support\Str;
+use App\Models\Tenant\Catalogs\DocumentType;
 
 class DocumentInput
 {
@@ -282,6 +283,7 @@ class DocumentInput
                     $guides[] = [
                         'number' => $number,
                         'document_type_id' => $document_type_id,
+                        'document_type_description' => DocumentType::find($document_type_id)->description,
                     ];
                 }
                 return $guides;
