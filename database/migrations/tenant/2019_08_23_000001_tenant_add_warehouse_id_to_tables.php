@@ -25,9 +25,9 @@ class TenantAddWarehouseIdToTables extends Migration
             $table->unsignedInteger('warehouse_id')->after('establishment_id');
         });
         
-        DB::statement("UPDATE documents SET establishment_id = warehouse_id");
-        DB::statement("UPDATE purchases SET establishment_id = warehouse_id");
-        DB::statement("UPDATE sale_notes SET establishment_id = warehouse_id");
+        DB::statement("UPDATE documents SET warehouse_id = establishment_id");
+        DB::statement("UPDATE purchases SET warehouse_id = establishment_id");
+        DB::statement("UPDATE sale_notes SET warehouse_id = establishment_id");
 
         Schema::table('documents', function (Blueprint $table) {
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
