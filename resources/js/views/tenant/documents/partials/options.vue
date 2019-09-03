@@ -14,18 +14,12 @@
                 </button>
             </div>
         </div>
-        <!-- <div class="row mt-4">
-            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                <button type="button" class="btn btn-lg waves-effect waves-light btn-outline-secondary" @click="clickDownload('a4')">
-                    <i class="fa fa-download"></i>&nbsp;&nbsp;Descargar A4
-                </button>
+        <div class="col-md-12 pt-2" v-if="form.sunat_information != null && form.sunat_information.code != null">
+            <div class="well p-1">
+                <span><strong>Code: </strong></span><span class="">{{form.sunat_information.code}}</span><br>
+                <span><strong>Descripción:</strong></span><span class="">{{form.sunat_information.description}}</span>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                <button type="button" class="btn btn-lg waves-effect waves-light btn-outline-secondary" @click="clickDownload('ticket')">
-                    <i class="fa fa-download"></i>&nbsp;&nbsp;Descargar Ticket
-                </button>
-            </div>
-        </div> -->
+        </div>
         <div v-show="hasPermissionTo('tenant.documents.email')" class="row mt-4">
             <div class="col-md-12">
                 <el-input v-model="form.customer_email">
@@ -82,7 +76,8 @@
                     download_pdf: null,
                     external_id: null,
                     number: null,
-                    id: null
+                    id: null,
+                    sunat_information: null
                 };
                 this.company = {
                     soap_type_id: null,
@@ -91,6 +86,7 @@
             create() {
                 this.$http.get(`/${this.resource}/record/${this.recordId}`).then(response => {
                     this.form = response.data.data;
+                    console.log(JSON.stringify(this.form.sunat_information))
                     this.titleDialog = 'Comprobante: '+this.form.number;
                 });
             },

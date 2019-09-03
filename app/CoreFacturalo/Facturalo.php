@@ -444,7 +444,11 @@ class Facturalo
                 'notes' => $cdrResponse->getNotes()
             ];
         } else {
-            throw new Exception("Code: {$res->getError()->getCode()}; Description: {$res->getError()->getMessage()}");
+            $this->response = [
+                'sent' => false,
+                'code' => $res->getError()->getCode(),
+                'description' => $res->getError()->getMessage()
+            ];
         }
     }
 
