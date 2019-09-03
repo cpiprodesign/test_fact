@@ -113,9 +113,18 @@
                             </div>
                         </div>
                         <div class="row mt-1">
+                            <div class="col-lg-3">
+                                <div class="form-group" :class="{'has-danger': errors.warehouse_id}">
+                                    <label class="control-label font-weight-bold text-info">Almacén</label>
+                                    <el-select v-model="form.warehouse_id">
+                                        <el-option v-for="option in warehouses" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                    </el-select>
+                                    <small class="form-control-feedback" v-if="errors.warehouse_id" v-text="errors.warehouse_id[0]"></small>
+                                </div>
+                            </div>
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.status_paid}">
-                                    <label class="control-label font-weight-bold text-info">Estado de pago</label>
+                                    <label class="control-label">Estado de pago</label>
                                     <el-select v-model="form.status_paid">
                                         <el-option v-for="option in status_paid" :key="option.id" :value="option.id" :label="option.nombre"></el-option>
                                     </el-select>
@@ -171,6 +180,7 @@
                                 <p class="text-right" v-if="form.total_exonerated > 0">OP.EXONERADAS: {{ currency_type.symbol }} {{ form.total_exonerated }}</p>
                                 <p class="text-right" v-if="form.total_taxed > 0">OP.GRAVADA: {{ currency_type.symbol }} {{ form.total_taxed }}</p>
                                 <p class="text-right" v-if="form.total_igv > 0">IGV: {{ currency_type.symbol }} {{ form.total_igv }}</p>
+                                <p class="text-right" v-if="form.total_plastic_bag_taxes > 0">ICBPER: {{ currency_type.symbol }} {{ form.total_plastic_bag_taxes }}</p>
                                 <h3 class="text-right" v-if="form.total > 0"><b>TOTAL A PAGAR: </b>{{ currency_type.symbol }} {{ form.total }}</h3>
                             </div>
                         </div>
@@ -238,6 +248,7 @@
                 document_type_03_filter: null,
                 operation_types: [],
                 establishments: [],
+                warehouses: [],
                 establishment: null,
                 all_series: [],
                 series: [],
@@ -249,7 +260,8 @@
         async created() {
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables2/${this.quotation_id}`)
-                .then(response => {
+                .then(response => {                    
+                    this.warehouses = response.data.warehouses
                     this.document_types = response.data.document_types_invoice
                     this.currency_types = response.data.currency_types
                     this.establishments = response.data.establishments
@@ -260,6 +272,7 @@
                     this.charges_types = response.data.charges_types
                     this.company = response.data.company
                     this.document_type_03_filter = response.data.document_type_03_filter
+                    this.form.warehouse_id = response.data.warehouse_id
 
                     this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
@@ -328,6 +341,7 @@
                     total_unaffected: 0,
                     total_exonerated: 0,
                     total_igv: 0,
+                    total_plastic_bag_taxes: 0,
                     total_base_isc: 0,
                     total_isc: 0,
                     total_base_other_taxes: 0,
@@ -421,6 +435,7 @@
                 let total_igv = 0
                 let total_value = 0
                 let total = 0
+                let total_plastic_bag_taxes = 0
                 this.form.items.forEach((row) => {
                     total_discount += parseFloat(row.total_discount)
                     total_charge += parseFloat(row.total_charge)
@@ -460,8 +475,7 @@
             submit() {
                 this.loading_submit = true
                 this.$http.post(`/${this.resource}`, this.form).then(response => {
-                    console.log(response);
-
+                    
                     if (response.data.success) {
                         this.resetForm();
 

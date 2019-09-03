@@ -19,6 +19,6 @@ class Warehouse extends ModelTenant
 
     public function establishment()
     {
-        return $this->belongsTo(Establishment::class);
+        return $this->belongsTo(Establishment::class)->withDefault();
     }
 }

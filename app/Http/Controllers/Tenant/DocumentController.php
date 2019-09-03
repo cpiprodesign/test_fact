@@ -43,6 +43,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Modules\Inventory\Models\Warehouse;
 use Nexmo\Account\Price;
 
 class DocumentController extends Controller
@@ -162,6 +163,8 @@ class DocumentController extends Controller
             $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
         }
         
+        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first()->id;
+        $warehouses = Warehouse::get();
         $series = Series::all();
         $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
         $document_types_invoice2 = DocumentType::whereIn('id', ['01', '03', '100'])->get();
@@ -176,12 +179,13 @@ class DocumentController extends Controller
         $accounts = Account::all();
         $price_list = PriceList::all();
         $company = Company::active();
+        $document_types_guide = DocumentType::whereIn('id', ['09', '31'])->get();
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
         $decimal = Configuration::first()->decimal;
 
-        return compact('customers', 'establishments', 'series', 'document_types_invoice', 'document_types_invoice2', 'document_types_note',
+        return compact('customers', 'establishments', 'warehouse_id', 'warehouses', 'series', 'document_types_invoice', 'document_types_invoice2', 'document_types_note',
             'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
-            'discount_types', 'charge_types', 'payment_methods', 'accounts', 'company', 'document_type_03_filter', 'decimal', 'price_list');
+            'discount_types', 'charge_types', 'payment_methods', 'accounts', 'company', 'document_types_guide', 'document_type_03_filter', 'decimal', 'price_list');
     }
 
     public function tables2($quotation_id = false)
@@ -219,6 +223,8 @@ class DocumentController extends Controller
             $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
         }
         
+        $warehouse_id = Warehouse::where('establishment_id', auth()->user()->establishment_id)->first()->id;
+        $warehouses = Warehouse::get();
         $series = Series::all();
         
         $document_types_note = DocumentType::whereIn('id', ['07', '08'])->get();
@@ -229,12 +235,13 @@ class DocumentController extends Controller
         $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
         $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
         $company = Company::active();
+        $document_types_guide = DocumentType::whereIn('id', ['09', '31'])->get();
         $document_type_03_filter = env('DOCUMENT_TYPE_03_FILTER', true);
         $decimal = Configuration::first()->decimal;
 
-        return compact('quotation', 'customers', 'establishments', 'series', 'document_types_invoice', 'document_types_note',
+        return compact('quotation', 'customers', 'establishments', 'warehouse_id', 'warehouses', 'series', 'document_types_invoice', 'document_types_note',
             'note_credit_types', 'note_debit_types', 'currency_types', 'operation_types',
-            'discount_types', 'charge_types', 'company', 'document_type_03_filter', 'decimal');
+            'discount_types', 'charge_types', 'company', 'document_types_guide', 'document_type_03_filter', 'decimal');
     }
 
     public function item_tables()
@@ -286,10 +293,12 @@ class DocumentController extends Controller
                 'currency_type_id' => $row->currency_type_id,
                 'currency_type_symbol' => $row->currency_type->symbol,
                 'sale_unit_price' => $this->formatNumber($row->sale_unit_price),
+                'has_plastic_bag_taxes' => $row->icbper,
                 'purchase_unit_price' => $this->formatNumber($row->purchase_unit_price),
                 'unit_type_id' => $row->unit_type_id,
                 'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
+                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                'amount_plastic_bag_taxes' => $row->amount_plastic_bag_taxes,
             ];
         }
 
@@ -333,9 +342,11 @@ class DocumentController extends Controller
                     'sale_unit_price' => $this->formatNumber($row->sale_unit_price),
                     'purchase_unit_price' => $this->formatNumber($row->purchase_unit_price),
                     'included_igv' => $row->included_igv,
+                    'amount_plastic_bag_taxes' => $row->amount_plastic_bag_taxes,
                     'unit_type_id' => $row->unit_type_id,
                     'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
                     'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                    'has_plastic_bag_taxes' => $row->icbper,
                     'item_price_list' => $row->item_price_list
                 ];
             });

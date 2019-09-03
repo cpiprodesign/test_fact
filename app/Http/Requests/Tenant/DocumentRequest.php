@@ -22,6 +22,9 @@ class DocumentRequest extends FormRequest
             'establishment_id' => [
                 'required',
             ],
+            'warehouse_id' => [
+                'required',
+            ],
             'series' => [
                 'required',
             ],

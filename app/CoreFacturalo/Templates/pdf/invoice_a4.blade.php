@@ -79,6 +79,22 @@
                     </tr>
                 @endif
             </table>
+            @if ($document->guides)
+                <br/>
+                <table>
+                    @foreach($document->guides as $guide)
+                        <tr>
+                            @if(isset($guide->document_type_description))
+                            <td>{{ $guide->document_type_description }}</td>
+                            @else
+                            <td>{{ $guide->document_type_id }}</td>
+                            @endif
+                            <td>:</td>
+                            <td>{{ $guide->number }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            @endif
         </div>
         <div class="border-no-top py-4 px-1">
             <table class="full-width mt-12 mb-10">
@@ -90,6 +106,9 @@
                         <th class="border-top text-center py-1">CANT.</th>
                         <th class="border-top text-center py-2">UNIDAD</th>
                         <th class="border-top text-right py-2">P.UNIT</th>
+                        @if($document->total_plastic_bag_taxes > 0)
+                            <th class="border-top text-right py-2">ICBPER</th>
+                        @endif
                         <th class="border-top text-right py-2">DTO.</th>
                         <th class="border-top text-right py-2">TOTAL</th>
                     </tr>
@@ -124,6 +143,9 @@
                             <td class="align-top">{{ number_format($row->quantity, $decimal) }}</td>
                             <td class="text-center align-top">{{ $row->item->unit_type_id }}</td>
                             <td class="text-right align-top">{{ number_format($row->unit_price, $configuration->decimal) }}</td>
+                            @if($document->total_plastic_bag_taxes > 0)
+                                <td class="text-right align-top">{{ $row->total_plastic_bag_taxes }}</td>
+                            @endif
                             <td class="text-right align-top">
                                 @if($row->discounts)
                                     @php
@@ -149,15 +171,7 @@
                         <td width="25%"><strong>Orden de Compra:</strong> </td>
                         <td class="text-left">{{ $document->purchase_order }}</td>
                     </tr>
-                @endif
-                @if ($document->guides)
-                    @foreach($document->guides as $guide)
-                        <tr>
-                            <td>{{ $guide->document_type_id }}</td>
-                            <td>{{ $guide->number }}</td>
-                        </tr>
-                    @endforeach
-                @endif
+                @endif                
             </table>
             <table>
                 <tr>
@@ -222,13 +236,18 @@
                                     <td colspan="5" class="text-right font-bold">IGV: {{ $document->currency_type->symbol }}</td>
                                     <td class="text-right font-bold">{{ number_format($document->total_igv, 2) }}</td>
                                 </tr>
+                                @if($document->total_plastic_bag_taxes > 0)
+                                    <tr>
+                                        <td colspan="5" class="text-right font-bold">ICBPER: {{ $document->currency_type->symbol }}</td>
+                                        <td class="text-right font-bold">{{ number_format($document->total_plastic_bag_taxes, 2) }}</td>
+                                    </tr>
+                                @endif
                                 <tr>
                                     <td colspan="5" class="text-right font-bold">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
                                     <td class="text-right font-bold">{{ number_format($document->total, 2) }}</td>
                                 </tr>
-            
                             </tbody>
-                            <tfoot>            
+                            <tfoot>
                             </tfoot>
                         </table>
                     </td>

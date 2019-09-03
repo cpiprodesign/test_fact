@@ -10,6 +10,7 @@ use App\Models\Tenant\Company;
 use App\Models\Tenant\Document;
 use App\Models\Tenant\Item;
 use Illuminate\Support\Str;
+use App\Models\Tenant\Catalogs\DocumentType;
 
 class DocumentInput
 {
@@ -66,6 +67,7 @@ class DocumentInput
             'user_id' => auth()->id(),
             'external_id' => Str::uuid()->toString(),
             'establishment_id' => $inputs['establishment_id'],
+            'warehouse_id' => $inputs['warehouse_id'],
             'establishment' => $establishment,
             'quotation_id' => $quotation_id,
             'soap_type_id' => $soap_type_id,
@@ -96,6 +98,7 @@ class DocumentInput
             'total_isc' => Functions::valueKeyInArray($inputs, 'total_isc', 0),
             'total_base_other_taxes' => Functions::valueKeyInArray($inputs, 'total_base_other_taxes', 0),
             'total_other_taxes' => Functions::valueKeyInArray($inputs, 'total_other_taxes', 0),
+            'total_plastic_bag_taxes' => Functions::valueKeyInArray($inputs, 'total_plastic_bag_taxes', 0),
             'total_taxes' => $inputs['total_taxes'],
             'total_value' => $inputs['total_value'],
             'total' => $inputs['total'],
@@ -131,6 +134,8 @@ class DocumentInput
                         'item_code' => $item->item_code,
                         'item_code_gs1' => $item->item_code_gs1,
                         'unit_type_id' => $item->unit_type_id,
+                        'presentation' => (key_exists('item', $row)) ? (isset($row['item']['presentation']) ? $row['item']['presentation']:[]):[],
+                        'amount_plastic_bag_taxes' => $item->amount_plastic_bag_taxes,
                     ],
                     'quantity' => $row['quantity'],
                     'unit_value' => $row['unit_value'],
@@ -147,6 +152,7 @@ class DocumentInput
                     'total_base_other_taxes' => Functions::valueKeyInArray($row, 'total_base_other_taxes', 0),
                     'percentage_other_taxes' => Functions::valueKeyInArray($row, 'percentage_other_taxes', 0),
                     'total_other_taxes' => Functions::valueKeyInArray($row, 'total_other_taxes', 0),
+                    'total_plastic_bag_taxes' => Functions::valueKeyInArray($row, 'total_plastic_bag_taxes', 0),
                     'total_taxes' => $row['total_taxes'],
                     'total_value' => $row['total_value'],
                     'total_charge' => Functions::valueKeyInArray($row, 'total_charge', 0),
@@ -277,6 +283,7 @@ class DocumentInput
                     $guides[] = [
                         'number' => $number,
                         'document_type_id' => $document_type_id,
+                        'document_type_description' => DocumentType::find($document_type_id)->description,
                     ];
                 }
                 return $guides;
