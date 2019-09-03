@@ -42,6 +42,12 @@
                         </div>
                     </div>
 
+                    <div class="col-md-3 center-el-checkbox">
+                        <div class="form-group" :class="{'has-danger': errors.has_igv}">
+                            <el-checkbox v-model="form.has_plastic_bag_taxes">Impuesto a la Bolsa Plástica</el-checkbox><br>
+                        </div>
+                    </div>
+
                     <div class="col-md-12 mt-3">
                         <section class="card mb-2 card-transparent card-collapsed" id="card-section">
                                 <header class="card-header hoverable bg-light border-top rounded-0 py-1" data-card-toggle style="cursor: pointer;" id="card-click">
@@ -232,6 +238,7 @@
                     charges: [],
                     discounts: [],
                     attributes: [],
+                    has_plastic_bag_taxes:false
                 }
             },
             // initializeFields() {
@@ -316,6 +323,7 @@
                 }
 
                 this.form.affectation_igv_type_id = this.form.item.sale_affectation_igv_type_id
+                this.form.has_plastic_bag_taxes = (this.form.item.has_plastic_bag_taxes)?true:false
             },
             clickAddItem() {
                 this.form.item.unit_price = this.form.unit_price

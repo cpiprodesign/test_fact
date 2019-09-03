@@ -23,6 +23,9 @@ class PurchaseRequest extends FormRequest
             'establishment_id' => [
                 'required',
             ],
+            'warehouse_id' => [
+                'required',
+            ],
             'number' => [
                 'required',
                 'numeric'

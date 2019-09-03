@@ -80,13 +80,22 @@
                                 <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-3">
                             <div class="form-group" :class="{'has-danger': errors.establishment_id}">
                                 <label class="control-label">Establecimiento</label>
                                 <el-select v-model="form.establishment_id">
                                     <el-option v-for="option in establishments" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                 </el-select>
                                 <small class="form-control-feedback" v-if="errors.establishment_id" v-text="errors.establishment_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group" :class="{'has-danger': errors.warehouse_id}">
+                                <label class="control-label">Almacén</label>
+                                <el-select v-model="form.warehouse_id">
+                                    <el-option v-for="option in warehouses" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.warehouse_id" v-text="errors.warehouse_id[0]"></small>
                             </div>
                         </div>
                         <div class="col-lg-2 col-md-6 d-flex align-items-end pt-2">
@@ -193,6 +202,7 @@
                 company: null,
                 operation_types: [],
                 establishments: [],
+                warehouses: [],
                 establishment: null,
                 all_series: [],
                 series: [],
@@ -205,7 +215,7 @@
             this.initForm()
             this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
-
+                    this.warehouses = response.data.warehouses
                     this.document_types = response.data.document_types_invoice
                     this.currency_types = response.data.currency_types
                     this.establishments = response.data.establishments
@@ -214,6 +224,7 @@
                     this.charges_types = response.data.charges_types
                     this.form.currency_type_id = (this.currency_types.length > 0)?this.currency_types[0].id:null
                     this.form.establishment_id = (this.establishments.length > 0)?this.establishments[0].id:null
+                    this.form.warehouse_id = response.data.warehouse_id
                     this.form.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
 
                     this.decimal = response.data.decimal;
@@ -228,29 +239,25 @@
            })
         },
         methods: {
-
             filterSuppliers() {
-
                 if(this.form.document_type_id === '01') {
                     this.suppliers = _.filter(this.all_suppliers, {'identity_document_type_id': '6'})
                     this.selectSupplier()
-
                 } else {
                     this.suppliers = _.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
                     this.selectSupplier()
                 }
             },
             selectSupplier(){
-
                 let supplier = _.find(this.suppliers, {'id': this.aux_supplier_id})
                 this.form.supplier_id = (supplier) ? supplier.id : null
                 this.aux_supplier_id = null
-
             },
             initForm() {
                 this.errors = {}
                 this.form = {
                     establishment_id: null,
+                    warehouse_id: null,
                     document_type_id: null,
                     series: null,
                     number: null,

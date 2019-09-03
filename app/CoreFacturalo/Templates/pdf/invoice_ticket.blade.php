@@ -84,15 +84,22 @@
             <td><p class="desc">{{ $document->purchase_order }}</p></td>
         </tr>
     @endif
-    @if ($document->guides)
+</table>
+@if ($document->guides)
+    <table>
         @foreach($document->guides as $guide)
             <tr>
-                <td><p class="desc">{{ $guide->document_type_id }}</p></td>
-                <td><p class="desc">{{ $guide->number }}</p></td>
+                @if(isset($guide->document_type_description))
+                    <td>{{ $guide->document_type_description }}</td>
+                @else
+                    <td>{{ $guide->document_type_id }}</td>
+                @endif
+                <td>:</td>
+                <td>{{ $guide->number }}</td>
             </tr>
         @endforeach
-    @endif
-</table>
+    </table>
+@endif
 <table class="full-width mt-10 mb-10">
     <thead class="">
     <tr>
@@ -168,6 +175,12 @@
             <td colspan="4" class="text-right font-bold desc">IGV: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold desc">{{ number_format($document->total_igv, 2) }}</td>
         </tr>
+        @if($document->total_plastic_bag_taxes > 0)
+            <tr>
+                <td colspan="4" class="text-right font-bold desc">ICBPER: {{ $document->currency_type->symbol }}</td>
+                <td class="text-right font-bold desc">{{ number_format($document->total_plastic_bag_taxes, 2) }}</td>
+            </tr>
+        @endif
         <tr>
             <td colspan="4" class="text-right font-bold desc">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold desc">{{ number_format($document->total, 2) }}</td>

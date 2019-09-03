@@ -20,6 +20,7 @@ class Item extends ModelTenant
         'currency_type_id',
         'sale_unit_price',
         'purchase_unit_price',
+        'icbper',
         'included_igv',
         'has_isc',
         'system_isc_type_id',
@@ -31,6 +32,8 @@ class Item extends ModelTenant
 
         'stock',
         'stock_min',
+
+        'amount_plastic_bag_taxes',
 
         'trademark_id',
         'item_category_id',

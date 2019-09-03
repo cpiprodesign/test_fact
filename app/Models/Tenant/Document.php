@@ -14,6 +14,7 @@ class Document extends ModelTenant
         'user_id',
         'external_id',
         'establishment_id',
+        'warehouse_id',
         'establishment',
         'soap_type_id',
         'state_type_id',
@@ -63,6 +64,9 @@ class Document extends ModelTenant
         'has_xml',
         'has_pdf',
         'has_cdr',
+
+        'query_status',
+        'total_plastic_bag_taxes',
 
         'status_paid'
     ];
