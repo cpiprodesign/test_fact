@@ -67,7 +67,7 @@ class DispatchRequest extends FormRequest
             ],
             'license_plate' => [
                 'required',
-            ],            
+            ],        
         ];
     }
 }

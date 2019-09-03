@@ -103,7 +103,9 @@ class DispatchInput
 
     private static function invoices($inputs)
     {
-        if($inputs['document_id'])
+        $inputs['document_id'] = isset($inputs['document_id']) ? $inputs['document_id'] : null; 
+
+        if(!is_null($inputs['document_id']))
         {
             $document = Document::select('series', 'number')->find($inputs['document_id']);
             
@@ -116,8 +118,6 @@ class DispatchInput
             
             return $invoices;
         }
-        
-        return null;
     }
 
     private static function dispatcher($inputs)
