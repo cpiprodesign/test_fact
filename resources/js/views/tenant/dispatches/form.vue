@@ -366,7 +366,7 @@
         },
         created() {
             this.clean();
-            
+
             this.$http.post(`/${this.resource}/tables`).then(response => {
                 this.identityDocumentTypes = response.data.identityDocumentTypes;
                 this.transferReasonTypes = response.data.transferReasonTypes;
@@ -488,6 +488,8 @@
                         country_id: 'PE'
                     },
                     number: '#',
+                    port_code: null,
+                    container_number: null,
                     items: [],
                     total_weight: null,
                     packages_number: null,

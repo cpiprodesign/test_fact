@@ -16,7 +16,6 @@ use App\Models\Tenant\Catalogs\{
     UnitType,
     Country
 };
-use Illuminate\Http\Request;
 use App\Models\Tenant\{
     Establishment,
     Document,
@@ -26,8 +25,11 @@ use App\Models\Tenant\{
     Series,
     Item
 };
-use Exception, DB;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use App\Http\Requests\Tenant\DispatchRequest;
 
 class DispatchController extends Controller
 {
@@ -66,10 +68,12 @@ class DispatchController extends Controller
 
     public function create2($document_id = false)
     {
-        return view('tenant.dispatches.form2', compact('document_id'));
+        $document = Document::select('id','series', 'number')->find($document_id);
+        
+        return view('tenant.dispatches.form2', compact('document'));
     }
 
-    public function store(Request $request)
+    public function store(DispatchRequest $request)
     {
         $fact = DB::connection('tenant')->transaction(function () use ($request) {
             $facturalo = new Facturalo();
@@ -85,10 +89,9 @@ class DispatchController extends Controller
         $document->has_xml = 1;
         $document->has_pdf = 1;
 
-        try {
-
+        try
+        {
             $fact->senderXmlSignedBill();
-//            $response = $fact->getResponse();
             $document->has_cdr = 1;
             $document->save();
 
@@ -97,8 +100,9 @@ class DispatchController extends Controller
                 'message' => "Se creo la guía de remisión {$document->series}-{$document->number}",
             ];
 
-        } catch (Exception $e) {
-
+        }
+        catch (Exception $e)
+        {
             $document->has_cdr = 0;
             $document->save();
 
