@@ -1,6 +1,6 @@
 <template>
     <el-dialog :title="titleDialog" :visible="showDialog" @open="create" width="30%" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
-        <div v-show="hasPermissionTo('tenant.documents.imprimir')" class="row mt-4">
+        <div v-show="hasPermissionTo('tenant.documents.imprimir')" class="row mt-2">
             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold">
                 <p>Imprimir A4</p>
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('a4')">
@@ -14,10 +14,13 @@
                 </button>
             </div>
         </div>
-        <div class="col-md-12 pt-2" v-if="form.sunat_information != null && form.sunat_information.code != null">
-            <div class="well p-1">
-                <span><strong>Code: </strong></span><span class="">{{form.sunat_information.code}}</span><br>
-                <span><strong>Descripción:</strong></span><span class="">{{form.sunat_information.description}}</span>
+        <div v-if="showError">
+            <br>
+            <div class="col-md-12 pt-2" v-if="form.sunat_information != null && form.sunat_information.code != null">
+                <div class="well p-1">
+                    <span><strong>Code: </strong></span><span class="">{{form.sunat_information.code}}</span><br>
+                    <span><strong>Descripción:</strong></span><span class="">{{form.sunat_information.description}}</span>
+                </div>
             </div>
         </div>
         <div v-show="hasPermissionTo('tenant.documents.email')" class="row mt-4">
@@ -48,7 +51,7 @@
 
 <script>
     export default {
-        props: ['showDialog', 'recordId', 'showClose'],
+        props: ['showDialog', 'recordId', 'showClose', 'showError'],
         data() {
             return {
                 titleDialog: null,

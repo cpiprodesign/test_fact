@@ -273,6 +273,7 @@ if ($hostname) {
             Route::post('summaries/documents', 'Tenant\SummaryController@documents');
             Route::post('summaries', 'Tenant\SummaryController@store')->middleware('can:tenant.summaries.index');
             Route::get('summaries/status/{summary}', 'Tenant\SummaryController@status')->middleware('can:tenant.summaries.enviar-sunat');
+            Route::delete('summaries/{summary}', 'Tenant\SummaryController@destroy');
 
             //Voided
             Route::get('voided', 'Tenant\VoidedController@index')->name('tenant.voided.index')->middleware('can:tenant.voided.index');
