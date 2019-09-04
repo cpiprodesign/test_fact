@@ -230,13 +230,30 @@
                 this.$http.get(`/${this.resource}/send/${document_id}`)
                     .then(response => {
                         if (response.data.success) {
-                            this.$message.success(response.data.message)
+                            let code = response.data.code;
+                            
+                            console.log("code "+ code)
+                            if(code == 0){
+                                this.$message.success(response.data.message)
+                            }
+                            else if(code < 2000){
+                                this.$message.warning(response.data.message)
+                            }
+                            else if(code < 4000){
+                                this.$message.error(response.data.message)
+                            }
+                            else{
+                                this.$message.warning(response.data.message)
+                            }
+                            
                             this.$eventHub.$emit('reloadData')
                         } else {
                             this.$message.error(response.data.message)
                         }
                     })
                     .catch(error => {
+
+                        console.log(JSON.stringify(error))
                         this.$message.error(error.response.data.message)
                     })
             },

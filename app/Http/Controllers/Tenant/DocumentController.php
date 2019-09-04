@@ -419,6 +419,7 @@ class DocumentController extends Controller
             $document = $fact->getDocument();
             $response = $fact->getResponse();
 
+            
             $document_sunat = Document::find($document->id);
             $document_sunat->sunat_information = $response;
             $document_sunat->save();
@@ -481,7 +482,8 @@ class DocumentController extends Controller
 
         return [
             'success' => true,
-            'message' => $response['description'],
+            'code' => $response['code'],
+            'message' => 'Código: '.$response['code'].'; Descripción: '.$response['description'],
         ];
     }
 
