@@ -303,6 +303,7 @@ if ($hostname) {
             Route::get('dispatches/create2/{dispatche}', 'Tenant\DispatchController@create2');
             Route::get('dispatches/datos/{dispatche}', 'Tenant\DispatchController@datos');
             Route::post('dispatches/tables', 'Tenant\DispatchController@tables');
+            Route::post('dispatches/items', 'Tenant\DispatchController@items');
             Route::post('dispatches', 'Tenant\DispatchController@store')->middleware('hasAnyPermission:tenant.dispatches.store,tenant.dispatches.update');
 
             Route::get('dispatches/resend/{document}', 'Tenant\DispatchController@resend')->middleware('can:tenant.dispatches.resend');

@@ -51,7 +51,7 @@
         },
         methods: {
             create() {
-                this.$http.post(`/${this.resource}/tables`).then(response => {
+                this.$http.post(`/${this.resource}/items`).then(response => {
                     this.items = response.data.items;
                 });
                 
