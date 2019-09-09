@@ -220,7 +220,8 @@ class DispatchController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function tables(Request $request)
+
+    public function items()
     {
         $items = Item::query()
             ->where('item_type_id', '01')
@@ -229,22 +230,27 @@ class DispatchController extends Controller
             ->transform(function ($row) {
                 $full_description = ($row->internal_id) ? $row->internal_id . ' - ' . $row->description : $row->description;
 
-                return [
-                    'id' => $row->id,
-                    'full_description' => $full_description,
-                    'description' => $row->description,
-                    'internal_id' => $row->internal_id,
-                    'currency_type_id' => $row->currency_type_id,
-                    'currency_type_symbol' => $row->currency_type->symbol,
-                    'sale_unit_price' => $row->sale_unit_price,
-                    'purchase_unit_price' => $row->purchase_unit_price,
-                    'unit_type_id' => $row->unit_type_id,
-                    'included_igv' => $row->included_igv,
-                    'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
-                ];
-            });
+            return [
+                'id' => $row->id,
+                'full_description' => $full_description,
+                'description' => $row->description,
+                'internal_id' => $row->internal_id,
+                'currency_type_id' => $row->currency_type_id,
+                'currency_type_symbol' => $row->currency_type->symbol,
+                'sale_unit_price' => $row->sale_unit_price,
+                'purchase_unit_price' => $row->purchase_unit_price,
+                'unit_type_id' => $row->unit_type_id,
+                'included_igv' => $row->included_igv,
+                'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
+            ];
+        });
 
+        return compact('items');
+    }
+
+    public function tables(Request $request)
+    {
         $customers = Person::query()
             ->whereIn('identity_document_type_id', [6, 1])
             ->whereType('customers')
@@ -278,7 +284,7 @@ class DispatchController extends Controller
         $establishments = Establishment::all();
         $series = Series::all();
 
-        return compact('establishments', 'customers', 'series', 'transportModeTypes', 'transferReasonTypes', 'unitTypes', 'countries', 'departments', 'provinces', 'districts', 'identityDocumentTypes', 'items');
+        return compact('establishments', 'customers', 'series', 'transportModeTypes', 'transferReasonTypes', 'unitTypes', 'countries', 'departments', 'provinces', 'districts', 'identityDocumentTypes');
     }
 
     public function downloadExternal($type, $external_id)
