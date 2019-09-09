@@ -65,7 +65,6 @@
                                     <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
                                     <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_value) }}</td>
                                     <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
-
                                     <td class="text-center pl-0 pr-0">
                                         <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveItem(index)">x
                                         </button>
@@ -127,15 +126,12 @@
                         </div>
                         <div class="row pt-3">
                             <div class="col-3">
-                                <el-button class="btn btn-danger btn-lg btn-block" type="danger"
-                                           @click.prevent="close">
+                                <el-button class="btn btn-danger btn-lg btn-block" type="danger" @click.prevent="close">
                                     Cancelar
                                 </el-button>
                             </div>
                             <div class="col-9">
-                                <el-button class="btn btn-submit btn-lg btn-block" type="primary" native-type="submit"
-                                           @click.prevent="showDialogMakeSale=true"
-                                           v-if="form.items.length > 0"> Procesar Pago
+                                <el-button class="btn btn-submit btn-lg btn-block" type="primary" native-type="submit" @click.prevent="showDialogMakeSale=true" v-if="form.items.length > 0"> Procesar Pago
                                 </el-button>
                             </div>
                         </div>
@@ -157,8 +153,7 @@
                                         <el-option v-for="option in establishments" :key="option.id" :value="option.id"
                                                    :label="option.description"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.establishment_id"
-                                           v-text="errors.establishment_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.establishment_id" v-text="errors.establishment_id[0]"></small>
                                 </div>
                             </div>
                             <div class="col-lg-2">
@@ -168,12 +163,8 @@
                                         <el-option v-for="option in operation_types" :key="option.id" :value="option.id"
                                                    :label="option.description"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.operation_type_id"
-                                           v-text="errors.operation_type_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.operation_type_id" v-text="errors.operation_type_id[0]"></small>
                                 </div>
-                            </div>
-                            <div class="col-lg-2">
-
                             </div>
                         </div>
                         <div class="row mt-1">
