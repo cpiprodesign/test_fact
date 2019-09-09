@@ -953,7 +953,7 @@
             },
             ////////////////////////////////
             refreshItems() {
-                this.$http.post(`/dispatches/tables`).then(response => {
+                this.$http.post(`/dispatches/items`).then(response => {
                     this.items = response.data.items;
                 });
                 this.$http.get(`/documents/item/tables`).then(response => {
