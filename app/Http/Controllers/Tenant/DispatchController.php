@@ -16,7 +16,6 @@ use App\Models\Tenant\Catalogs\{
     UnitType,
     Country
 };
-use Illuminate\Http\Request;
 use App\Models\Tenant\{
     Establishment,
     Document,
@@ -26,8 +25,11 @@ use App\Models\Tenant\{
     Series,
     Item
 };
-use Exception, DB;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use App\Http\Requests\Tenant\DispatchRequest;
 
 class DispatchController extends Controller
 {
@@ -66,10 +68,12 @@ class DispatchController extends Controller
 
     public function create2($document_id = false)
     {
-        return view('tenant.dispatches.form2', compact('document_id'));
+        $document = Document::select('id','series', 'number')->find($document_id);
+        
+        return view('tenant.dispatches.form2', compact('document'));
     }
 
-    public function store(Request $request)
+    public function store(DispatchRequest $request)
     {
         $fact = DB::connection('tenant')->transaction(function () use ($request) {
             $facturalo = new Facturalo();
@@ -85,10 +89,9 @@ class DispatchController extends Controller
         $document->has_xml = 1;
         $document->has_pdf = 1;
 
-        try {
-
+        try
+        {
             $fact->senderXmlSignedBill();
-//            $response = $fact->getResponse();
             $document->has_cdr = 1;
             $document->save();
 
@@ -97,8 +100,9 @@ class DispatchController extends Controller
                 'message' => "Se creo la guía de remisión {$document->series}-{$document->number}",
             ];
 
-        } catch (Exception $e) {
-
+        }
+        catch (Exception $e)
+        {
             $document->has_cdr = 0;
             $document->save();
 
@@ -216,7 +220,8 @@ class DispatchController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function tables(Request $request)
+
+    public function items()
     {
         $items = Item::query()
             ->where('item_type_id', '01')
@@ -225,22 +230,27 @@ class DispatchController extends Controller
             ->transform(function ($row) {
                 $full_description = ($row->internal_id) ? $row->internal_id . ' - ' . $row->description : $row->description;
 
-                return [
-                    'id' => $row->id,
-                    'full_description' => $full_description,
-                    'description' => $row->description,
-                    'internal_id' => $row->internal_id,
-                    'currency_type_id' => $row->currency_type_id,
-                    'currency_type_symbol' => $row->currency_type->symbol,
-                    'sale_unit_price' => $row->sale_unit_price,
-                    'purchase_unit_price' => $row->purchase_unit_price,
-                    'unit_type_id' => $row->unit_type_id,
-                    'included_igv' => $row->included_igv,
-                    'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                    'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
-                ];
-            });
+            return [
+                'id' => $row->id,
+                'full_description' => $full_description,
+                'description' => $row->description,
+                'internal_id' => $row->internal_id,
+                'currency_type_id' => $row->currency_type_id,
+                'currency_type_symbol' => $row->currency_type->symbol,
+                'sale_unit_price' => $row->sale_unit_price,
+                'purchase_unit_price' => $row->purchase_unit_price,
+                'unit_type_id' => $row->unit_type_id,
+                'included_igv' => $row->included_igv,
+                'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id
+            ];
+        });
 
+        return compact('items');
+    }
+
+    public function tables(Request $request)
+    {
         $customers = Person::query()
             ->whereIn('identity_document_type_id', [6, 1])
             ->whereType('customers')
@@ -274,7 +284,7 @@ class DispatchController extends Controller
         $establishments = Establishment::all();
         $series = Series::all();
 
-        return compact('establishments', 'customers', 'series', 'transportModeTypes', 'transferReasonTypes', 'unitTypes', 'countries', 'departments', 'provinces', 'districts', 'identityDocumentTypes', 'items');
+        return compact('establishments', 'customers', 'series', 'transportModeTypes', 'transferReasonTypes', 'unitTypes', 'countries', 'departments', 'provinces', 'districts', 'identityDocumentTypes');
     }
 
     public function downloadExternal($type, $external_id)

@@ -123,5 +123,20 @@
         <td>{{ $document->observations }}</td>
     </tr>
 </table>
+<br>
+<table class="full-width border-box">
+    <tr>
+        <td class="text-bold border-bottom font-bold">Comprobantes</td>
+    </tr>
+    <tr>
+        @if ($document->invoices)
+            @foreach($document->invoices as $invoice)
+                <tr>
+                    <td>{{ $invoice->series }} - {{ $invoice->number }}</td>
+                </tr>
+            @endforeach
+        @endif
+    </tr>
+</table>
 </body>
 </html>

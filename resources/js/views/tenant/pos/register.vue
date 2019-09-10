@@ -1,8 +1,6 @@
 <template>
-
     <div class="container-fluid m-0 pb-0">
         <div class="row flex-row">
-            <!--            articulos-->
             <div class="col-6">
                 <div class="input-group input-group-lg border border-primary rounded">
                     <div class="input-group-prepend">
@@ -10,21 +8,15 @@
                             <i class="fas fa-barcode"></i>
                         </span>
                     </div>
-
-                    <input type="text" class="form-control" placeholder="Buscar productos" v-model="searchBox"
-                           @keyup.enter="enterAddItem">
+                    <input type="text" class="form-control" placeholder="Buscar productos" v-model="searchBox" @keyup.enter="enterAddItem">
                     <button type="button" class="btn" @click.prevent="showDialogNewItem=!showDialogNewItem">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
-
                 <div class="mt-3 overflow-auto h-100 border border-primary rounded rounded-0" style="max-height: 77vh">
                     <div class="d-flex flex-row flex-wrap p-2">
-
-                        <div v-for="option in findItem" class="card m-1 btn-outline-success "
-                             style="width: 32%; cursor: pointer"
-                             @click.prevent="selectItem(option.id)"
-                        >
+                        <div v-for="option in findItem" :key="option" class="card m-1 btn-outline-success" style="width: 32%; cursor: pointer"
+                             @click.prevent="selectItem(option.id)">
                             <div class="card-header p-1 bg-success text-white">{{option.internal_id}}</div>
                             <div class="card-body p-1 text-dark" style="width: 100%">
                                 <span class="font-weight-blod">{{option.description}}</span> <br>
@@ -35,13 +27,9 @@
                                 </span>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
-
-            <!--            pago-->
             <div class="col-6">
                 <div class="card mb-0">
                     <div class="card-header  bg-success p-1">
@@ -64,28 +52,25 @@
                             </tr>
                             </thead>
                             <tbody v-if="form.items.length > 0">
-                            <tr v-for="(row, index) in form.items">
-                                <td>{{ index + 1 }}</td>
-                                <td>
-                                    {{ row.item.description }}
-                                    <br/>
-                                    <small>
-                                        {{ row.affectation_igv_type.description }}/{{ row.item.unit_type_id }}
-                                    </small>
-                                </td>
-                                <td class="text-right">{{ row.quantity }}</td>
-                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
-                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_value) }}</td>
-                                <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
+                                <tr v-for="(row, index) in form.items" :key="row">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>
+                                        {{ row.item.description }}
+                                        <br/>
+                                        <small>
+                                            {{ row.affectation_igv_type.description }}/{{ row.item.unit_type_id }}
+                                        </small>
+                                    </td>
+                                    <td class="text-right">{{ row.quantity }}</td>
+                                    <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.unit_price, decimal) }}</td>
+                                    <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total_value) }}</td>
+                                    <td class="text-right">{{ currency_type.symbol }} {{ formaterNumber(row.total) }}</td>
 
-                                <td class="text-center pl-0 pr-0">
-                                    <button type="button"
-                                            class="btn waves-effect waves-light btn-xs btn-danger"
-                                            @click.prevent="clickRemoveItem(index)">x
-                                    </button>
-
-                                </td>
-                            </tr>
+                                    <td class="text-center pl-0 pr-0">
+                                        <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickRemoveItem(index)">x
+                                        </button>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -95,11 +80,9 @@
                                 <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
                                     <label class="control-label text-white">Moneda</label>
                                     <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
-                                        <el-option v-for="option in currency_types" :key="option.id" :value="option.id"
-                                                   :label="option.description"></el-option>
+                                        <el-option v-for="option in currency_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.currency_type_id"
-                                           v-text="errors.currency_type_id[0]"></small>
+                                    <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
                                 </div>
                                 <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                     <label class="control-label text-white">Tipo de cambio
@@ -112,13 +95,11 @@
                                     <small class="form-control-feedback" v-if="errors.exchange_rate_sale"
                                            v-text="errors.exchange_rate_sale[0]"></small>
                                 </div>
-
                                 <div class="form-group">
                                     <button type="button" class="btn waves-effect waves-light btn-primary btn-xs"
                                             @click.prevent="showDialogAddItem = true">+ Agregar Producto Detallado
                                     </button>
                                 </div>
-
                             </div>
                             <div class="col-6 pt-3">
                                 <p class="text-right text-white mb-1" v-if="form.total_exportation > 0">
@@ -159,26 +140,15 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
-
             </div>
         </div>
-        <!--    </div>-->
-
-        <!--    <div class="card mb-0 pt-2 pt-md-0">-->
-        <!-- <div class="card-header bg-info">
-            <h3 class="my-0">Nuevo Comprobante</h3>
-        </div> -->
         <div class="tab-content" v-if="false">
             <div class="invoice">
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
                         <div class="row">
                             <div class="col-lg-2 pb-2">
-
                             </div>
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.establishment_id}">
@@ -205,10 +175,8 @@
                             <div class="col-lg-2">
 
                             </div>
-
                         </div>
                         <div class="row mt-1">
-
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.purchase_order}">
                                     <label class="control-label">Orden Compra</label>
@@ -255,27 +223,27 @@
                                         </tr>
                                         </thead>
                                         <tbody v-if="form.items.length > 0">
-                                        <tr v-for="(row, index) in form.items">
-                                            <td>{{ index + 1 }}</td>
-                                            <td>{{ row.item.description }}<br/>
-                                                <small>{{ row.affectation_igv_type.description }}</small>
-                                            </td>
-                                            <td class="text-center">{{ row.item.unit_type_id }}</td>
-                                            <td class="text-right">{{ row.quantity }}</td>
-                                            <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td>
-                                            <td class="text-right">{{ currency_type.symbol }} {{ row.total_value }}</td>
-                                            <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
-                                            <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
-                                            <td class="text-right">
-                                                <button type="button"
-                                                        class="btn waves-effect waves-light btn-xs btn-danger"
-                                                        @click.prevent="clickRemoveItem(index)">x
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="8"></td>
-                                        </tr>
+                                            <tr v-for="(row, index) in form.items" :key="row">
+                                                <td>{{ index + 1 }}</td>
+                                                <td>{{ row.item.description }}<br/>
+                                                    <small>{{ row.affectation_igv_type.description }}</small>
+                                                </td>
+                                                <td class="text-center">{{ row.item.unit_type_id }}</td>
+                                                <td class="text-right">{{ row.quantity }}</td>
+                                                <td class="text-right">{{ currency_type.symbol }} {{ row.unit_price }}</td>
+                                                <td class="text-right">{{ currency_type.symbol }} {{ row.total_value }}</td>
+                                                <!--<td class="text-right">{{ currency_type.symbol }} {{ row.total_charge }}</td>-->
+                                                <td class="text-right">{{ currency_type.symbol }} {{ row.total }}</td>
+                                                <td class="text-right">
+                                                    <button type="button"
+                                                            class="btn waves-effect waves-light btn-xs btn-danger"
+                                                            @click.prevent="clickRemoveItem(index)">x
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="8"></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -304,12 +272,10 @@
                                     currency_type.symbol }} {{ form.total }}</h3>
                             </div>
                         </div>
-
                     </div>
                     <div class="form-actions text-right mt-4">
                         <el-button @click.prevent="close()">Cancelar</el-button>
-                        <el-button class="submit" type="primary" native-type="submit" :loading="loading_submit"
-                                   v-if="form.items.length > 0">Generar
+                        <el-button class="submit" type="primary" native-type="submit" :loading="loading_submit" v-if="form.items.length > 0">Generar
                         </el-button>
                     </div>
                 </form>
@@ -336,16 +302,13 @@
                 :visible.sync="showDialogMakeSale"
                 :close-on-modal="false"
                 :show-close="false"
-                top="5vh" width="50%"
-            >
+                top="5vh" width="50%">
                 <div class="row" v-if="payment.total>0">
                     <div class="col-lg-4 col-md-4 col-sm-4">
                         <div class="form-group">
-
                             <label class="control-label">
                                 Documento
                             </label>
-
                             <div>
                                 <label
                                     v-for="option in document_types"
@@ -367,18 +330,15 @@
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4">
                         <div class="form-group">
-
                             <label class="control-label">
                                 Serie
                             </label>
-
                             <div>
                                 <label
-                                    v-for="option in series"
+                                    v-for="option in series" :key="option"
                                     class="btn btn-info btn-sm mr-1 mb-1"
                                     v-bind:for="'idS'+option.id"
-                                    :class="{'active':form.series_id==option.id}"
-                                >
+                                    :class="{'active':form.series_id==option.id}">
                                     <input
                                         type="radio"
                                         v-model="form.series_id"
@@ -418,8 +378,7 @@
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </label>
-
-                            <div class="row" v-for="(info,index) in informacion_adicional.pagos">
+                            <div class="row" v-for="(info,index) in informacion_adicional.pagos" :key="info">
                                 <div class="col-1 pt-4">
                                     <button class="btn btn-danger btn-xs"
                                             v-if="index>0"
@@ -446,7 +405,6 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-
                                     <div class="form-group" v-if="info.tipo!=='Efectivo' && info.tipo!==''">
                                         <label class="control-label">Num. Referencia</label>
                                         <input v-model="info.ref"
@@ -454,9 +412,7 @@
                                                type="text" required>
                                     </div>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -468,8 +424,10 @@
                                type="application/pdf"/>
                     </div>
                 </div>
-
                 <div slot="title" class="dialog-header">
+                    <div class="row">
+                        
+                    </div>
                     <div class="row" v-if="payment.total>0">
                         <div class="col-8">
                             <h2 class="pt-1 mt-0">
@@ -480,46 +438,45 @@
                             </h5>
                         </div>
                         <div class="col-4 text-right">
-                            <h4 class="m-0 pb-1">
-                                <span class="font-whe text-primary">Total a pagar</span>
-                                {{currency_type.symbol}} {{payment.total}}
-                            </h4>
-                            <h5 class="m-0 pb-1">
-                                <span class="text-success">Pagando:</span>
-                                {{currency_type.symbol}} {{payment.pagando}}
-                            </h5>
-                            <h5 class="m-0 pb-1">
-                                <span class="text-info">Diferencia:</span>
-                                {{currency_type.symbol}} {{payment.delta}}
-                            </h5>
+                            <el-select v-model="form.warehouse_id">
+                                <el-option v-for="option in warehouses" :key="option.id" :value="option.id" :label="option.description"></el-option>
+                            </el-select>
+                             <small class="form-control-feedback" v-if="errors.warehouse_id" v-text="errors.warehouse_id[0]"></small>
+                            <br>
+                            <div class="border-secondary mt-1">
+                                <h4 class="m-0 pb-1">
+                                    <span class="font-whe text-primary">Total a pagar</span>
+                                    {{currency_type.symbol}} {{payment.total}}
+                                </h4>
+                                <h5 class="m-0 pb-1">
+                                    <span class="text-success">Pagando:</span>
+                                    {{currency_type.symbol}} {{payment.pagando}}
+                                </h5>
+                                <h5 class="m-0 pb-1">
+                                    <span class="text-info">Diferencia:</span>
+                                    {{currency_type.symbol}} {{payment.delta}}
+                                </h5>
+                            </div>
                         </div>
                     </div>
+                    
                     <h2 v-if="payment.total<=0">Documento {{ factura_d.number }}</h2>
                 </div>
-
                 <span slot="footer" class="dialog-footer">
 
                 <el-button size="mini" type="danger"
                            @click.prevent="close"
                            v-if="payment.total>0"
-                           class="btn-danger btn-xs"
-                >
-                    Cancelar venta
+                           class="btn-danger btn-xs">Cancelar venta
                 </el-button>
                 <el-button type="warning" @click.prevent="showDialogMakeSale = false"
-                           class="btn-warning btn-lg"
-                >
-                    Atras
+                           class="btn-warning btn-lg">Atras
                 </el-button>
                 <el-button type="primary" native-type="submit"
                            v-if="payment.total>0"
                            :loading="loading_submit"
                            :disabled="payment.delta>0"
-                           class="btn-primary btn-lg"
-                >
-                    Generar
-                        </el-button>
-
+                           class="btn-primary btn-lg">Generar</el-button>
             </span>
             </el-dialog>
         </form>
@@ -601,6 +558,7 @@
                     this.charges_types = response.data.charges_types
                     this.company = response.data.company
                     this.document_type_03_filter = response.data.document_type_03_filter
+                    this.warehouses = response.data.warehouses
 
                     this.decimal = response.data.decimal;
 
@@ -608,6 +566,8 @@
                     this.form.establishment_id = (this.establishments.length > 0) ? this.establishments[0].id : null
                     this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
                     this.form.operation_type_id = (this.operation_types.length > 0) ? this.operation_types[0].id : null
+
+                    this.form.warehouse_id = response.data.warehouse_id
 
                     this.changeEstablishment()
                     this.changeDateOfIssue()
@@ -953,7 +913,7 @@
             },
             ////////////////////////////////
             refreshItems() {
-                this.$http.post(`/dispatches/tables`).then(response => {
+                this.$http.post(`/dispatches/items`).then(response => {
                     this.items = response.data.items;
                 });
                 this.$http.get(`/documents/item/tables`).then(response => {

@@ -43,6 +43,7 @@ class Dispatch extends ModelTenant
         'dispatcher',
         'driver',
         'license_plate',
+        'invoices',
 
         'legends',
 
@@ -77,6 +78,16 @@ class Dispatch extends ModelTenant
     public function setCustomerAttribute($value)
     {
         $this->attributes['customer'] = (is_null($value))?null:json_encode($value);
+    }
+
+    public function getInvoicesAttribute($value)
+    {
+        return (is_null($value)) ? null : (object)json_decode($value);
+    }
+
+    public function setInvoicesAttribute($value)
+    {
+        $this->attributes['invoices'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getOriginAttribute($value)

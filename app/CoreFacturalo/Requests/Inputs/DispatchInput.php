@@ -8,6 +8,7 @@ use App\CoreFacturalo\Requests\Inputs\Common\LegendInput;
 use App\CoreFacturalo\Requests\Inputs\Common\PersonInput;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Dispatch;
+use App\Models\Tenant\Document;
 use App\Models\Tenant\Item;
 use Illuminate\Support\Str;
 
@@ -16,7 +17,7 @@ class DispatchInput
     public static function set($inputs)
     {
         $document_type_id = $inputs['document_type_id'];
-        $series = $inputs['series'];
+        $series = (is_null($inputs['series']))?'0':$inputs['series'];
         $number = $inputs['number'];
 
         $company = Company::active();
@@ -65,6 +66,7 @@ class DispatchInput
             'driver' => self::driver($inputs),
             'items' => self::items($inputs),
             'legends' => LegendInput::set($inputs),
+            'invoices' => self::invoices($inputs),
             'actions' => ActionInput::set($inputs),
         ];
     }
@@ -97,6 +99,25 @@ class DispatchInput
             ];
         }
         return null;
+    }
+
+    private static function invoices($inputs)
+    {
+        $inputs['document_id'] = isset($inputs['document_id']) ? $inputs['document_id'] : null; 
+
+        if(!is_null($inputs['document_id']))
+        {
+            $document = Document::select('series', 'number')->find($inputs['document_id']);
+            
+            $invoices = [];
+            
+            $invoices[] = [
+                'series' => $document['series'],
+                'number' => $document['number']
+            ];
+            
+            return $invoices;
+        }
     }
 
     private static function dispatcher($inputs)
