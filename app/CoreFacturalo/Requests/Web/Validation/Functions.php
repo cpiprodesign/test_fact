@@ -10,6 +10,7 @@ use App\Models\Tenant\{
     Item
 };
 use Exception;
+use Modules\Inventory\Models\Warehouse;
 
 class Functions
 {
@@ -75,6 +76,16 @@ class Functions
         ]);
         
         return $item->id;
+    }
+
+    public static function warehouse($inputs) {
+        $warehouse = Warehouse::updateOrCreate([
+                'description' => $inputs['warehouse'],
+            ], [
+                'description' => $inputs['warehouse']
+        ]);
+        
+        return $warehouse->id;
     }
     
     public static function findAffectedDocumentByExternalId($external_id) {
