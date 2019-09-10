@@ -6,11 +6,11 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label"> Saldo Inicial </label>
-                            <el-input class="text-right" type="number" placeholder="0.00"
+                            <el-input-number class="text-right" controls-position="right" placeholder="0.00"
                                       :prop="'form.open_amount'"
                                       :rules="{required: true, message: 'description is required', trigger: 'blur'}"
-                                      steep="0.1" v-model="form.open_amount" required>
-                            </el-input>
+                                      steep="0.01" v-model="form.open_amount" required>
+                            </el-input-number>
                         </div>
                     </div>
                     <!--<div class="col-md-4">-->
