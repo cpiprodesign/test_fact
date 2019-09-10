@@ -2,7 +2,7 @@
 
 namespace App\CoreFacturalo\Requests\Api\Transform;
 
-use App\CoreFacturalo\Requests\Api\Transform\Common\EstablishmentTransform;
+use App\CoreFacturalo\Requests\Api\Transform\Common\WarehouseTransform;
 use App\CoreFacturalo\Requests\Api\Transform\Common\PersonTransform;
 use App\CoreFacturalo\Requests\Api\Transform\Common\ActionTransform;
 use App\CoreFacturalo\Requests\Api\Transform\Common\LegendTransform;
@@ -22,7 +22,7 @@ class DocumentTransform
             'currency_type_id' => Functions::valueKeyInArray($inputs, 'codigo_tipo_moneda'),
             'exchange_rate_sale' => Functions::valueKeyInArray($inputs, 'factor_tipo_de_cambio', 1),
             'purchase_order' => Functions::valueKeyInArray($inputs, 'numero_orden_de_compra'),
-//            'establishment' => EstablishmentTransform::transform($inputs['datos_del_emisor']),
+            'warehouse_description' => Functions::valueKeyInArray($inputs, 'nombre_almacen'),
             'customer' => PersonTransform::transform($inputs['datos_del_cliente_o_receptor']),
             'total_prepayment' => Functions::valueKeyInArray($totals, 'total_anticipos'),
             'total_discount' => Functions::valueKeyInArray($totals, 'total_descuentos'),
