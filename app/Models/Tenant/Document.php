@@ -56,6 +56,7 @@ class Document extends ModelTenant
         'detraction',
         'legends',
         'additional_information',
+        'sunat_information',
 
         'filename',
         'hash',
@@ -179,6 +180,16 @@ class Document extends ModelTenant
     {
         $arr = explode('|', $value);
         return $arr;
+    }
+
+    public function getSunatInformationAttribute($value)
+    {
+        return (is_null($value)) ? null : (object)json_decode($value);
+    }
+
+    public function setSunatInformationAttribute($value)
+    {
+        $this->attributes['sunat_information'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function user()

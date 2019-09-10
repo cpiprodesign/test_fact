@@ -418,11 +418,16 @@ class DocumentController extends Controller
             $fact->senderXmlSignedBill();
             $document = $fact->getDocument();
             $response = $fact->getResponse();
+
+            
+            $document_sunat = Document::find($document->id);
+            $document_sunat->sunat_information = $response;
+            $document_sunat->save();
     
             return [
                 'success' => true,
                 'data' => [
-                    'id' => $document->id,
+                    'id' => $document->id
                 ],
             ];
         }
@@ -465,14 +470,20 @@ class DocumentController extends Controller
             $facturalo->setDocument($document);
             $facturalo->loadXmlSigned();
             $facturalo->onlySenderXmlSignedBill();
+
             return $facturalo;
         });
 
         $response = $fact->getResponse();
 
+        $document_sunat = Document::find($document->id);
+        $document_sunat->sunat_information = $response;
+        $document_sunat->save();
+
         return [
             'success' => true,
-            'message' => $response['description'],
+            'code' => $response['code'],
+            'message' => 'Código: '.$response['code'].'; Descripción: '.$response['description'],
         ];
     }
 

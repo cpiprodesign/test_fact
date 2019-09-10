@@ -35,6 +35,8 @@ class Facturalo
 
     const SENT = '03';
     const ACCEPTED = '05';
+    const OBSERVED = '07';
+    const REJECTED = '09';
     const CANCELING = '13';
     const VOIDED = '11';
 
@@ -433,19 +435,64 @@ class Facturalo
     public function onlySenderXmlSignedBill()
     {
         $res = $this->senderXmlSigned();
-        if ($res->isSuccess()) {
+
+        if ($res->isSuccess())
+        {
             $cdrResponse = $res->getCdrResponse();
             $this->uploadFile($res->getCdrZip(), 'cdr');
-            $this->updateState(self::ACCEPTED);
+
+            $code = $cdrResponse->getCode();
+            $description = $cdrResponse->getDescription();
+            $this->validationCodeResponse($code, $description);
+
             $this->response = [
                 'sent' => true,
                 'code' => $cdrResponse->getCode(),
                 'description' => $cdrResponse->getDescription(),
                 'notes' => $cdrResponse->getNotes()
             ];
-        } else {
-            throw new Exception("Code: {$res->getError()->getCode()}; Description: {$res->getError()->getMessage()}");
         }
+        else
+        {
+            $code = $res->getError()->getCode();
+            $message = $res->getError()->getMessage();
+            $this->validationCodeResponse($code, $message);
+            $this->response = [
+                'sent' => true,
+                'code' => $code,
+                'description' => $message
+            ];
+        }
+    }
+
+    public function validationCodeResponse($code, $message)
+    {
+        if($code === 'ERROR_CDR')
+        {
+            return;
+        }
+        if($code === 'HTTP')
+        {
+            // throw new Exception("Code: {$code}; Description: {$message}");
+        }
+        if((int)$code === 0)
+        {
+            $this->updateState(self::ACCEPTED);
+            return;
+        }
+        if((int)$code < 2000)
+        {
+            // throw new Exception("Code: {$code}; Description: {$message}");
+        }
+        elseif ((int)$code < 4000)
+        {
+            $this->updateState(self::REJECTED);
+        } 
+        else
+        {
+            $this->updateState(self::OBSERVED);
+        }
+        return;
     }
 
     public function senderXmlSignedSummary()

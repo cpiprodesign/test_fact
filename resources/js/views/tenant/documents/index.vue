@@ -64,15 +64,43 @@
                         <td class="text-right">
                             <span>{{ row.total_to_pay }}</span>
                         </td>
-                        <td class="text-right"><span class="badge bg-secondary text-white" :class="{
-                            'bg-danger': (row.state_type_id === '11'),
-                            'bg-warning': (row.state_type_id === '13'),
-                            'bg-secondary': (row.state_type_id === '01'),
-                            'bg-info': (row.state_type_id === '03'),
-                            'bg-success': (row.state_type_id === '05'),
-                            'bg-secondary': (row.state_type_id === '07'),
-                            'bg-dark': (row.state_type_id === '09')
-                        }">{{ row.state_type_description }}</span></td>
+                        <td class="text-right">
+                            <el-popover v-if="row.sunat_information != null && row.sunat_information.code != null"
+                                placement="right"
+                                width="300"
+                                trigger="hover">
+                                <table class="table table-sm table-striped" style="font-size: 10px">
+                                    <tbody>
+                                        <tr>
+                                            <td>Código</td>
+                                            <td>{{row.sunat_information.code}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Descripción</td>
+                                            <td>{{row.sunat_information.description}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                               <span slot="reference" class="badge bg-secondary text-white" :class="{
+                                    'bg-danger': (row.state_type_id === '11'),
+                                    'bg-warning': (row.state_type_id === '13'),
+                                    'bg-secondary': (row.state_type_id === '01'),
+                                    'bg-info': (row.state_type_id === '03'),
+                                    'bg-success': (row.state_type_id === '05'),
+                                    'bg-secondary': (row.state_type_id === '07'),
+                                    'bg-dark': (row.state_type_id === '09')
+                                }">{{ row.state_type_description }}</span>
+                            </el-popover>
+                            <span v-else class="badge bg-secondary text-white" :class="{
+                                    'bg-danger': (row.state_type_id === '11'),
+                                    'bg-warning': (row.state_type_id === '13'),
+                                    'bg-secondary': (row.state_type_id === '01'),
+                                    'bg-info': (row.state_type_id === '03'),
+                                    'bg-success': (row.state_type_id === '05'),
+                                    'bg-secondary': (row.state_type_id === '07'),
+                                    'bg-dark': (row.state_type_id === '09')
+                                }">{{ row.state_type_description }}</span>
+                        </td>
                         <td class="text-right">
                             <span class="badge bg-secondary text-white bg-warning" v-if="row.total_to_pay > 0">Pendiente</span>
                             <span class="badge bg-secondary text-white bg-success" v-else>Pagado</span>
@@ -141,7 +169,7 @@
 
             <document-options :showDialog.sync="showDialogOptions"
                               :recordId="recordId"
-                              :showClose="true"></document-options>
+                              :showClose="true" :showError="false"></document-options>
             <documents-pay :showDialog.sync="showDialogPay"
                             :recordId="recordId" :resource="resource"></documents-pay>
         </div>
@@ -202,13 +230,30 @@
                 this.$http.get(`/${this.resource}/send/${document_id}`)
                     .then(response => {
                         if (response.data.success) {
-                            this.$message.success(response.data.message)
+                            let code = response.data.code;
+                            
+                            console.log("code "+ code)
+                            if(code == 0){
+                                this.$message.success(response.data.message)
+                            }
+                            else if(code < 2000){
+                                this.$message.warning(response.data.message)
+                            }
+                            else if(code < 4000){
+                                this.$message.error(response.data.message)
+                            }
+                            else{
+                                this.$message.warning(response.data.message)
+                            }
+                            
                             this.$eventHub.$emit('reloadData')
                         } else {
                             this.$message.error(response.data.message)
                         }
                     })
                     .catch(error => {
+
+                        console.log(JSON.stringify(error))
                         this.$message.error(error.response.data.message)
                     })
             },

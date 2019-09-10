@@ -207,7 +207,7 @@
 
         <document-options :showDialog.sync="showDialogOptions"
                           :recordId="documentNewId"
-                          :showClose="false"></document-options>
+                          :showClose="false" :showError="true"></document-options>
     </div>
 </template>
 
