@@ -7,6 +7,7 @@ use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Series;
+use App\Models\Tenant\Warehouse;
 use Exception;
 
 class Functions
@@ -19,6 +20,19 @@ class Functions
         }
         
         throw new Exception("El código ingresado del establecimiento es incorrecto.");
+    }
+
+    public static function warehouse($warehouse_description) {
+        
+        $warehouse_description = $warehouse_description;
+        
+        $warehouse = Warehouse::updateOrCreate([
+            'description' => $warehouse_description
+        ], [
+            'description' => $warehouse_description
+        ]);
+        
+        return $warehouse->id;
     }
     
     public static function person($inputs, $type) {
