@@ -19,13 +19,29 @@ class SaleNoteInput
         $series = $inputs['series'];
         $number = $inputs['number'];
 
-        //$sale_note_id = $inputs['sale_note_id'];
+        $sale_note_id = $inputs['sale_note_id'];
 
         $company = Company::active();
-        
-        $number = Functions::newNumber2($document_type_id, $series, $number, SaleNote::class);
-        Functions::validateUniqueDocument2($document_type_id, $series, $number, SaleNote::class);
-        $created_at = date("Y-m-d H:i:s");
+        if($sale_note_id == null){
+            $number = Functions::newNumber2($document_type_id, $series, $number, SaleNote::class);
+            Functions::validateUniqueDocument2($document_type_id, $series, $number, SaleNote::class);
+            $created_at = date("Y-m-d H:i:s");
+        }else{
+            $saleNote = SaleNote::find($sale_note_id);
+
+            if($inputs['establishment_id'] == $saleNote->establishment_id)
+            {
+                $number = $saleNote->number;
+            }
+            else 
+            {
+                $number = Functions::newNumber2($document_type_id, $series, $number, SaleNote::class);
+                Functions::validateUniqueDocument2($document_type_id, $series, $number, SaleNote::class);
+            }       
+            
+            $created_at = $saleNote->created_at;
+        }
+
              
 
         $filename = Functions::filename($company, $document_type_id, $series, $number);

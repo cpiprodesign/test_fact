@@ -79,7 +79,7 @@ Vue.component('tenant-quotations-edit', require('./views/tenant/quotations/edit.
 // sale notes
 Vue.component('tenant-sale-notes-index', require('./views/tenant/sale_notes/index.vue'));
 Vue.component('tenant-sale-notes-invoice', require('./views/tenant/sale_notes/invoice.vue'))
-Vue.component('tenant-sale-notes-edit', require('./views/tenant/sale_notes/edit.vue'))
+Vue.component('tenant-sale-notes-edit', require('./views/tenant/sale_notes/edit_salenote.vue'))
 
 Vue.component('inventory-index', require('../../modules/Inventory/Resources/assets/js/inventory/index.vue'));
 Vue.component('warehouses-index', require('../../modules/Inventory/Resources/assets/js/warehouses/index.vue'));
