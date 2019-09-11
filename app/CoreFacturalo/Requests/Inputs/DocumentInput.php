@@ -116,6 +116,7 @@ class DocumentInput
             'additional_information' => $additional_information,
             'legends' => LegendInput::set($inputs),
             'actions' => ActionInput::set($inputs),
+            'document_id' => isset($inputs['document_id'])?$inputs['document_id']:null,
         ];
     }
 

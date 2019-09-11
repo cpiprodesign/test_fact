@@ -212,6 +212,9 @@ if ($hostname) {
             Route::get('documents/tables2/{document}', 'Tenant\DocumentController@tables2');
             Route::get('documents/record/{document}', 'Tenant\DocumentController@record');
             Route::post('documents', 'Tenant\DocumentController@store')->middleware('hasAnyPermission:tenant.documents.store,tenant.documents.update');
+            Route::get('documents/edit/{document}', 'Tenant\DocumentController@edit');
+            Route::post('documents/edit/{document}', 'Tenant\DocumentController@update')->middleware('hasAnyPermission:tenant.documents.store,tenant.documents.update');
+            Route::get('documents/item/tables3/{document}', 'Tenant\DocumentController@item_tables_by_document');
             //Route::post('documents/{document}', 'Tenant\DocumentController@store2');
             Route::get('documents/send/{document}', 'Tenant\DocumentController@send')->middleware('can:tenant.documents.enviar-sunat');
             Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');

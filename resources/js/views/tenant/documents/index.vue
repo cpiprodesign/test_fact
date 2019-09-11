@@ -117,6 +117,12 @@
                                 </div>
                             </div>
                             <button v-show="hasPermissionTo(['tenant.documents.imprimir'])" type="button" class="btn waves-effect waves-light btn-xs btn-info m-1__2" @click.prevent="clickOptions(row.id)">Opciones</button>
+                           
+                             <el-tooltip class="item" effect="dark" content="Editar" placement="top-end">
+                                  <a v-if="row.state_type_id == '01'" :href="`/${resource}/edit/${row.id}`" class="btn btn-xs"><i class="fa fa-edit i-icon text-info"></i></a>
+                                   <a v-else class="btn btn-xs" disabled ><i class="fa fa-edit i-icon  text-disabled"></i></a>
+                               
+                            </el-tooltip>
                         </td>
                     </tr>
                     <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">

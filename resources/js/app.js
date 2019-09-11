@@ -70,6 +70,7 @@ Vue.component('tenant-documents-invoice', require('./views/tenant/documents/invo
 Vue.component('tenant-documents-invoice2', require('./views/tenant/documents/invoice2.vue'));
 Vue.component('tenant-documents-note', require('./views/tenant/documents/note.vue'));
 Vue.component('tenant-documents-configuration', require('./views/tenant/documents/configuration.vue'));
+Vue.component('tenant-documents-edit', require('./views/tenant/documents/edit.vue'));
 
 // quotations
 Vue.component('tenant-quotations-index', require('./views/tenant/quotations/index.vue'));
