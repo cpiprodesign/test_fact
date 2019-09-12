@@ -142,6 +142,11 @@
                 location.href = `/${this.resource}`
             },
             clickNewDocument() {
+                var pathname = window.location.pathname;
+                if('/documents/create' != pathname){
+                     location.href = `/${this.resource}/create`
+                     return false
+                }
                 this.clickClose()
             },
             clickClose() {

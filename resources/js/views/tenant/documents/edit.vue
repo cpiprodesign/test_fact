@@ -1,7 +1,7 @@
 <template>
     <div class="card mb-0 pt-2 pt-md-0" >
      <div class="card-header bg-info">
-            <h3 class="my-0>">Editar {{nameDocument}} <br> <span class="small">{{nameCustomer}}</span> </h3>
+            <h3 class="my-0>">Editar {{nameDocument}} </h3>
   
         </div>
 
@@ -26,16 +26,16 @@
                 <form autocomplete="off" @submit.prevent="submit">
                     <div class="form-body">
                         <div class="row">
-                           <!-- <div class="col-lg-2 pb-2">
+                           <div class="col-lg-2 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.document_type_id}">
                                     <label class="control-label font-weight-bold text-info full-text">Tipo de comprobante</label>
                                     <label class="control-label font-weight-bold text-info short-text">Tipo comprobante</label>
-                                    <el-select disabled v-model="form.document_type_id" @change="changeDocumentType" popper-class="el-select-document_type" dusk="document_type_id" class="border-left rounded-left border-info">
+                                    <el-select  v-model="form.document_type_id" @change="changeDocumentType" popper-class="el-select-document_type" dusk="document_type_id" class="border-left rounded-left border-info">
                                         <el-option v-for="option in document_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.document_type_id" v-text="errors.document_type_id[0]"></small>
                                 </div>
-                            </div> -->
+                            </div> 
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.establishment_id}">
                                     <label class="control-label">Establecimiento</label>
@@ -54,15 +54,22 @@
                                     <small class="form-control-feedback" v-if="errors.operation_type_id" v-text="errors.operation_type_id[0]"></small>
                                 </div>
                             </div>
-                          <!--  <div class="col-lg-2">
+                            <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.series_id}">
                                     <label class="control-label">Serie</label>
-                                    <el-select v-model="form.series_id" disabled>
+                                    <el-select v-model="form.series_id" >
                                         <el-option v-for="option in series" :key="option.id" :value="option.id" :label="option.number"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.series_id" v-text="errors.series_id[0]"></small>
                                 </div>
-                            </div> -->
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group" :class="{'has-danger': errors.number}">
+                                    <label class="control-label">Número</label>
+                                    <el-input v-model="form.number"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.number" v-text="errors.number"></small>
+                                </div>
+                            </div>
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
                                     <label class="control-label">Moneda</label>
@@ -72,30 +79,20 @@
                                     <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
-                                <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
-                                    <label class="control-label">Tipo de cambio
-                                        <el-tooltip class="item" effect="dark" content="Valor obtenido de SUNAT" placement="top-end">
-                                            <i class="fa fa-info-circle"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <el-input v-model="form.exchange_rate_sale"></el-input>
-                                    <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
-                                </div>
-                            </div>
+
                         </div>
                         <div class="row mt-1">
-                            <!--<div class="col-lg-6 pb-2">
+                            <div class="col-lg-6 pb-2">
                                 <div class="form-group" :class="{'has-danger': errors.customer_id}">
                                     <label class="control-label font-weight-bold text-info">
                                         Cliente
                                     </label>
-                                    <el-select disabled v-model="form.customer_id" filterable class="border-left rounded-left border-info" popper-class="el-select-customers" dusk="customer_id">
+                                    <el-select  v-model="form.customer_id" filterable class="border-left rounded-left border-info" popper-class="el-select-customers" dusk="customer_id">
                                         <el-option v-for="option in customers" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                     </el-select>
                                     <small class="form-control-feedback" v-if="errors.customer_id" v-text="errors.customer_id[0]"></small>
                                 </div>
-                            </div> -->
+                            </div> 
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.purchase_order}">
                                     <label class="control-label">Orden Compra</label>
@@ -138,7 +135,18 @@
                                     <small class="form-control-feedback" v-if="errors.status_paid" v-text="errors.status_paid"></small>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                              <div class="col-lg-2">
+                                <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
+                                    <label class="control-label">Tipo de cambio
+                                        <el-tooltip class="item" effect="dark" content="Valor obtenido de SUNAT" placement="top-end">
+                                            <i class="fa fa-info-circle"></i>
+                                        </el-tooltip>
+                                    </label>
+                                    <el-input v-model="form.exchange_rate_sale"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
                                 <div class="form-group" :class="{'has-danger': errors.additional_information}">
                                     <label class="control-label">Información Adicional</label>
                                     <el-input v-model="form.additional_information" type="textarea" autosize style="height: 50px !important"></el-input>
@@ -335,13 +343,13 @@
                 currency_type: {},
                 documentNewId: null,
                 decimal: 2,
-                nameDocument:'', 
-                nameCustomer:'',
+                nameDocument:'',
+                all_affectation_igv_types: [],
+                affectation_igv_types: [],
             }
         },
         async created() {
-            this.nameDocument = this.document.document_type.description + '  '+this.document.series+'-'+this.document.number 
-            this.nameCustomer = this.document.customer.name
+            this.nameDocument = this.document.document_type.description 
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
@@ -424,15 +432,40 @@
                     me.pay_data.account_id = me.document.payment.account_id
                     me.pay_data.total = me.document.payment.total
                 }
-                console.log(me.document)
+                var guides = me.document.guides
+                if(guides != null){
+                   for (var i in guides) {
+                        const element = guides[i];
+                        this.form.guides.push({
+                            document_type_id: element.document_type_id,
+                            number: element.number
+                        })
+                    }
+                }
+
+                
+                
                 me.$http.get(`/${this.resource}/item/tables3/${me.document.id}`).then(response => {
-                    me.form.items = response.data.items
+                    let items = response.data.items
+                    me.operation_types = response.data.operation_types
+                    me.all_affectation_igv_types = response.data.affectation_igv_types
+
+                    let operation_type = _.find(this.operation_types, {id: this.form.operation_type_id})
+                    me.affectation_igv_types = _.filter(this.all_affectation_igv_types, {exportation: operation_type.exportation})
+                    for (let index = 0; index < items.length; index++) {
+                        const item = items[index];
+                        me.form.item = item
+                        me.form.item.unit_price = (item.sale_unit_price)
+                        me.form.quantity = item.quantity
+                        me.form.affectation_igv_type_id = item.purchase_affectation_igv_type_id
+                        me.form.affectation_igv_type = _.find(me.affectation_igv_types, {'id': item.purchase_affectation_igv_type_id})
+                        me.row = calculateRowItem(me.form, me.form.currency_type_id, me.form.exchangeRateSale)
+                        me.addRow(me.row)
+                        
+                    }
 
                 })
-
-
-
-   
+                
             },
             changePrice(){
                 let items = []
@@ -541,6 +574,11 @@
                 this.series = _.filter(this.all_series, {'establishment_id': this.form.establishment_id,
                                                          'document_type_id': this.form.document_type_id})
                 this.form.series_id = (this.series.length > 0)?this.series[0].id:null
+                if(this.form.document_type_id == this.document.document_type_id){
+                    this.form.number = this.document.number
+                }else{
+                    this.form.number = '#'
+                }
             },
             filterCustomers() {
                 this.form.customer_id = null
@@ -552,6 +590,10 @@
                     } else {
                         this.customers = this.all_customers
                     }
+                }
+
+                if(this.form.document_type_id == this.document.document_type_id){
+                    this.form.customer_id = this.document.customer_id
                 }
             },
             clickAddGuide() {

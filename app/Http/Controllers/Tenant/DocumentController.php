@@ -272,7 +272,7 @@ class DocumentController extends Controller
             'operation_types', 'discount_types', 'charge_types', 'attribute_types');
     }
 
-    public function _by_document($quotation_id)
+    public function item_tables2($quotation_id)
     {
         $quotation = Quotation::where('id', $quotation_id)->first();
         $quotation_items = QuotationItem::where('quotation_id', $quotation_id)->get();
@@ -549,13 +549,24 @@ class DocumentController extends Controller
                 'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
                 'included_igv' => $row->included_igv,
                 'item' => $row,
-                'purchase_affectation_igv_type_id' => $row->sale_note_affectation_igv_type_id,
+                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
                 'affectation_igv_type' =>$row->sale_affectation_igv_type,
                 'system_isc_type_id' => $row->system_isc_type_id,
+                'item_price_list' => $row->item_price_list
             ];
         }
 
-        return compact('items');
+        $categories = [];//Category::cascade();
+        $affectation_igv_types = AffectationIgvType::whereActive()->get();
+        $system_isc_types = SystemIscType::whereActive()->get();
+        $price_types = PriceType::whereActive()->get();
+        $operation_types = OperationType::whereActive()->get();
+        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
+        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
+
+        return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
+            'operation_types', 'discount_types', 'charge_types', 'attribute_types', 'quotation');
     }
 
     public function update(DocumentRequest $request,$documentId)
@@ -596,6 +607,7 @@ class DocumentController extends Controller
 
             //delete
               DocumentItem::where('document_id',$documentId)->delete();
+              Payment::where('document_id',$documentId)->delete();
               Document::where('id',$documentId)->delete();
             // add again
             $facturalo = new Facturalo();
