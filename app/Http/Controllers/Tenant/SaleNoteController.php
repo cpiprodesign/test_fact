@@ -230,34 +230,6 @@ class SaleNoteController extends Controller
         }
     }
 
-    public function update(QuotationRequest $request, $quotation_id)
-    {
-        $inputs = $request->all();       
-
-        $array = [$inputs, $quotation_id];
-
-        $fact = DB::connection('tenant')->transaction(function () use ($array){
-
-            $inputs = $array[0];
-            $quotation_id = $array[1];           
-            
-            $facturalo = new Facturalo();
-            $this->document = $facturalo->updateQuotation($inputs, $quotation_id);
-            $facturalo->createPdf2($this->document, 'quotation', 'a4');
-
-            return $this->document;            
-        });
-
-        $document = $fact;
-
-        return [
-            'success' => true,
-            'data' => [
-                'id' => $document->id,
-            ],
-        ];        
-    }
-
     public function email(DocumentEmailRequest $request)
     {
         $company = Company::active();
@@ -396,9 +368,8 @@ class SaleNoteController extends Controller
                         'discount_types', 'charge_types', 'attribute_types');
     }
 
-    public function updateSaleNote(SaleNoteRequest $request, $sale_note_id)
-    {
-       
+    public function update(SaleNoteRequest $request, $sale_note_id)
+    {  
         $pos = Pos::active();
 
         if($pos == null)
@@ -409,7 +380,7 @@ class SaleNoteController extends Controller
             ];
         }
         $inputs = $request;
-        $array = [$inputs, $sale_note_id,$pos];
+        $array = [$inputs, (int)$sale_note_id, $pos];
 
         $sale_note = DB::connection('tenant')->transaction(function () use ($array){
 
@@ -429,10 +400,19 @@ class SaleNoteController extends Controller
             {   
                 $item_warehouse = \App\Models\Tenant\ItemWarehouse::where('warehouse_id', $sale_note->warehouse_id)
                 ->where('item_id', $sale_note_item->item_id)->first();
-                $item_warehouse->stock -= $sale_note_item->quantity;
+                $item_warehouse->stock += $sale_note_item->quantity;
                 $item_warehouse->save();
             }
             
+            DB::statement("UPDATE pos INNER JOIN payments pay ON pay.pos_id = pos.id
+                                SET pos.close_amount = pos.close_amount - pay.total
+                                WHERE pay.sale_note_id = $sale_note_id"); 
+
+            DB::statement("UPDATE accounts acc
+                        INNER JOIN payments pay ON pay.account_id = acc.id
+                        SET acc.current_balance = acc.current_balance - pay.total
+                        WHERE pay.sale_note_id = $sale_note_id");
+
             //eliminar
             SaleNoteItem::where('sale_note_id', $sale_note_id)->delete();
             SaleNote::where('id', $sale_note_id)->delete();

@@ -258,7 +258,7 @@ if ($hostname) {
             Route::get('sale-notes/create', 'Tenant\SaleNoteController@create')->name('tenant.sale_notes.create')->middleware('can:tenant.sale-notes.store');
             Route::get('sale-notes/edit/{id}', 'Tenant\SaleNoteController@edit')->name('tenant.quotations.edit');
             Route::get('sale-notes/item/tables2/{id}', 'Tenant\SaleNoteController@item_tables2');
-            Route::post('sale-notes/update/{id}', 'Tenant\SaleNoteController@updateSaleNote')->middleware('can:tenant.sale-notes.update');
+            Route::post('sale-notes/update/{id}', 'Tenant\SaleNoteController@update')->middleware('can:tenant.sale-notes.update');
 
             Route::get('sale-notes/tables', 'Tenant\SaleNoteController@tables');
             Route::get('sale-notes/record/{id}', 'Tenant\SaleNoteController@record');
