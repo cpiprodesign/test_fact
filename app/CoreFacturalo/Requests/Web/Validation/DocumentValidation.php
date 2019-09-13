@@ -2,7 +2,7 @@
 
 namespace App\CoreFacturalo\Requests\Web\Validation;
 use App\Models\Tenant\Document;
-use App\Models\tenant\Series;
+use App\Models\Tenant\Series;
 
 class DocumentValidation
 {
@@ -14,15 +14,11 @@ class DocumentValidation
             if($document->document_type_id == $inputs['document_type_id']){
                 $inputs['series_id'] = Series::ByNumber($document->series)->first()->id;
             }
-
         }
 
-            $series = Functions::findSeries($inputs);
-            $inputs['series'] = $series->number;
-            unset($inputs['series_id']);
-
-
-
+        $series = Functions::findSeries($inputs);
+        $inputs['series'] = $series->number;
+        unset($inputs['series_id']);
         
         Functions::DNI($inputs);
         
