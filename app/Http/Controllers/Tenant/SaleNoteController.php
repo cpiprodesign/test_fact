@@ -39,7 +39,7 @@ class SaleNoteController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('input.request:saleNote,web', ['only' => ['store', 'update','updateSaleNote']]);
+        $this->middleware('input.request:saleNote,web', ['only' => ['store', 'update']]);
     }
 
     public function index()
@@ -200,9 +200,7 @@ class SaleNoteController extends Controller
                 
                 $request = $array[0];
                 $pos = $array[1];
-
-                $inputs = $request->all();
-    
+                
                 $facturalo = new Facturalo();
                 $facturalo->save($request->all());
                 $facturalo->createPdf2();
@@ -228,89 +226,6 @@ class SaleNoteController extends Controller
                 ],
             ];
         }
-    }
-
-    public function email(DocumentEmailRequest $request)
-    {
-        $company = Company::active();
-        $document = SaleNote::find($request->input('id'));
-        $customer_email = $request->input('customer_email');
-
-        Mail::to($customer_email)->send(new DocumentEmail($company, $document));
-
-        return [
-            'success' => true
-        ];
-    }
-
-    public function destroy($id)
-    {
-        $fact = DB::connection('tenant')->transaction(function () use ($id){
-
-            $sale_note = SaleNote::find($id);
-            $sale_note_items = SaleNoteItem::where('sale_note_id', $id)->get();
-
-            foreach($sale_note_items as $sale_note_item)
-            {
-                $item_warehouse = \App\Models\Tenant\ItemWarehouse::where('warehouse_id', $sale_note->establishment_id)
-                ->where('item_id', $sale_note_item->item_id)->first();
-                $item_warehouse->stock += $sale_note_item->quantity;
-                $item_warehouse->save();
-            }
-
-            Kardex::where('type', 'sale-note')->where('sale_note_id', $id)->delete();
-
-            \App\Models\Tenant\InventoryKardex::where('inventory_kardexable_id', $id)
-                                                    ->where('inventory_kardexable_type', 'App\Models\Tenant\SaleNote')
-                                                    ->delete();
-
-            $payments = \App\Models\Tenant\Payment::where('sale_note_id', $id)->get();
-
-            foreach($payments as $payment)
-            {   
-                $pos = Pos::find($payment->pos_id);
-
-                $pos->close_amount -= $payment->total;
-                $pos->save();
-
-                $account = Account::find($payment->account_id);
-                $account->current_balance -= $payment->total;
-                $account->save();
-            }
-
-            \App\Models\Tenant\Payment::where('sale_note_id', $id)->delete();
-            \App\Models\Tenant\PosSales::where('document_id', $id)->where('table_name', 'sale_notes')->delete();
-
-            SaleNote::where('id', $id)->delete();
-            SaleNoteItem::where('sale_note_id', $id)->delete();
-
-            return true;
-        });
-
-        return [
-            'success' => true,
-            'message' => 'Nota de venta eliminada con éxito'
-        ];
-    }
-
-    public function send($document_id)
-    {
-        $document = Document::find($document_id);
-
-        $fact = DB::connection('tenant')->transaction(function () use ($document) {
-            $facturalo = new Facturalo();
-            $facturalo->setDocument($document);
-            $facturalo->loadXmlSigned();
-            $facturalo->onlySenderXmlSignedBill();
-            return $facturalo;
-        });
-
-        $response = $fact->getResponse();
-
-        return [
-            'success' => true,
-            'message' => $response['description'],
-        ];
     }
 
     public function item_tables2($saleNoteId)
@@ -441,6 +356,56 @@ class SaleNoteController extends Controller
                 'id' => $sale_note->id,
             ],
         ];        
+    }
+
+    public function destroy($id)
+    {
+        $fact = DB::connection('tenant')->transaction(function () use ($id){
+
+            $sale_note = SaleNote::find($id);
+            $sale_note_items = SaleNoteItem::where('sale_note_id', $id)->get();
+
+            foreach($sale_note_items as $sale_note_item)
+            {
+                $item_warehouse = \App\Models\Tenant\ItemWarehouse::where('warehouse_id', $sale_note->establishment_id)
+                ->where('item_id', $sale_note_item->item_id)->first();
+                $item_warehouse->stock += $sale_note_item->quantity;
+                $item_warehouse->save();
+            }
+
+            Kardex::where('type', 'sale-note')->where('sale_note_id', $id)->delete();
+
+            \App\Models\Tenant\InventoryKardex::where('inventory_kardexable_id', $id)
+                                                    ->where('inventory_kardexable_type', 'App\Models\Tenant\SaleNote')
+                                                    ->delete();
+
+            $payments = \App\Models\Tenant\Payment::where('sale_note_id', $id)->get();
+
+            foreach($payments as $payment)
+            {   
+                $pos = Pos::find($payment->pos_id);
+
+                $pos->close_amount -= $payment->total;
+                $pos->save();
+
+                $account = Account::find($payment->account_id);
+                $account->current_balance -= $payment->total;
+                $account->save();
+            }
+
+            \App\Models\Tenant\Payment::where('sale_note_id', $id)->delete();
+            \App\Models\Tenant\PosSales::where('document_id', $id)->where('table_name', 'sale_notes')->delete();
+
+            SaleNote::where('id', $id)->delete();
+            SaleNoteItem::where('sale_note_id', $id)->delete();
+
+            return true;
+        });
+
+        return [
+            'success' => true,
+            'message' => 'Nota de venta eliminada con éxito'
+        ];
     }
 
   

@@ -22,11 +22,15 @@ class SaleNoteInput
         $sale_note_id = $inputs['sale_note_id'];
 
         $company = Company::active();
-        if($sale_note_id == null){
+
+        if($sale_note_id == null)
+        {
             $number = Functions::newNumber2($document_type_id, $series, $number, SaleNote::class);
             Functions::validateUniqueDocument2($document_type_id, $series, $number, SaleNote::class);
             $created_at = date("Y-m-d H:i:s");
-        }else{
+        }
+        else
+        {
             $saleNote = SaleNote::find($sale_note_id);
 
             if($inputs['establishment_id'] == $saleNote->establishment_id)
@@ -40,29 +44,20 @@ class SaleNoteInput
             }       
             
             $created_at = $saleNote->created_at;
-        }
-
-             
+        }    
 
         $filename = Functions::filename($company, $document_type_id, $series, $number);
         $establishment = EstablishmentInput::set($inputs['establishment_id']);
         $customer = PersonInput::set($inputs['customer_id']);
         
-        //$array_partial = self::invoice($inputs);
-        //$invoice = $array_partial['invoice'];
-        //$note = null;       
-
         $inputs['type'] = 'sale-note';
-        //$inputs['group_id'] = $array_partial['group_id'];
-
+        
         return [
             'type' => $inputs['type'],
             'user_id' => auth()->id(),
             'establishment_id' => $inputs['establishment_id'],
             'warehouse_id' => $inputs['warehouse_id'],
             'establishment' => $establishment,
-            //'state_type_id' => '01',
-            //'ubl_version' => '2.1',
             'filename' => $filename,
             'document_type_id' => $document_type_id,
             'series' => $series,
@@ -72,7 +67,6 @@ class SaleNoteInput
             'customer_id' => $inputs['customer_id'],
             'customer' => $customer,
             'currency_type_id' => $inputs['currency_type_id'],
-            //'purchase_order' => $inputs['purchase_order'],
             'exchange_rate_sale' => $inputs['exchange_rate_sale'],
             'total_prepayment' => Functions::valueKeyInArray($inputs, 'total_prepayment', 0),
             'total_discount' => Functions::valueKeyInArray($inputs, 'total_discount', 0),
@@ -92,15 +86,6 @@ class SaleNoteInput
             'total' => $inputs['total'],
             'total_paid' => 0,
             'items' => self::items($inputs),
-            //'charges' => self::charges($inputs),
-            // 'discounts' => self::discounts($inputs),
-            // 'prepayments' => self::prepayments($inputs),
-            // 'guides' => self::guides($inputs),
-            // 'related' => self::related($inputs),
-            // 'perception' => self::perception($inputs),
-            // 'detraction' => self::detraction($inputs),
-            //'invoice' => $invoice,
-            //'note' => $note,
             'additional_information' => Functions::valueKeyInArray($inputs, 'additional_information'),
             'legends' => LegendInput::set($inputs),
             'actions' => ActionInput::set($inputs),
@@ -150,19 +135,4 @@ class SaleNoteInput
         }
         return null;
     }
-
-    // private static function invoice($inputs)
-    // {
-    //     $operation_type_id = $inputs['operation_type_id'];
-    //     $date_of_due = $inputs['date_of_due'];
-
-    //     return [
-    //         'type' => 'quotation',
-    //         'group_id' => ($inputs['document_type_id'] === '01')?'01':'02',
-    //         'invoice' => [
-    //             'operation_type_id' => $operation_type_id,
-    //             'date_of_due' => $date_of_due,
-    //         ]
-    //     ];
-    // }
 }
