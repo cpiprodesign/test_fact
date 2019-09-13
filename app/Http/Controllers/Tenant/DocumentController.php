@@ -85,7 +85,7 @@ class DocumentController extends Controller
     {
         $records = Document::where($request->column, 'like', "%{$request->value}%")
             ->whereIn('document_type_id', ['01', '03'])
-            ->latest();
+            ->orderBy('date_of_issue', 'desc');
 
         return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
@@ -569,7 +569,7 @@ class DocumentController extends Controller
             'operation_types', 'discount_types', 'charge_types', 'attribute_types', 'quotation');
     }
 
-    public function update(DocumentRequest $request,$documentId)
+    public function update(DocumentRequest $request, $documentId)
     {
         $pos = Pos::active();
 
@@ -582,58 +582,66 @@ class DocumentController extends Controller
         }
         else
         {
-        $array = [$request, $pos,$documentId];
-        $fact = DB::connection('tenant')->transaction(function () use ($array) {
+            $array = [$request, $pos, (int)$documentId];
 
-            $request = $array[0];
-            $pos = $array[1];
-            $documentId = $array[2];
+            $fact = DB::connection('tenant')->transaction(function () use ($array) {
 
-            $document = Document::find($documentId);
-            $documentItems = DocumentItem::where('document_id', $documentId)->get();
+                $request = $array[0];
+                $pos = $array[1];
+                $documentId = $array[2];
 
-            \App\Models\Tenant\Kardex::where('document_id', $documentId)->delete();
-            \App\Models\Tenant\InventoryKardex::where('inventory_kardexable_id', $documentId)
-                                                    ->where('inventory_kardexable_type', 'App\Models\Tenant\Document')
-                                                    ->delete();
+                $document = Document::find($documentId);
+                $documentItems = DocumentItem::where('document_id', $documentId)->get();
 
-            foreach($documentItems as $documentItem)
-            {   
-                $item_warehouse = \App\Models\Tenant\ItemWarehouse::where('warehouse_id', $document->warehouse_id)
-                ->where('item_id', $documentItem->item_id)->first();
-                $item_warehouse->stock += $documentItem->quantity;
-                $item_warehouse->save();
-            }
+                \App\Models\Tenant\Kardex::where('document_id', $documentId)->delete();
+                \App\Models\Tenant\InventoryKardex::where('inventory_kardexable_id', $documentId)
+                                                        ->where('inventory_kardexable_type', 'App\Models\Tenant\Document')
+                                                        ->delete();
 
-            //delete
-              DocumentItem::where('document_id',$documentId)->delete();
-              Payment::where('document_id',$documentId)->delete();
-              Document::where('id',$documentId)->delete();
-            // add again
-            $facturalo = new Facturalo();
-            $facturalo->save($request->all());
-            $facturalo->createXmlUnsigned();
-            $facturalo->signXmlUnsigned();
-            $facturalo->updateHash();
-            $facturalo->updateQr();
-            $facturalo->createPdf();
+                foreach($documentItems as $documentItem)
+                {   
+                    $item_warehouse = \App\Models\Tenant\ItemWarehouse::where('warehouse_id', $document->warehouse_id)
+                    ->where('item_id', $documentItem->item_id)->first();
+                    $item_warehouse->stock += $documentItem->quantity;
+                    $item_warehouse->save();
+                }
 
-            if ($request->input('quotation_id')) {
-                Quotation::where('id', $request->input('quotation_id'))
-                    ->update(['state_type_id' => '05']);
-            }
+                DB::statement("UPDATE pos INNER JOIN payments pay ON pay.pos_id = pos.id
+                                SET pos.close_amount = pos.close_amount - pay.total
+                                WHERE pay.document_id = $documentId"); 
 
-            $document = $facturalo->getDocument();
+                DB::statement("UPDATE accounts acc
+                            INNER JOIN payments pay ON pay.account_id = acc.id
+                            SET acc.current_balance = acc.current_balance - pay.total
+                            WHERE pay.document_id = $documentId");
 
-            $pos_sales = new PosSales();
-            $pos_sales->table_name = 'documents';
-            $pos_sales->document_id = $document->id;
-            $pos_sales->pos_id = $pos;
-            
-            $pos_sales->save();
+                \App\Models\Tenant\Payment::where('document_id', $documentId)->delete();
+                \App\Models\Tenant\PosSales::where('document_id', $documentId)->where('table_name', 'documents')->delete();
 
-            return $facturalo;
-        });
+                //delete
+                DocumentItem::where('document_id', $documentId)->delete();
+                Document::where('id', $documentId)->delete();
+                // add again
+                
+                $facturalo = new Facturalo();
+                $facturalo->save($request->all());
+                $facturalo->createXmlUnsigned();
+                $facturalo->signXmlUnsigned();
+                $facturalo->updateHash();
+                $facturalo->updateQr();
+                $facturalo->createPdf();
+
+                $document = $facturalo->getDocument();
+
+                $pos_sales = new PosSales();
+                $pos_sales->table_name = 'documents';
+                $pos_sales->document_id = $document->id;
+                $pos_sales->pos_id = $pos;
+                
+                $pos_sales->save();
+
+                return $facturalo;
+            });
     
             $fact->senderXmlSignedBill();
             $document = $fact->getDocument();
@@ -647,5 +655,4 @@ class DocumentController extends Controller
             ];
         }
     }
-
 }

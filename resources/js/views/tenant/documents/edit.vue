@@ -718,7 +718,7 @@
                             this.errors = error.response.data;
                         }
                         else {
-                            //this.$message.error(error.response.data.message);
+                            this.$message.error(error.response.data.message);
                         }
                     }).then(() => {
                         this.loading_submit = false;
