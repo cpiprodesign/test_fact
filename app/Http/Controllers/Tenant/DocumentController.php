@@ -45,6 +45,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Modules\Inventory\Models\Warehouse;
 use Nexmo\Account\Price;
+use App\Models\Tenant\DocumentItem;
 
 class DocumentController extends Controller
 {
@@ -52,7 +53,7 @@ class DocumentController extends Controller
 
     public function __construct()
     {
-        $this->middleware('input.request:document,web', ['only' => ['store']]);
+        $this->middleware('input.request:document,web', ['only' => ['store','update']]);
     }
 
     public function index()
@@ -84,7 +85,7 @@ class DocumentController extends Controller
     {
         $records = Document::where($request->column, 'like', "%{$request->value}%")
             ->whereIn('document_type_id', ['01', '03'])
-            ->latest();
+            ->orderBy('date_of_issue', 'desc');
 
         return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
@@ -148,6 +149,17 @@ class DocumentController extends Controller
         $user = auth()->user();
         $pos = \App\Models\Tenant\Pos::active();
         return view('tenant.documents.form2', compact('quotation_id', 'user', 'pos'));
+    }
+
+    public function edit($documentId) 
+    {
+        $document = Document::with('payment')->find($documentId);
+
+        if(is_null($document) || $document->state_type_id != 1){
+            return redirect('/documents');
+        }
+
+        return view('tenant.documents.edit',compact('document'));
     }
     
     public function tables()
@@ -509,5 +521,149 @@ class DocumentController extends Controller
     {
         $decimal = Configuration::first()->decimal;
         return number_format($value, $decimal, ".", "");
+    }
+
+    public function item_tables_by_document($documentId)
+    {
+        $document_items = DocumentItem::where('document_id', $documentId)->get();
+
+        $items = array();
+
+        foreach ($document_items as $document_item) {
+            $row = Item::with('sale_affectation_igv_type')->whereId($document_item->item_id)->first();
+
+            $full_description = ($row->internal_id) ? $row->internal_id . ' - ' . $row->description : $row->description;
+
+            $items[] = [
+                'id' => $row->id,
+                'full_description' => $full_description,
+                'item_id' => $row->id,
+                'unit_value' => $document_item->unit_value,
+                'unit_price' => $document_item->unit_price,
+                'quantity' => $document_item->quantity,
+                'total_discount' => $document_item->total_discount,
+                'total_charge' => $document_item->total_charge,
+                'total' => $document_item->total,
+                'total_taxes' => $document_item->total_taxes,
+                'total_value' => $document_item->total_value,
+                'affectation_igv_type_id' => $document_item->affectation_igv_type_id,
+                'price_type_id' => $document_item->price_type_id,
+                'total_base_igv' => $document_item->total_base_igv,
+                'percentage_igv' => $document_item->percentage_igv,
+                'total_igv' => $document_item->total_igv,
+                'description' => $row->description,
+                'currency_type_id' => $row->currency_type_id,
+                'currency_type_symbol' => $row->currency_type->symbol,
+                'sale_unit_price' => $row->sale_unit_price,
+                'purchase_unit_price' => $row->sale_note_unit_price,
+                'unit_type_id' => $row->unit_type_id,
+                'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
+                'included_igv' => $row->included_igv,
+                'item' => $row,
+                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
+                'affectation_igv_type' =>$row->sale_affectation_igv_type,
+                'system_isc_type_id' => $row->system_isc_type_id,
+                'item_price_list' => $row->item_price_list
+            ];
+        }
+
+        $categories = [];//Category::cascade();
+        $affectation_igv_types = AffectationIgvType::whereActive()->get();
+        $system_isc_types = SystemIscType::whereActive()->get();
+        $price_types = PriceType::whereActive()->get();
+        $operation_types = OperationType::whereActive()->get();
+        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
+        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
+
+        return compact('items', 'categories', 'affectation_igv_types', 'system_isc_types', 'price_types',
+            'operation_types', 'discount_types', 'charge_types', 'attribute_types', 'quotation');
+    }
+
+    public function update(DocumentRequest $request, $documentId)
+    {
+        $pos = Pos::active();
+
+        if($pos == null)
+        {
+            return [
+                'success' => false,
+                'message' => "!Necesita aperturar una caja!"
+            ];
+        }
+        else
+        {
+            $array = [$request, $pos, (int)$documentId];
+
+            $fact = DB::connection('tenant')->transaction(function () use ($array) {
+
+                $request = $array[0];
+                $pos = $array[1];
+                $documentId = $array[2];
+
+                $document = Document::find($documentId);
+                $documentItems = DocumentItem::where('document_id', $documentId)->get();
+
+                \App\Models\Tenant\Kardex::where('document_id', $documentId)->delete();
+                \App\Models\Tenant\InventoryKardex::where('inventory_kardexable_id', $documentId)
+                                                        ->where('inventory_kardexable_type', 'App\Models\Tenant\Document')
+                                                        ->delete();
+
+                foreach($documentItems as $documentItem)
+                {   
+                    $item_warehouse = \App\Models\Tenant\ItemWarehouse::where('warehouse_id', $document->warehouse_id)
+                    ->where('item_id', $documentItem->item_id)->first();
+                    $item_warehouse->stock += $documentItem->quantity;
+                    $item_warehouse->save();
+                }
+
+                DB::statement("UPDATE pos INNER JOIN payments pay ON pay.pos_id = pos.id
+                                SET pos.close_amount = pos.close_amount - pay.total
+                                WHERE pay.document_id = $documentId"); 
+
+                DB::statement("UPDATE accounts acc
+                            INNER JOIN payments pay ON pay.account_id = acc.id
+                            SET acc.current_balance = acc.current_balance - pay.total
+                            WHERE pay.document_id = $documentId");
+
+                \App\Models\Tenant\Payment::where('document_id', $documentId)->delete();
+                \App\Models\Tenant\PosSales::where('document_id', $documentId)->where('table_name', 'documents')->delete();
+
+                //delete
+                DocumentItem::where('document_id', $documentId)->delete();
+                Document::where('id', $documentId)->delete();
+                // add again
+                
+                $facturalo = new Facturalo();
+                $facturalo->save($request->all());
+                $facturalo->createXmlUnsigned();
+                $facturalo->signXmlUnsigned();
+                $facturalo->updateHash();
+                $facturalo->updateQr();
+                $facturalo->createPdf();
+
+                $document = $facturalo->getDocument();
+
+                $pos_sales = new PosSales();
+                $pos_sales->table_name = 'documents';
+                $pos_sales->document_id = $document->id;
+                $pos_sales->pos_id = $pos;
+                
+                $pos_sales->save();
+
+                return $facturalo;
+            });
+    
+            $fact->senderXmlSignedBill();
+            $document = $fact->getDocument();
+            $response = $fact->getResponse();
+    
+            return [
+                'success' => true,
+                'data' => [
+                    'id' => $document->id,
+                ],
+            ];
+        }
     }
 }

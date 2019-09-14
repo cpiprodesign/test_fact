@@ -283,4 +283,9 @@ class Document extends ModelTenant
     {
         return $this->morphMany(InventoryKardex::class, 'inventory_kardexable');
     }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
 }
