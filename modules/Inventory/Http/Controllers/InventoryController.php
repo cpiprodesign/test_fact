@@ -33,6 +33,7 @@ class InventoryController extends Controller
     {
         $item_description = $request->input('value');
         $records = ItemWarehouse::with(['item', 'warehouse'])
+                                ->where('stock', '!=', 0)
                                 ->whereHas('item', function($query) use($item_description) {
                                     $query->where('description', 'like', '%' . $item_description . '%');
                                 })->orderBy('item_id');
@@ -65,9 +66,18 @@ class InventoryController extends Controller
             $item_warehouse = ItemWarehouse::firstOrNew(['item_id' => $item_id,
                                                          'warehouse_id' => $warehouse_id]);
             if($item_warehouse->id) {
+
+                $inventory = new Inventory();
+                $inventory->type = 4;
+                $inventory->description = 'Aumentar';
+                $inventory->item_id = $item_id;
+                $inventory->warehouse_id = $warehouse_id;
+                $inventory->quantity = $quantity;
+                $inventory->save();
+
                 return [
-                    'success' => false,
-                    'message' => 'El producto ya se encuentra registrado en el almacén indicado.'
+                    'success' => true,
+                    'message' => 'Se aumentó la cantidad de '.$quantity.' correctamente'
                 ];
             }
 
