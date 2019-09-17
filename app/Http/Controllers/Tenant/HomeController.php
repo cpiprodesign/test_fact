@@ -118,9 +118,11 @@ class HomeController extends Controller
             $customers = DB::connection('tenant')->select($sql);
         }
 
-        $total_sells = (int)$total_sells->total;
+        $total = number_format($totals->total, 2);
+        $total2 = number_format($totals->total - $totals->total_paid, 2);
+        $total_sells = number_format($total_sells->total, 2);
 
-        return compact('totals', 'total_sells', 'items', 'customers'); 
+        return compact('total', 'total2', 'total_sells', 'items', 'customers'); 
     }
 
     public function total($establishment_id = 0, $range="Diario")

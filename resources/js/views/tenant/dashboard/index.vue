@@ -221,8 +221,8 @@
                         .then(response => {
                             this.items = response.data.items
                             this.customers = response.data.customers
-                            this.total_invoices = response.data.totals.total
-                            this.total_charge = response.data.totals.total - response.data.totals.total_paid
+                            this.total_invoices = response.data.total
+                            this.total_charge = response.data.total2
                             this.total_sell = response.data.total_sells
                         });
             },
