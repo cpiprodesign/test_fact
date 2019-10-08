@@ -1,6 +1,6 @@
 <template>
     <el-dialog :title="titleDialog" :visible="showDialog" @open="create" width="30%" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
-        <div v-show="hasPermissionTo('tenant.documents.imprimir')" class="row mt-4">
+        <div v-show="hasPermissionTo('tenant.documents.imprimir')" class="row mt-2">
             <div class="col-lg-6 col-md-6 col-sm-12 text-center font-weight-bold">
                 <p>Imprimir A4</p>
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('a4')">
@@ -14,18 +14,15 @@
                 </button>
             </div>
         </div>
-        <!-- <div class="row mt-4">
-            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                <button type="button" class="btn btn-lg waves-effect waves-light btn-outline-secondary" @click="clickDownload('a4')">
-                    <i class="fa fa-download"></i>&nbsp;&nbsp;Descargar A4
-                </button>
+        <div v-if="showError">
+            <br>
+            <div class="col-md-12 pt-2" v-if="form.sunat_information != null && form.sunat_information.code != null">
+                <div class="well p-1">
+                    <span><strong>Code: </strong></span><span class="">{{form.sunat_information.code}}</span><br>
+                    <span><strong>Descripción:</strong></span><span class="">{{form.sunat_information.description}}</span>
+                </div>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                <button type="button" class="btn btn-lg waves-effect waves-light btn-outline-secondary" @click="clickDownload('ticket')">
-                    <i class="fa fa-download"></i>&nbsp;&nbsp;Descargar Ticket
-                </button>
-            </div>
-        </div> -->
+        </div>
         <div v-show="hasPermissionTo('tenant.documents.email')" class="row mt-4">
             <div class="col-md-12">
                 <el-input v-model="form.customer_email">
@@ -54,7 +51,7 @@
 
 <script>
     export default {
-        props: ['showDialog', 'recordId', 'showClose'],
+        props: ['showDialog', 'recordId', 'showClose', 'showError'],
         data() {
             return {
                 titleDialog: null,
@@ -82,7 +79,8 @@
                     download_pdf: null,
                     external_id: null,
                     number: null,
-                    id: null
+                    id: null,
+                    sunat_information: null
                 };
                 this.company = {
                     soap_type_id: null,
@@ -91,6 +89,7 @@
             create() {
                 this.$http.get(`/${this.resource}/record/${this.recordId}`).then(response => {
                     this.form = response.data.data;
+                    console.log(JSON.stringify(this.form.sunat_information))
                     this.titleDialog = 'Comprobante: '+this.form.number;
                 });
             },
@@ -142,6 +141,11 @@
                 location.href = `/${this.resource}`
             },
             clickNewDocument() {
+                var pathname = window.location.pathname;
+                if('/documents/create' != pathname){
+                     location.href = `/${this.resource}/create`
+                     return false
+                }
                 this.clickClose()
             },
             clickClose() {

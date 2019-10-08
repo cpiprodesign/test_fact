@@ -26,7 +26,7 @@ class PosCollection extends ResourceCollection
                 'open_amount' => $row->open_amount,
                 'close_amount' => $row->close_amount,
                 'sales_count' => $row->sales_count,
-                'balance' => $row->open_amount + $row->close_amount,
+                'balance' => number_format($row->open_amount + $row->close_amount, 2),
                 'status' => $row->status,
                 'created_at' => Carbon::parse($row->created_at)->format('d/m/Y H:i'),
                 'deleted_at' => $row->deleted_at ? Carbon::parse($row->deleted_at)->format('d/m/Y H:i') : null,

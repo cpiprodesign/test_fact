@@ -52,6 +52,9 @@
                                         @click.prevent="clickTicket(row.id)"
                                         dusk="consult-ticket"
                                         v-if="row.btn_ticket">Enviar a SUNAT/OSE</button>
+                                <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"
+                                        @click.prevent="clickDelete(row.id)"
+                                        v-if="row.btn_ticket">Eliminar</button>
                             </td>
                         </tr>
                         </tbody>
@@ -68,8 +71,10 @@
 <script>
 
     import SummaryForm from './form.vue'
+    import {deletable} from '../../../mixins/deletable'
 
     export default {
+        mixins: [deletable],
         components: {SummaryForm},
         data () {
             return {
@@ -107,6 +112,11 @@
                     .catch(error => {
                         this.$message.error(error.response.data.message)
                     })
+            },
+            clickDelete(id) {
+                this.destroy(`/${this.resource}/${id}`).then(() =>
+                    this.$eventHub.$emit('reloadData')
+                )
             },
             clickDownload(download) {
                 window.open(download, '_blank');

@@ -122,6 +122,11 @@ class SaleNote extends ModelTenant
         return $this->hasMany(Kardex::class);
     }
 
+    public function payment()
+    {
+        return $this->hasOne(Payment::class,'sale_note_id');
+    }
+
     public function getNumberFullAttribute()
     {
         return $this->series.'-'.$this->number;

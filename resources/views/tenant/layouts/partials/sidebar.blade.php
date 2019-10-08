@@ -220,12 +220,6 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                         </a>
                     </li>
                     @endcanany
-                    <li>
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-comment-dollar" aria-hidden="true"></i>
-                            <span>Contable </span><span class="label label-info"> Pronto</span>
-                        </a>
-                    </li>
                     @can('tenant.accounts.index')
                     <li class="
                         {{ ($path[0] === 'accounts')?'nav-active':'' }}

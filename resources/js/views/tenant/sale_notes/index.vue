@@ -47,10 +47,14 @@
                             <el-tooltip v-show="hasPermissionTo('tenant.sale-notes.report')" class="item" effect="dark" content="Descargar Pdf" placement="top-end">
                                 <a :href="`/download/salenote/pdf/`+row.id" class="btn btn-xs"><i class="fa fa-file-pdf i-icon text-info"></i></a>
                             </el-tooltip>
+                             <el-tooltip v-show="hasPermissionTo('tenant.sale-notes.edit')" class="item" effect="dark" content="Editar Nota Venta" placement="top-end">
+                                <a :href="`/sale-notes/edit/`+row.id" class="btn btn-xs"><i class="fa fa-file-signature i-icon text-success"></i></a>
+                            </el-tooltip>
+                            
                             <el-tooltip v-show="hasPermissionTo('tenant.sale-notes.destroy')" class="item" effect="dark" content="Eliminar" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickDelete(row.id)" v-if="row.has_delete"><i class="fa fa-trash-alt i-icon text-danger"></i></button>
                                 <button type="button" class="btn btn-xs" v-else><i class="fa fa-trash-alt i-icon text-disabled"></i></button>
-                            </el-tooltip>
+                            </el-tooltip>   
                         </td>
                     </tr>
                     <div class="row col-md-12 justify-content-center" slot-scope="{ totals }" slot="totals">

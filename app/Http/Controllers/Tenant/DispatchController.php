@@ -92,8 +92,13 @@ class DispatchController extends Controller
         try
         {
             $fact->senderXmlSignedBill();
+            $response = $fact->getResponse();
             $document->has_cdr = 1;
             $document->save();
+
+            $document_sunat = Dispatch::find($document->id);
+            $document_sunat->sunat_information = $response;
+            $document_sunat->save();
 
             return [
                 'success' => true,
@@ -119,11 +124,11 @@ class DispatchController extends Controller
     // reenvio y captura del cdr
     public function resend($document_id)
     {
-
         $document = Dispatch::find($document_id);
         $response = [];
 
-        try {
+        try
+        {
             $fileXML = "signed/{$document->filename}.xml";
             $has_xml_file = Storage::disk("tenant")->exists($fileXML);
 
@@ -133,50 +138,67 @@ class DispatchController extends Controller
             $fileCDR = "cdr/R-{$document->filename}.zip";
             $has_cdr_file = Storage::disk("tenant")->exists($fileCDR);
 
-
             $facturalo = DB::connection('tenant')->transaction(function () use ($document) {
                 return new Facturalo();
             });
+
             $facturalo->setDocument($document);
             $facturalo->setType('dispatch');
 
-            if (!$has_xml_file) { // corrige la existencia de xm
+            if (!$has_xml_file)
+            {
                 $facturalo->createXmlUnsigned();
                 $facturalo->signXmlUnsigned();
             }
             $document->has_xml = 1;
 
-            if (!$has_pdf_file) { //corrige la existencia de pdf
+            if (!$has_pdf_file)
+            {
                 $facturalo->createPdf(null, null, 'a4');
             }
+            
             $document->has_pdf = 1;
 
-            if (!$has_cdr_file) { // corrige la existencia de cdr
-                try {
+            if (!$has_cdr_file)
+            {
+                try
+                {
                     $facturalo->consultCdr();
                     $document->has_cdr = 1;
-                } catch (Exception $e) {
+                }
+                catch (Exception $e)
+                {
                     $facturalo->loadXmlSigned(); // se carga el xml firmado
                     $facturalo->onlySenderXmlSignedBill();
                 }
+
                 $response = $facturalo->getResponse();
-            } else {
+            }
+            else
+            {
                 $response = ['description' => 'Se ha corregido el índice del archivo CDR'];
                 $document->has_cdr = 1;
             }
 
             $document->save();
 
+            $document_sunat = Dispatch::find($document->id);
+            $document_sunat->sunat_information = $response;
+            $document_sunat->save();
+
             return [
                 'success' => true,
-                'message' => $response['description'],
+                'code' => $response['code'],
+                'message' => 'Código: '.$response['code'].'; Descripción: '.$response['description'],
             ];
 
-        } catch (Exception $e) {
-
+        }
+        catch (Exception $e)
+        {
             $status = false;
 
-            if (preg_match('/Code: 4000;/', $e->getMessage())) {
+            if (preg_match('/Code: 4000;/', $e->getMessage()))
+            {
                 $status = true;
                 $document->has_cdr = 2;
                 $document->save();
@@ -187,9 +209,7 @@ class DispatchController extends Controller
                 'code' => $e->getCode(),
                 'message' => $e->getMessage()
             ];
-
         }
-
     }
 
     public function datos($document_id)

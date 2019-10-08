@@ -70,6 +70,7 @@ Vue.component('tenant-documents-invoice', require('./views/tenant/documents/invo
 Vue.component('tenant-documents-invoice2', require('./views/tenant/documents/invoice2.vue'));
 Vue.component('tenant-documents-note', require('./views/tenant/documents/note.vue'));
 Vue.component('tenant-documents-configuration', require('./views/tenant/documents/configuration.vue'));
+Vue.component('tenant-documents-edit', require('./views/tenant/documents/edit.vue'));
 
 // quotations
 Vue.component('tenant-quotations-index', require('./views/tenant/quotations/index.vue'));
@@ -79,7 +80,7 @@ Vue.component('tenant-quotations-edit', require('./views/tenant/quotations/edit.
 // sale notes
 Vue.component('tenant-sale-notes-index', require('./views/tenant/sale_notes/index.vue'));
 Vue.component('tenant-sale-notes-invoice', require('./views/tenant/sale_notes/invoice.vue'))
-Vue.component('tenant-sale-notes-edit', require('./views/tenant/sale_notes/edit.vue'))
+Vue.component('tenant-sale-notes-edit', require('./views/tenant/sale_notes/edit_salenote.vue'))
 
 Vue.component('inventory-index', require('../../modules/Inventory/Resources/assets/js/inventory/index.vue'));
 Vue.component('warehouses-index', require('../../modules/Inventory/Resources/assets/js/warehouses/index.vue'));

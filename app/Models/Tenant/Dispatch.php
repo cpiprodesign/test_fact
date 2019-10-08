@@ -45,6 +45,8 @@ class Dispatch extends ModelTenant
         'license_plate',
         'invoices',
 
+        'sunat_information',
+
         'legends',
 
         'filename',
@@ -88,6 +90,16 @@ class Dispatch extends ModelTenant
     public function setInvoicesAttribute($value)
     {
         $this->attributes['invoices'] = (is_null($value)) ? null : json_encode($value);
+    }
+
+    public function getSunatInformationAttribute($value)
+    {
+        return (is_null($value)) ? null : (object)json_decode($value);
+    }
+
+    public function setSunatInformationAttribute($value)
+    {
+        $this->attributes['sunat_information'] = (is_null($value)) ? null : json_encode($value);
     }
 
     public function getOriginAttribute($value)

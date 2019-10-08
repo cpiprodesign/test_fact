@@ -83,6 +83,7 @@ class DocumentCollection extends ResourceCollection
                 'btn_note' => $btn_note,
                 'btn_resend' => $btn_resend,
                 'btn_consult_cdr' => $btn_consult_cdr,
+                'sunat_information' => $row->sunat_information,
                 'affected_document' => $affected_document,
                 'created_at' => $row->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $row->updated_at->format('Y-m-d H:i:s'),

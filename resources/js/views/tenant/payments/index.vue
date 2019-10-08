@@ -37,8 +37,8 @@
                         <td>{{ row.description }}</td>
                         <td class="text-right">
                             <el-tooltip class="item" effect="dark" content="Eliminar" placement="top-end">
-                                <button v-show="hasPemissionTo('tenant.payments.destroy')" type="button" class="btn btn-xs" @click.prevent="clickDelete(row.id)" v-if="row.has_delete"><i class="fa fa-trash-alt i-icon text-danger"></i></button>
-                                <button v-show="hasPemissionTo('tenant.payments.destroy')" type="button" class="btn btn-xs" v-else><i class="fa fa-trash-alt i-icon text-disabled"></i></button>
+                                <button v-show="hasPermissionTo('tenant.payments.destroy')" type="button" class="btn btn-xs" @click.prevent="clickDelete(row.id)" v-if="row.has_delete"><i class="fa fa-trash-alt i-icon text-danger"></i></button>
+                                <button v-show="hasPermissionTo('tenant.payments.destroy')" type="button" class="btn btn-xs" v-else><i class="fa fa-trash-alt i-icon text-disabled"></i></button>
                             </el-tooltip>
                         </td>
                     </tr>

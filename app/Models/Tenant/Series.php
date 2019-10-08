@@ -28,4 +28,9 @@ class Series extends ModelTenant
     {
         $this->attributes['number'] = strtoupper($value);
     }
+
+    public function scopeByNumber($query,$number)
+    {
+        $query->where('number',$number);
+    }
 }

@@ -14,31 +14,50 @@
             <div class="card-body">
                 <data-table :resource="resource">
                     <tr slot="heading">
-                        <th style="width: 5%">#</th>
-                        <th style="width: 10%" class="text-center">Fecha Emisión</th>
-                        <th style="width: 35%">Cliente</th>
-                        <th style="width: 10%">Número</th>
-                        <th style="width: 10%" class="text-center">Fecha Envío</th>
-                        <th style="width: 15%" class="text-center">Descargas</th>
+                        <th>#</th>
+                        <th class="text-center">Fecha Emisión</th>
+                        <th>Cliente</th>
+                        <th>Número</th>
+                        <th class="text-center">Fecha Envío</th>
+                        <th class="text-center">Estado SUNAT</th>
+                        <th class="text-center">Descargas</th>
                     <tr>
                     <tr slot-scope="{ index, row }" slot="tbody" :class="{'text-danger': (row.state_type_id === '11')}">
                         <td>{{ index }}</td>
                         <td class="text-center">{{ row.date_of_issue }}</td>
                         <td>{{ row.customer_name }} <br/>
                             <small>{{ row.customer_number }}</small>
-                            <br>
-                            <span class="badge bg-secondary text-white" :class="{
-                            'bg-danger': (row.state_type_id === '11'),
-                            'bg-warning': (row.state_type_id === '13'),
-                            'bg-secondary': (row.state_type_id === '01'),
-                            'bg-info': (row.state_type_id === '03'),
-                            'bg-success': (row.state_type_id === '05'),
-                            'bg-secondary': (row.state_type_id === '07'),
-                            'bg-dark': (row.state_type_id === '09')
-                        }">{{ row.state_type_description }}</span>
                         </td>
                         <td>{{ row.number }}</td>
                         <td class="text-center">{{ row.date_of_shipping }}</td>
+                        <td class="text-center">
+                            <el-popover v-if="row.sunat_information != null && row.sunat_information.code != null"
+                                placement="right"
+                                width="300"
+                                trigger="hover">
+                                <table class="table table-sm table-striped" style="font-size: 10px">
+                                    <tbody>
+                                        <tr>
+                                            <td>Código</td>
+                                            <td>{{row.sunat_information.code}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Descripción</td>
+                                            <td>{{row.sunat_information.description}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                               <span slot="reference" class="badge bg-secondary text-white" :class="{
+                                    'bg-danger': (row.state_type_id === '11'),
+                                    'bg-warning': (row.state_type_id === '13'),
+                                    'bg-secondary': (row.state_type_id === '01'),
+                                    'bg-info': (row.state_type_id === '03'),
+                                    'bg-success': (row.state_type_id === '05'),
+                                    'bg-secondary': (row.state_type_id === '07'),
+                                    'bg-dark': (row.state_type_id === '09')
+                                }">{{ row.state_type_description }}</span>
+                            </el-popover>
+                        </td>
                         <td class="text-center">
                             <button v-show="hasPermissionTo('tenant.dispatches.report')" type="button" :disabled="row.has_xml*1!==1"
                                     class="btn waves-effect waves-light btn-xs btn-info"
@@ -87,12 +106,26 @@
              */
             sendDocument(row) {
                 return this.$http.get(`/${this.resource}/resend/${row.id}`).then((response) => {
-                    // console.info(response);
                     if (response.data.success) {
-                        this.$eventHub.$emit('reloadData');
-                        this.$message.success(response.data.message)
+                        let code = response.data.code;
+                        
+                        console.log("code "+ code)
+                        if(code == 0){
+                            this.$message.success(response.data.message)
+                        }
+                        else if(code < 2000){
+                            this.$message.warning(response.data.message)
+                        }
+                        else if(code < 4000){
+                            this.$message.error(response.data.message)
+                        }
+                        else{
+                            this.$message.warning(response.data.message)
+                        }
+                        
+                        this.$eventHub.$emit('reloadData')
                     } else {
-                        this.$message.error(response.data.message);
+                        this.$message.error(response.data.message)
                     }
                 });
             }

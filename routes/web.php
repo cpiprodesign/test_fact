@@ -212,6 +212,9 @@ if ($hostname) {
             Route::get('documents/tables2/{document}', 'Tenant\DocumentController@tables2');
             Route::get('documents/record/{document}', 'Tenant\DocumentController@record');
             Route::post('documents', 'Tenant\DocumentController@store')->middleware('hasAnyPermission:tenant.documents.store,tenant.documents.update');
+            Route::get('documents/edit/{document}', 'Tenant\DocumentController@edit');
+            Route::post('documents/edit/{document}', 'Tenant\DocumentController@update')->middleware('hasAnyPermission:tenant.documents.store,tenant.documents.update');
+            Route::get('documents/item/tables3/{document}', 'Tenant\DocumentController@item_tables_by_document');
             //Route::post('documents/{document}', 'Tenant\DocumentController@store2');
             Route::get('documents/send/{document}', 'Tenant\DocumentController@send')->middleware('can:tenant.documents.enviar-sunat');
             Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
@@ -256,7 +259,10 @@ if ($hostname) {
             Route::get('sale-notes/records', 'Tenant\SaleNoteController@records');
             Route::get('sale-notes/totals', 'Tenant\SaleNoteController@totals');
             Route::get('sale-notes/create', 'Tenant\SaleNoteController@create')->name('tenant.sale_notes.create')->middleware('can:tenant.sale-notes.store');
-            // Route::get('sale-notes/edit/{quotation}', 'Tenant\SaleNoteController@edit')->name('tenant.quotations.edit');
+            Route::get('sale-notes/edit/{id}', 'Tenant\SaleNoteController@edit')->name('tenant.quotations.edit');
+            Route::get('sale-notes/item/tables2/{id}', 'Tenant\SaleNoteController@item_tables2');
+            Route::post('sale-notes/update/{id}', 'Tenant\SaleNoteController@update')->middleware('can:tenant.sale-notes.update');
+
             Route::get('sale-notes/tables', 'Tenant\SaleNoteController@tables');
             Route::get('sale-notes/record/{id}', 'Tenant\SaleNoteController@record');
             Route::post('sale-notes', 'Tenant\SaleNoteController@store')->middleware('can:tenant.sale-notes.store');
@@ -273,6 +279,7 @@ if ($hostname) {
             Route::post('summaries/documents', 'Tenant\SummaryController@documents');
             Route::post('summaries', 'Tenant\SummaryController@store')->middleware('can:tenant.summaries.index');
             Route::get('summaries/status/{summary}', 'Tenant\SummaryController@status')->middleware('can:tenant.summaries.enviar-sunat');
+            Route::delete('summaries/{summary}', 'Tenant\SummaryController@destroy');
 
             //Voided
             Route::get('voided', 'Tenant\VoidedController@index')->name('tenant.voided.index')->middleware('can:tenant.voided.index');

@@ -19,12 +19,35 @@ class DocumentInput
         $document_type_id = $inputs['document_type_id'];
         $series = $inputs['series'];
         $number = $inputs['number'];
+        $document_id = isset($inputs['document_id'])?$inputs['document_id']:null;
+        $created_at = date("Y-m-d H:i:s");
 
         $company = Company::active();
         $soap_type_id = $company->soap_type_id;
-        $number = Functions::newNumber($soap_type_id, $document_type_id, $series, $number, Document::class);
+        if($document_id == null){
 
-        Functions::validateUniqueDocument($soap_type_id, $document_type_id, $series, $number, Document::class);
+            $number = Functions::newNumber($soap_type_id, $document_type_id, $series, $number, Document::class);
+            Functions::validateUniqueDocument($soap_type_id, $document_type_id, $series, $number, Document::class);
+
+        }else{
+            $document = Document::find($document_id);
+
+            if($document->document_type_id != $inputs['document_type_id'] && $number !='#')
+            {
+                Functions::validateUniqueDocument($soap_type_id, $document_type_id, $series, $number, Document::class);
+            }
+            if($document->number != $number && $number !='#')
+            {
+                Functions::validateUniqueDocument($soap_type_id, $document_type_id, $series, $number, Document::class);
+            }
+            if($number == '#'){
+                $number = Functions::newNumber($soap_type_id, $document_type_id, $series, $number, Document::class);
+                Functions::validateUniqueDocument($soap_type_id, $document_type_id, $series, $number, Document::class);
+            }
+
+            $created_at = $document->created_at;
+
+        }
 
         $filename = Functions::filename($company, $document_type_id, $series, $number);
         $establishment = EstablishmentInput::set($inputs['establishment_id']);
@@ -116,6 +139,8 @@ class DocumentInput
             'additional_information' => $additional_information,
             'legends' => LegendInput::set($inputs),
             'actions' => ActionInput::set($inputs),
+            'document_id' => isset($inputs['document_id'])?$inputs['document_id']:null,
+            'created_at' => $created_at
         ];
     }
 
