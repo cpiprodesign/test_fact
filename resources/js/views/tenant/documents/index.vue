@@ -106,7 +106,7 @@
                             <span class="badge bg-secondary text-white bg-success" v-else>Pagado</span>
                         </td>
                         <td class="text-right">
-                            <el-tooltip class="item" effect="dark" v-if="row.document_type_id == '03'" content="Boletas se envian como Resúmenes" placement="top-end">
+                            <el-tooltip v-show="hasPermissionTo('tenant.documents.enviar-sunat')" class="item" effect="dark" v-if="row.document_type_id == '03'" content="Boletas se envian como Resúmenes" placement="top-end">
                                 <button type="button" class="btn btn-xs"><i class="fa fa-file-export i-icon text-disabled"></i></button>
                             </el-tooltip>
                             <el-tooltip v-show="hasPermissionTo('tenant.documents.enviar-sunat')" class="item" effect="dark" v-else="" content="Enviar a SUNAT/OSE" placement="top-end">
