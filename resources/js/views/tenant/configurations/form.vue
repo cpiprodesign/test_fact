@@ -14,13 +14,13 @@
                                 <small class="form-control-feedback" v-if="errors.send_auto" v-text="errors.send_auto[0]"></small>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <label class="control-label">Envio de Resumenes automático <small>(2:00 am - 3:00 am)</small></label>
                             <div class="form-group" :class="{'has-danger': errors.cron}">
                                 <el-switch v-model="form.cron" active-text="Si" inactive-text="No" @change="submit"></el-switch>
                                 <small class="form-control-feedback" v-if="errors.cron" v-text="errors.cron[0]"></small>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row">
                         <div class="col-md-6">

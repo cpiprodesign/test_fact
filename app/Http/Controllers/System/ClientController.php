@@ -171,7 +171,7 @@ class ClientController extends Controller
         ]);
 
         DB::connection('tenant')->table('configurations')->insert([
-            'send_auto' => true,
+            'send_auto' => false,
         ]);
 
         $establishment_id = DB::connection('tenant')->table('establishments')->insertGetId([

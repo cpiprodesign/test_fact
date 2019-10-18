@@ -210,16 +210,16 @@ $path)> 0)?$path[2]:''; $path[0] = ($path[0] === '')?'documents':$path[0];
                         </ul>
                     </li>
                     @endcanany
-                    @canany(['tenant.documents.pos', 'tenant.pos.index'])
-                    <li class="
-                        {{ ($path[0] === 'box')?'nav-active':'' }}
-                        ">
-                        <a class="nav-link" href="{{route('tenant.box.index')}}">
-                            <i class="fas fa-cash-register" aria-hidden="true"></i>
-                            <span>Control de Caja</span>
-                        </a>
-                    </li>
-                    @endcanany
+                    @can(['tenant.pos.index'])
+                        <li class="
+                            {{ ($path[0] === 'box')?'nav-active':'' }}
+                            ">
+                            <a class="nav-link" href="{{route('tenant.box.index')}}">
+                                <i class="fas fa-cash-register" aria-hidden="true"></i>
+                                <span>Control de Caja</span>
+                            </a>
+                        </li>
+                    @endcan
                     @can('tenant.accounts.index')
                     <li class="
                         {{ ($path[0] === 'accounts')?'nav-active':'' }}

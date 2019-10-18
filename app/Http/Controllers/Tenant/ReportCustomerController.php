@@ -21,7 +21,18 @@ class ReportCustomerController extends Controller
     {
         $establishments = Establishment::all();
 
-        return view('tenant.reports.customers.index', compact('establishments'));
+        $customers = Person::whereType('customers')->orderBy('name')->get()->transform(function ($row) {
+            return [
+                'id' => $row->id,
+                'description' => $row->number . ' - ' . $row->name,
+                'name' => $row->name,
+                'number' => $row->number,
+                'identity_document_type_id' => $row->identity_document_type_id,
+                'identity_document_type_code' => $row->identity_document_type->code
+            ];
+        });
+
+        return view('tenant.reports.customers.index', compact('establishments', 'customers'));
     }
 
     public function detail(Person $person)
@@ -50,25 +61,38 @@ class ReportCustomerController extends Controller
     {
         $d = $request->d;
         $a = $request->a;
-        $establishment_td = $this->getEstablishment($request->establishment);;
+        $customer_td = $this->getPerson($request->customer);
+        $establishment_td = $this->getEstablishment($request->establishment);
+
+        $customers = Person::whereType('customers')->orderBy('name')->get()->transform(function ($row) {
+            return [
+                'id' => $row->id,
+                'description' => $row->number . ' - ' . $row->name,
+                'name' => $row->name,
+                'number' => $row->number,
+                'identity_document_type_id' => $row->identity_document_type_id,
+                'identity_document_type_code' => $row->identity_document_type->code
+            ];
+        });
 
         $establishments = Establishment::all();
 
-        $records = $this->records($d, $a, $establishment_td);
+        $records = $this->records($d, $a, $customer_td, $establishment_td);
         
-        return view('tenant.reports.customers.index', compact('records', 'd', 'a', 'establishment_td', 'establishments'));
+        return view('tenant.reports.customers.index', compact('records', 'd', 'a', 'customer_td', 'customers', 'establishment_td', 'establishments'));
     }
 
     public function pdf(Request $request)
     {        
         $d = $request->d;
         $a = $request->a;
+        $customer_td = $request->customer_td;
         $establishment_td = $request->establishment_td;
         
         $company = Company::first();
         $establishment = Establishment::where('id', $establishment_td)->first();
         
-        $records = $this->records($d, $a, $establishment_td);
+        $records = $this->records($d, $a, $customer_td, $establishment_td);
         
         $pdf = PDF::loadView('tenant.reports.customers.report_pdf', compact("records", "company", "establishment"));
         $filename = 'Reporte_Ventas_Cliente'.date('YmdHis');
@@ -80,12 +104,13 @@ class ReportCustomerController extends Controller
     {
         $d = $request->d;
         $a = $request->a;
+        $customer_td = $request->customer_td;
         $establishment_td = $request->establishment_td;      
         
         $company = Company::first();
         $establishment = Establishment::where('id', $establishment_td)->first();
         
-        $records = $this->records($d, $a, $establishment_td);
+        $records = $this->records($d, $a, $customer_td, $establishment_td);
         
         return (new DocumentExport)
                 ->excel_view('tenant.reports.customers.report_excel')
@@ -95,7 +120,7 @@ class ReportCustomerController extends Controller
                 ->download('ReporteVentasCliente'.Carbon::now().'.xlsx');
     }
 
-    public function records($d, $a, $establishment_id)
+    public function records($d, $a,  $customer_id, $establishment_id)
     {
         $condition = "";
 
@@ -107,6 +132,11 @@ class ReportCustomerController extends Controller
         if(!is_null($establishment_id))
         {
             $condition .= " AND doc.establishment_id = $establishment_id";
+        }
+
+        if(!is_null($customer_id))
+        {
+            $condition .= " AND doc.customer_id = $customer_id";
         }
 
         $sql = "SELECT customer_id, name, number, SUM(quantity) AS quantity, SUM(total) AS total, SUM(total_paid) AS total_paid
