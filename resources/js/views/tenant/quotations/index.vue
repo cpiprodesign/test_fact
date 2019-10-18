@@ -61,7 +61,7 @@
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                         <a v-show="hasPermissionTo('tenant.documents.store')" v-if="row.state_type_id==1" class="dropdown-item" :href="`/documents/create2/`+row.id">Crear venta</a>
                                         <a v-show="hasPermissionTo('tenant.quotations.update')" v-if="row.state_type_id==1" class="dropdown-item" :href="`/quotations/edit/`+row.id">Editar</a>
-                                        <a v-show="hasPermissionTo('tenant.quotations.reporte')" class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
+                                        <a v-show="hasPermissionTo('tenant.quotations.report')" class="dropdown-item" :href="`/download/Quotation/pdf/`+row.id">Descargar PDF</a>
                                     </div>
                                 </div>
                             </div>
