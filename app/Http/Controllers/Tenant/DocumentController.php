@@ -85,7 +85,9 @@ class DocumentController extends Controller
     {
         $records = Document::where($request->column, 'like', "%{$request->value}%")
             ->whereIn('document_type_id', ['01', '03'])
-            ->orderBy('date_of_issue', 'desc');
+            ->orderBy('date_of_issue', 'desc')
+            ->orderBy('series', 'desc')
+            ->orderBy('number', 'desc');
 
         return new DocumentCollection($records->paginate(env('ITEMS_PER_PAGE', 10)));
     }
