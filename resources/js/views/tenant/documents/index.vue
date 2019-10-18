@@ -124,7 +124,7 @@
                                 <a :href="`/${resource}/note/${row.id}`" class="btn btn-xs" v-if="row.btn_note"><i class="fa fa-file-signature i-icon text-danger"></i></a>
                                 <a class="btn btn-xs" v-else=""><i class="fa fa-file-signature i-icon text-disabled"></i></a>
                             </el-tooltip>
-                            <el-tooltip v-show="hasPermissionTo('tenant.dispaches.store')" class="item" effect="dark" content="Guía de Remisión" placement="top-end">
+                            <el-tooltip v-show="hasPermissionTo('tenant.dispatches.store')" class="item" effect="dark" content="Guía de Remisión" placement="top-end">
                                 <a :href="`/dispatches/create2/${row.id}`" class="btn btn-xs" v-if="row.btn_note"><i class="fa fa-clipboard-check i-icon text-success"></i></a>
                                 <a class="btn btn-xs" v-else=""><i class="fa fa-clipboard-check i-icon text-disabled"></i></a>
                             </el-tooltip>
