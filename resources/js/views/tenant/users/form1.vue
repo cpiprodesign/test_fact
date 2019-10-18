@@ -54,7 +54,7 @@
                             <small class="form-control-feedback d-block" v-if="errors.admin" v-text="errors.admin[0]"></small>
                         </div>
                     </div> -->
-                    <div class="col-md-12">
+                    <div class="col-md-12" v-if="form.id != '1'">
                         <div class="form-group ">
                             <label class="control-label">Roles</label>
                             <div class="">
