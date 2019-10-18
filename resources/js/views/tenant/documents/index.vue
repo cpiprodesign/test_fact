@@ -116,7 +116,7 @@
                             <el-tooltip class="item" effect="dark" content="Visualizar" placement="top-end">
                                 <a :href="`/${resource}/view/${row.id}`" class="btn btn-xs"><i class="fa fa-eye i-icon text-info"></i></a>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="Anular" placement="top-end">
+                            <el-tooltip v-show="hasPermissionTo('tenant.voided.store')" class="item" effect="dark" content="Anular" placement="top-end">
                                 <button type="button" class="btn btn-xs" @click.prevent="clickVoided(row.id)" v-if="row.btn_voided"><i class="fa fa-backspace i-icon text-danger"></i></button>
                                 <button type="button" class="btn btn-xs" v-else="" disabled><i class="fa fa-backspace i-icon text-disabled"></i></button>
                             </el-tooltip>
