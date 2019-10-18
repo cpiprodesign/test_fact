@@ -13,7 +13,7 @@
                     <div>
                         <form action="{{route('tenant.reports.customers.search')}}" class="el-form demo-form-inline el-form--inline" method="POST">
                             {{csrf_field()}}
-                            <tenant-calendar :document_types="{}" :establishments="{{json_encode($establishments)}}" data_d="{{$d ?? ''}}" data_a="{{$a ?? ''}}" establishment_td="{{$establishment_td ?? null}}"></tenant-calendar>
+                            <tenant-calendar2 :document_types="{}" :establishments="{{json_encode($establishments)}}" :customers="{{json_encode($customers)}}" data_d="{{$d ?? ''}}" data_a="{{$a ?? ''}}" establishment_td="{{$establishment_td ?? null}}"></tenant-calendar2>
                         </form>
                     </div>
                     @if(!empty($records) && count($records))
@@ -26,17 +26,17 @@
                                         {{csrf_field()}}
                                         <input type="hidden" value="{{$d}}" name="d">
                                         <input type="hidden" value="{{$a}}" name="a">
+                                        <input type="hidden" value="{{$customer_td}}" name="customer_td">
                                         <input type="hidden" value="{{$establishment_td}}" name="establishment_td">
                                         <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
-                                        {{-- <label class="pull-right">Se encontraron {{$records->count()}} registros.</label> --}}
                                     </form>
                                 <form action="{{route('tenant.report.customers.excel')}}" class="d-inline" method="POST">
                                     {{csrf_field()}}
                                     <input type="hidden" value="{{$d}}" name="d">
                                     <input type="hidden" value="{{$a}} " name="a">
+                                    <input type="hidden" value="{{$customer_td}}" name="customer_td">
                                     <input type="hidden" value="{{$establishment_td}}" name="establishment_td">
                                     <button class="btn btn-custom   mt-2 mr-2" type="submit"><i class="fa fa-file-excel"></i> Exportar Excel</button>
-                                    {{-- <label class="pull-right">Se encontraron {{$records->count()}} registros.</label> --}}
                                 </form>
                                 @endif
                                 @endcan
