@@ -129,10 +129,10 @@
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.status_paid}">
                                     <label class="control-label">Estado de pago</label>
-                                    <el-select v-model="form.status_paid">
-                                        <el-option v-for="option in status_paid" :key="option.id" :value="option.id" :label="option.nombre"></el-option>
+                                    <el-select v-model="status_paid" @change="chaneStatusPaid">
+                                        <el-option v-for="option in status_paids" :key="option.id" :value="option.id" :label="option.nombre"></el-option>
                                     </el-select>
-                                    <small class="form-control-feedback" v-if="errors.status_paid" v-text="errors.status_paid"></small>
+                                    <small class="form-control-feedback" v-if="errors.status_paid" v-text="errors.status_paid[0]"></small>
                                 </div>
                             </div>
                               <div class="col-lg-2">
@@ -189,7 +189,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-1" v-show="form.status_paid == 1">
+                        <div class="row mt-1" v-show="status_paid == 1">
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.payment_method_id}">
                                     <label class="control-label">Método de Pago</label>
@@ -326,7 +326,8 @@
                 accounts: [],
                 price_list: [],
                 all_customers: [],
-                status_paid: [
+                status_paid:'0',
+                status_paids: [
                     {"id": "1", "nombre": "Pagado"}, 
                     {"id": "0", "nombre": "Pendiente"}
                 ],
@@ -426,11 +427,12 @@
                 me.form.total_value = me.document.total_value
                 me.form.total = me.document.total
                 me.form.additional_information = me.document.additional_information[0]
-                me.form.status_paid =  (me.document.total_paid > 0)?"1":"0"
+                me.status_paid =  ((me.document.total - me.document.total_paid) > 0)?'0':'1'
+                me.chaneStatusPaid()
                 if(me.document.payment){
-                    me.pay_data.payment_method_id = me.document.payment.payment_method_id
-                    me.pay_data.account_id = me.document.payment.account_id
-                    me.pay_data.total = me.document.payment.total
+                    me.pay_data.payment_method_id = me.document.payment[0].payment_method_id
+                    me.pay_data.account_id = me.document.payment[0].account_id
+                    me.pay_data.total = me.document.payment[0].total
                 }
                 var guides = me.document.guides
                 if(guides != null){
@@ -549,7 +551,7 @@
                 this.form.operation_type_id = (this.operation_types.length > 0)?this.operation_types[0].id:null
                 this.changeEstablishment()
                 this.changeDocumentType()
-                this.changeDateOfIssue()
+                this.changeDateOfIssue()()
                 this.changeCurrencyType()
             },
             changeOperationType() {
@@ -563,7 +565,7 @@
                 this.filterSeries()
                 this.filterCustomers()
             },
-            changeDateOfIssue() {
+            changeDateOfIssue(){
                 this.form.date_of_due = this.document.date_of_issue.substring(0,10)
                 this.searchExchangeRateByDate(this.document.date_of_issue.substring(0,10)).then(response => {
                     this.form.exchange_rate_sale = response
@@ -736,6 +738,10 @@
             },
             formaterNumber(value, decimal){
                 return formaterNumber(value, decimal);
+            },
+            chaneStatusPaid()
+            {
+                this.form.status_paid = this.status_paid
             }
         }
     }
