@@ -444,8 +444,6 @@
                         })
                     }
                 }
-
-                
                 
                 me.$http.get(`/${this.resource}/item/tables3/${me.document.id}`).then(response => {
                     let items = response.data.items
@@ -457,17 +455,14 @@
                     for (let index = 0; index < items.length; index++) {
                         const item = items[index];
                         me.form.item = item
-                        me.form.item.unit_price = (item.sale_unit_price)
+                        me.form.item.unit_price = (item.unit_price)
                         me.form.quantity = item.quantity
                         me.form.affectation_igv_type_id = item.purchase_affectation_igv_type_id
                         me.form.affectation_igv_type = _.find(me.affectation_igv_types, {'id': item.purchase_affectation_igv_type_id})
                         me.row = calculateRowItem(me.form, me.form.currency_type_id, me.form.exchangeRateSale)
                         me.addRow(me.row)
-                        
                     }
-
                 })
-                
             },
             changePrice(){
                 let items = []
