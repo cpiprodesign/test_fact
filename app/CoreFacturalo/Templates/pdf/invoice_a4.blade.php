@@ -135,9 +135,9 @@
                                 @php
                                     $decimal = 0;
                                 @endphp
-                                @if (strlen(stristr($row->quantity, '.00')) == 0)
+                                @if (strlen(stristr($row->quantity, '.0000')) == 0)
                                     @php
-                                        $decimal = 2;
+                                        $decimal = 4;
                                     @endphp
                                 @endif
                             <td class="align-top">{{ number_format($row->quantity, $decimal) }}</td>
