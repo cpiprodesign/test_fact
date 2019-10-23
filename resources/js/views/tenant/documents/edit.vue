@@ -687,8 +687,7 @@
                                 this.$http.post(`/payments`, this.pay_data)
                                 .then(response => {
                                     if (response.data.success) {
-                                        this.resetForm();
-                                        this.showDialogOptions = true;
+                                        this.close();
                                     } else {
                                         this.$message.error(response.data.message)
                                     }
@@ -704,8 +703,7 @@
                                     this.loading_submit = false
                                 })
                             }else{
-                                this.resetForm();
-                                this.showDialogOptions = true;
+                                this.close();
                             }                        
                         }else {
                             this.$message.error(response.data.message);
