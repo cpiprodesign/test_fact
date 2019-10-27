@@ -123,7 +123,15 @@
     <tbody>
     @foreach($document->items as $row)
         <tr>
-            <td class="text-center">{{ $row->quantity }}</td>
+            @php
+                $decimal = 0;
+            @endphp
+            @if (strlen(stristr($row->quantity, '.0000')) == 0)
+                @php
+                    $decimal = 4;
+                @endphp
+            @endif
+            <td class="text-center desc-9 align-top">{{ number_format($row->quantity, $decimal) }}</td>
             <td class="text-center">{{ $row->item->unit_type_id }}</td>
             <td class="text-left">
                 {!! $row->item->description !!}
