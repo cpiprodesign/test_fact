@@ -429,10 +429,10 @@
                 me.form.additional_information = me.document.additional_information[0]
                 me.status_paid =  ((me.document.total - me.document.total_paid) > 0)?'0':'1'
                 me.chaneStatusPaid()
-                if(me.document.payment){
+                if(me.document.payment.length > 0){
                     me.pay_data.payment_method_id = me.document.payment[0].payment_method_id
                     me.pay_data.account_id = me.document.payment[0].account_id
-                    me.pay_data.total = me.document.payment[0].total
+                    me.pay_data.total = me.document.total_paid
                 }
                 var guides = me.document.guides
                 if(guides != null){
